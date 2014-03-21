@@ -11,6 +11,8 @@ module.exports = function(_model, _data, _method, _url, _callback) {
 		error;
 
 	request[method](url)
+		.set(model.headers())
+		.type('json')
 		.accept('json')
 		.send(data)
 		.end(function(_error, _res) {

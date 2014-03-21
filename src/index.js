@@ -113,7 +113,7 @@ Model.prototype.json = function() {
 
 Model.prototype.headers = function(_headers) {
 	this.__headers = is.an.object(_headers) ? _headers : this.__headers;
-	return this;
+	return is.empty(_headers) ? this.__headers : this;
 };
 
 Model.prototype.isDirty = function() {
