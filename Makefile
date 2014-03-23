@@ -1,15 +1,15 @@
 build:
-	@npm install
-	@npm test
+	@make install
+	@gulp
 
 clean:
 	@rm -rf node_modules dist
 
+install:
+	@npm instal
+
 release:
 	@make clean
 	@make build
-	@mkdir dist
-	@./node_modules/.bin/browserify ./src/index.js -o dist/sgModel.js --standalone sgModel
-	@./node_modules/.bin/uglifyjs ./dist/sgModel.js -o ./dist/sgModel.min.js
 
-.PHONY: build clean release
+.PHONY: build clean install release
