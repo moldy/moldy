@@ -18,6 +18,7 @@ describe('sg-model', function() {
 
 	require('./readme.property');
 	require('./readme.url.base');
+	require('./readme.get');
 	require('./readme.save');
 	require('./readme.destroy');
 
