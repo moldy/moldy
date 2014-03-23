@@ -194,7 +194,7 @@ Model.prototype.json = function() {
 
 Model.prototype.headers = function(_headers) {
 	this.__headers = is.an.object(_headers) ? _headers : this.__headers;
-	return is.empty(_headers) ? this.__headers : this;
+	return is.not.an.object(_headers) ? this.__headers : this;
 };
 
 Model.prototype.isDirty = function() {
@@ -288,7 +288,7 @@ Model.prototype.url = function(_url) {
 
 	self.__url = url.trim().replace(/^\//, '');
 
-	return is.empty(_url) ? endpoint : self;
+	return is.not.a.string(_url) ? endpoint : self;
 };
 
 emitter(Model.prototype);
