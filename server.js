@@ -25,7 +25,20 @@ if ('development' == app.get('env')) {
 	app.use(express.errorHandler());
 }
 
-var guid = require('sc-guid');
+var _ = require('underscore'),
+	guid = require('sc-guid'),
+	dummy = require('./test/dummy');
+
+app.get('/api/person/:id', function(_req, _res) {
+	var person = _.findWhere(dummy.data.people, {
+		guid: _req.params.id
+	});
+	_res.json(person);
+});
+
+app.get('/api/person', function(_req, _res) {
+	_res.json(dummy.data.people);
+});
 
 app.post('/api/person', function(_req, _res) {
 	_req.body.id = guid.generate();
