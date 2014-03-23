@@ -4,6 +4,7 @@
        - [type & default](#sg-model-property-attributes-type--default)
        - [optional](#sg-model-property-attributes-optional)
      - [A model's url aka endpoint](#sg-model-a-models-url-aka-endpoint)
+     - [get](#sg-model-get)
      - [save](#sg-model-save)
      - [destroy](#sg-model-destroy)
 <a name=""></a>
@@ -111,6 +112,24 @@ personModel.url('v1');
 personModel.url().should.eql('/person/v1');
 personModel.base('/api');
 personModel.url().should.eql('/api/person/v1');
+```
+
+<a name="sg-model-get"></a>
+## get
+To get by id, give an object with the id.
+
+```js
+var personModel = new Model('person', 'guid')
+	.property('name')
+	.base('http://localhost:3000/api');
+personModel.get({
+	guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
+}, function(_error, _res) {
+	if (_error) {
+		return _done(_error);
+	}
+	_done();
+});
 ```
 
 <a name="sg-model-save"></a>

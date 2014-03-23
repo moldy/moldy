@@ -36,6 +36,18 @@ var setProperty = function(_key) {
 	}
 };
 
+var setBusy = function(_self) {
+	return function() {
+		_self.busy = true;
+	}
+}
+
+var unsetBusy = function(_self) {
+	return function() {
+		_self.busy = false;
+	}
+}
+
 var Model = function(_name, _key) {
 	var self = this;
 
@@ -70,12 +82,24 @@ var Model = function(_name, _key) {
 		__url: {
 			value: '',
 			writable: true
+		},
+		busy: {
+			value: false,
+			writable: true
 		}
 	});
 
 	self.property(self.__key);
 
-	return self;
+	self.on('presave', setBusy(self));
+	self.on('save', unsetBusy(self));
+
+	self.on('predestroy', setBusy(self));
+	self.on('destroy', unsetBusy(self));
+
+	self.on('preget', setBusy(self));
+	self.on('get', unsetBusy(self));
+
 };
 
 Model.prototype.base = function(_base) {
