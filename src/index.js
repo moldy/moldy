@@ -87,6 +87,28 @@ Model.prototype.base = function(_base) {
 	return is.empty(_base) ? self.__base : self;
 };
 
+Model.prototype.collection = function(_query) {
+	var self = this,
+		url = self.url(),
+		method = 'get',
+		query = is.an.object(_query) ? _query : {},
+		callback = is.a.func(_query) ? _query : is.a.func(_callback) ? _callback : noop;
+
+	self.emit('precollection', {
+		model: self,
+		method: method,
+		query: query,
+		url: url,
+		callback: callback
+	});
+
+	request(self, query, method, url, function(_error, _res) {
+		self.emit('collection', _error, _res);
+		callback.apply(self, arguments);
+	});
+
+};
+
 Model.prototype.destroy = function(_callback) {
 	var self = this,
 		isDirty = self.isDirty(),
@@ -115,6 +137,33 @@ Model.prototype.destroy = function(_callback) {
 		callback.apply(self, [new Error('This model cannot be destroyed because it has not been saved to the server yet.')]);
 	}
 
+};
+
+Model.prototype.data = function(_data) {
+	var self = this,
+		data = is.object(_data) ? _data : {};
+
+	Object.keys(data).forEach(function(_key) {
+		self.property(_key, _data[_key]);
+	});
+
+	return self;
+};
+
+Model.prototype.clone = function(_data) {
+	var self = this,
+		newModel = new Model(self.__name, self.__key)
+			.base(self.__base)
+			.headers(self.__headers)
+			.url(self.__url);
+
+	Object.keys(self.__attributes).forEach(function(_propertyKey) {
+		newModel.property(_propertyKey, merge(self.__attributes[_propertyKey]));
+	});
+
+	newModel.data(_data);
+
+	return newModel;
 };
 
 Model.prototype.get = function(_query, _callback) {
@@ -177,6 +226,11 @@ Model.prototype.isValid = function() {
 	});
 
 	return isValid;
+};
+
+Model.prototype.key = function(_key) {
+	this.__key = _key;
+	return this;
 };
 
 Model.prototype.property = function(_key, _value) {
