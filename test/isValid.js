@@ -8,6 +8,8 @@ describe('isValid', function() {
 			.property('name');
 
 		personModel.isValid().should.not.be.ok;
+		personModel.name = 'David';
+		personModel.isValid().should.be.ok;
 
 	});
 

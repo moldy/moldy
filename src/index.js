@@ -89,21 +89,53 @@ Model.prototype.base = function(_base) {
 
 Model.prototype.destroy = function(_callback) {
 	var self = this,
-		error = null,
 		isDirty = self.isDirty(),
 		data = self.json(),
 		url = self.url() + '/' + self[self.__key],
 		method = 'delete',
 		callback = is.a.func(_callback) ? _callback : noop;
 
+	self.emit('predestroy', {
+		model: self,
+		data: data,
+		method: method,
+		url: url,
+		callback: callback
+	});
+
 	if (!isDirty) {
 		request(self, data, method, url, function() {
+
+			self.emit('destroy', self);
+
 			self.__destroyed = true;
 			callback.apply(self, arguments);
 		});
 	} else {
 		callback.apply(self, [new Error('This model cannot be destroyed because it has not been saved to the server yet.')]);
 	}
+
+};
+
+Model.prototype.get = function(_query, _callback) {
+	var self = this,
+		url = self.url(),
+		method = 'get',
+		query = is.an.object(_query) ? _query : {},
+		callback = is.a.func(_query) ? _query : is.a.func(_callback) ? _callback : noop;
+
+	self.emit('preget', {
+		model: self,
+		method: method,
+		query: query,
+		url: url,
+		callback: callback
+	});
+
+	request(self, query, method, url, function(_error, _res) {
+		self.emit('get', _error, _res);
+		callback.apply(self, arguments);
+	});
 
 };
 
@@ -125,6 +157,11 @@ Model.prototype.isValid = function() {
 		isValid = true;
 
 	Object.keys(self.__attributes).forEach(function(_key) {
+
+		if (self.isDirty() && _key === self.__key) {
+			return;
+		}
+
 		var value = self[_key],
 			attributes = self.__attributes[_key],
 			type = attributes.type,
@@ -173,7 +210,16 @@ Model.prototype.save = function(_callback) {
 		method = isDirty ? 'post' : 'put',
 		callback = is.a.func(_callback) ? _callback : noop;
 
-	request(self, data, method, url, function() {
+	self.emit('presave', {
+		model: self,
+		data: data,
+		method: method,
+		url: url,
+		callback: callback
+	});
+
+	request(self, data, method, url, function(_error, _res) {
+		self.emit('save', _error, _res);
 		callback.apply(self, arguments);
 	});
 

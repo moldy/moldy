@@ -10,11 +10,10 @@ module.exports = function(_model, _data, _method, _url, _callback) {
 		isDirty = model.isDirty(),
 		error;
 
-	request[method](url)
+	request[method](url)[/get/i.test(method) ? 'query' : 'send'](data)
 		.set(model.headers())
 		.type('json')
 		.accept('json')
-		.send(data)
 		.end(function(_error, _res) {
 			var res = is.an.object(_res) ? _res : {},
 				body = hasKey(_res, 'body', 'object') ? _res.body : null;
