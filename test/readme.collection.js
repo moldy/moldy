@@ -14,7 +14,11 @@ describe('collection', function() {
 				return _done(_error);
 			}
 
-			// console.log(_people);
+			_people.should.be.an.Array.with.a.lengthOf(3);
+
+			_people.forEach(function(_person) {
+				_person.should.be.a.Model;
+			});
 
 			_done();
 
