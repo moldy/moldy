@@ -1,12 +1,12 @@
 build:
 	@make install
-	@gulp
+	@./node_modules/.bin/gulp
 
 clean:
 	@rm -rf node_modules dist
 
 install:
-	@npm instal
+	@npm install
 
 release:
 	@make clean

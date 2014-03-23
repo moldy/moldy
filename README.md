@@ -5,6 +5,7 @@
        - [optional](#sg-model-property-attributes-optional)
      - [A model's url aka endpoint](#sg-model-a-models-url-aka-endpoint)
      - [get](#sg-model-get)
+     - [collection](#sg-model-collection)
      - [save](#sg-model-save)
      - [destroy](#sg-model-destroy)
 <a name=""></a>
@@ -128,6 +129,26 @@ personModel.get({
 	if (_error) {
 		return _done(_error);
 	}
+	_done();
+});
+```
+
+<a name="sg-model-collection"></a>
+## collection
+To get a collection.
+
+```js
+var personModel = new Model('person', 'guid')
+	.property('name')
+	.base('http://localhost:3000/api');
+personModel.collection(function(_error, _people) {
+	if (_error) {
+		return _done(_error);
+	}
+	_people.should.be.an.Array.with.a.lengthOf(3);
+	_people.forEach(function(_person) {
+		_person.should.be.a.Model;
+	});
 	_done();
 });
 ```

@@ -6,8 +6,8 @@ var gulp = require('gulp'),
 	uglify = require('gulp-uglify'),
 	worker;
 
-gulp.task('compressScripts', function() {
-	gulp.src(['./dist/sgModel.js'])
+gulp.task('compressScripts', ['scripts'], function() {
+	return gulp.src(['./dist/sgModel.js'])
 		.pipe(uglify())
 		.pipe(rename('sgModel.min.js'))
 		.pipe(gulp.dest('./dist/'));
@@ -22,7 +22,7 @@ gulp.task('server', function() {
 });
 
 gulp.task('scriptSrc', function() {
-	gulp.src(['./src/index.js'])
+	return gulp.src(['./src/index.js'])
 		.pipe(browserify({
 			debug: true,
 			standalone: 'sgModel'
@@ -32,7 +32,7 @@ gulp.task('scriptSrc', function() {
 });
 
 gulp.task('test', function() {
-	gulp.src('').pipe(shell(['npm test']));
+	return gulp.src('').pipe(shell(['npm test']));
 });
 
 gulp.task('watch', function() {
@@ -45,4 +45,4 @@ gulp.task('default', ['build', 'test', 'compress']);
 gulp.task('build', ['scripts']);
 gulp.task('compress', ['compressScripts']);
 gulp.task('scripts', ['scriptSrc']);
-gulp.task('run', ['build', 'server', 'test', 'watch']);
+gulp.task('run', ['build', 'test', 'watch']);
