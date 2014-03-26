@@ -108,7 +108,7 @@ Model.prototype.base = function(_base) {
 
 	self.__base = url.trim().replace(/(\/|\s)+$/g, '');
 
-	return is.empty(_base) ? self.__base : self;
+	return is.not.a.string(_base) ? self.__base : self;
 };
 
 Model.prototype.collection = function(_query) {
