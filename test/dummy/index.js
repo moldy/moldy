@@ -1,5 +1,5 @@
 exports.data = {
-	people: [{
+	people: [ {
 		"id": 0,
 		"guid": "5a55a128-0ad7-49a5-801a-04a7030385ff",
 		"isActive": true,
@@ -25,7 +25,7 @@ exports.data = {
 			"do",
 			"Lorem"
 		],
-		"friends": [{
+		"friends": [ {
 			"id": 0,
 			"name": "Blake Oneill"
 		}, {
@@ -34,7 +34,7 @@ exports.data = {
 		}, {
 			"id": 2,
 			"name": "Kasey Jacobson"
-		}],
+		} ],
 		"customField": "Hello, Goodman Delgado! You have 5 unread messages."
 	}, {
 		"id": 1,
@@ -62,7 +62,7 @@ exports.data = {
 			"labore",
 			"eiusmod"
 		],
-		"friends": [{
+		"friends": [ {
 			"id": 0,
 			"name": "Carly Pickett"
 		}, {
@@ -71,7 +71,7 @@ exports.data = {
 		}, {
 			"id": 2,
 			"name": "Caldwell Shepherd"
-		}],
+		} ],
 		"customField": "Hello, Bennett Sanchez! You have 3 unread messages."
 	}, {
 		"id": 2,
@@ -99,7 +99,7 @@ exports.data = {
 			"Lorem",
 			"ex"
 		],
-		"friends": [{
+		"friends": [ {
 			"id": 0,
 			"name": "Lucille Shannon"
 		}, {
@@ -108,7 +108,7 @@ exports.data = {
 		}, {
 			"id": 2,
 			"name": "Dona Roberson"
-		}],
+		} ],
 		"customField": "Hello, Ericka Murray! You have 4 unread messages."
-	}]
+	} ]
 }
