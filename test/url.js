@@ -5,20 +5,20 @@ describe( 'url', function () {
 
 	it( 'should be empty', function () {
 		var personModel = new Model();
-		personModel.url().should.eql( '' );
+		personModel.$url().should.eql( '' );
 	} );
 
 	it( 'should be the name', function () {
 		var personModel = new Model( 'person' );
-		personModel.url().should.eql( '/person' );
+		personModel.$url().should.eql( '/person' );
 	} );
 
 	it( 'should be the base and the name', function () {
-		var personModel = new Model( 'person' ).base( '/api/' );
-		personModel.url().should.eql( '/api/person' );
+		var personModel = new Model( 'person' ).$base( '/api/' );
+		personModel.$url().should.eql( '/api/person' );
 
-		personModel.base( 'http://domain.com/api' );
-		personModel.url().should.eql( 'http://domain.com/api/person' );
+		personModel.$base( 'http://domain.com/api' );
+		personModel.$url().should.eql( 'http://domain.com/api/person' );
 	} );
 
 } );

@@ -7,14 +7,14 @@ describe( 'Property Attributes', function () {
 
 		it( 'Properties can by strongly typed. If a type has been defined, values are cast to that type automatically. If a value cannot be cast to a type then the value will be set to `null` or the `default` if it has been defined', function () {
 			var personModel = new Model( 'person' )
-				.property( 'age', {
+				.$property( 'age', {
 					type: 'number'
 				} )
-				.property( 'active', {
+				.$property( 'active', {
 					type: 'boolean',
 					default: false
 				} )
-				.property( 'tags', {
+				.$property( 'tags', {
 					type: 'array'
 				} );
 
@@ -52,17 +52,17 @@ describe( 'Property Attributes', function () {
 
 		it( 'Properties can be optional. By making a property optional, `isValid()` and `toJson()` will ignore it if is has not been set', function () {
 			var personModel = new Model( 'person' )
-				.property( 'id' )
-				.property( 'name' )
-				.property( 'age', {
+				.$property( 'id' )
+				.$property( 'name' )
+				.$property( 'age', {
 					type: 'number',
 					optional: true
 				} )
-				.property( 'active', {
+				.$property( 'active', {
 					type: 'boolean',
 					default: false
 				} )
-				.property( 'tags', {
+				.$property( 'tags', {
 					type: 'array',
 					optional: true
 				} );
@@ -74,7 +74,7 @@ describe( 'Property Attributes', function () {
 			personModel.id = 1;
 			personModel.name = 'David';
 
-			personModel.isValid().should.be.ok;
+			personModel.$isValid().should.be.ok;
 
 		} );
 

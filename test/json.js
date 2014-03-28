@@ -5,13 +5,13 @@ describe( 'json', function () {
 
 	it( 'should return the raw JSON representaiton of the model', function () {
 		var personModel = new Model( 'person' )
-			.property( 'name' )
-			.property( 'age' );
+			.$property( 'name' )
+			.$property( 'age' );
 
 		personModel.name = 'David';
 		personModel.age = 34;
 
-		var data = personModel.json();
+		var data = personModel.$json();
 
 		Object.keys( data ).should.have.a.lengthOf( 3 );
 
@@ -23,10 +23,10 @@ describe( 'json', function () {
 
 	it( 'should return all properties even when they have not been set', function () {
 		var personModel = new Model( 'person' )
-			.property( 'name' )
-			.property( 'age' );
+			.$property( 'name' )
+			.$property( 'age' );
 
-		var data = personModel.json();
+		var data = personModel.$json();
 
 		Object.keys( data ).should.have.a.lengthOf( 3 );
 
@@ -38,12 +38,12 @@ describe( 'json', function () {
 
 	it( 'should handle optional properties', function () {
 		var personModel = new Model( 'person' )
-			.property( 'name' )
-			.property( 'age', {
+			.$property( 'name' )
+			.$property( 'age', {
 				optional: true
 			} );
 
-		var data = personModel.json();
+		var data = personModel.$json();
 
 		Object.keys( data ).should.have.a.lengthOf( 2 );
 
@@ -53,7 +53,7 @@ describe( 'json', function () {
 
 		personModel.age = 34;
 
-		data = personModel.json();
+		data = personModel.$json();
 
 		Object.keys( data ).should.have.a.lengthOf( 3 );
 
@@ -65,13 +65,13 @@ describe( 'json', function () {
 
 	it( 'should handle optional properties with defaults', function () {
 		var personModel = new Model( 'person' )
-			.property( 'name' )
-			.property( 'age', {
+			.$property( 'name' )
+			.$property( 'age', {
 				optional: true,
 				default: 0
 			} );
 
-		var data = personModel.json();
+		var data = personModel.$json();
 
 		Object.keys( data ).should.have.a.lengthOf( 2 );
 
@@ -83,12 +83,12 @@ describe( 'json', function () {
 
 	it( 'should handle properties with defaults', function () {
 		var personModel = new Model( 'person' )
-			.property( 'name' )
-			.property( 'age', {
+			.$property( 'name' )
+			.$property( 'age', {
 				default: 0
 			} );
 
-		var data = personModel.json();
+		var data = personModel.$json();
 
 		Object.keys( data ).should.have.a.lengthOf( 3 );
 

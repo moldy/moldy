@@ -89,7 +89,7 @@ var Model = function ( _name, _key ) {
 		}
 	} );
 
-	self.property( self.__key );
+	self.$property( self.__key );
 
 	self.on( 'presave', setBusy( self ) );
 	self.on( 'save', unsetBusy( self ) );
@@ -102,7 +102,7 @@ var Model = function ( _name, _key ) {
 
 };
 
-Model.prototype.base = function ( _base ) {
+Model.prototype.$base = function ( _base ) {
 	var self = this,
 		url = is.empty( _base ) ? '' : _base;
 
@@ -111,9 +111,9 @@ Model.prototype.base = function ( _base ) {
 	return is.not.a.string( _base ) ? self.__base : self;
 };
 
-Model.prototype.collection = function ( _query ) {
+Model.prototype.$collection = function ( _query ) {
 	var self = this,
-		url = self.url(),
+		url = self.$url(),
 		method = 'get',
 		query = is.an.object( _query ) ? _query : {},
 		callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : noop;
@@ -133,11 +133,11 @@ Model.prototype.collection = function ( _query ) {
 
 };
 
-Model.prototype.destroy = function ( _callback ) {
+Model.prototype.$destroy = function ( _callback ) {
 	var self = this,
-		isDirty = self.isDirty(),
-		data = self.json(),
-		url = self.url() + '/' + self[ self.__key ],
+		isDirty = self.$isDirty(),
+		data = self.$json(),
+		url = self.$url() + '/' + self[ self.__key ],
 		method = 'delete',
 		callback = is.a.func( _callback ) ? _callback : noop;
 
@@ -163,36 +163,36 @@ Model.prototype.destroy = function ( _callback ) {
 
 };
 
-Model.prototype.data = function ( _data ) {
+Model.prototype.$data = function ( _data ) {
 	var self = this,
 		data = is.object( _data ) ? _data : {};
 
 	Object.keys( data ).forEach( function ( _key ) {
-		self.property( _key, _data[ _key ] );
+		self.$property( _key, _data[ _key ] );
 	} );
 
 	return self;
 };
 
-Model.prototype.clone = function ( _data ) {
+Model.prototype.$clone = function ( _data ) {
 	var self = this,
 		newModel = new Model( self.__name, self.__key )
-			.base( self.__base )
-			.headers( self.__headers )
-			.url( self.__url );
+			.$base( self.__base )
+			.$headers( self.__headers )
+			.$url( self.__url );
 
 	Object.keys( self.__attributes ).forEach( function ( _propertyKey ) {
-		newModel.property( _propertyKey, merge( self.__attributes[ _propertyKey ] ) );
+		newModel.$property( _propertyKey, merge( self.__attributes[ _propertyKey ] ) );
 	} );
 
-	newModel.data( _data );
+	newModel.$data( _data );
 
 	return newModel;
 };
 
-Model.prototype.get = function ( _query, _callback ) {
+Model.prototype.$get = function ( _query, _callback ) {
 	var self = this,
-		url = self.url(),
+		url = self.$url(),
 		method = 'get',
 		query = is.an.object( _query ) ? _query : {},
 		callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : noop;
@@ -212,26 +212,26 @@ Model.prototype.get = function ( _query, _callback ) {
 
 };
 
-Model.prototype.json = function () {
+Model.prototype.$json = function () {
 	return this.__data;
 };
 
-Model.prototype.headers = function ( _headers ) {
+Model.prototype.$headers = function ( _headers ) {
 	this.__headers = is.an.object( _headers ) ? _headers : this.__headers;
 	return is.not.an.object( _headers ) ? this.__headers : this;
 };
 
-Model.prototype.isDirty = function () {
+Model.prototype.$isDirty = function () {
 	return is.empty( this[ this.__key ] );
 };
 
-Model.prototype.isValid = function () {
+Model.prototype.$isValid = function () {
 	var self = this,
 		isValid = true;
 
 	Object.keys( self.__attributes ).forEach( function ( _key ) {
 
-		if ( self.isDirty() && _key === self.__key ) {
+		if ( self.$isDirty() && _key === self.__key ) {
 			return;
 		}
 
@@ -252,12 +252,12 @@ Model.prototype.isValid = function () {
 	return isValid;
 };
 
-Model.prototype.key = function ( _key ) {
+Model.prototype.$key = function ( _key ) {
 	this.__key = _key;
 	return this;
 };
 
-Model.prototype.property = function ( _key, _value ) {
+Model.prototype.$property = function ( _key, _value ) {
 	var self = this,
 		attributes = new Attributes( _key, _value );
 
@@ -279,12 +279,12 @@ Model.prototype.property = function ( _key, _value ) {
 	return self;
 };
 
-Model.prototype.save = function ( _callback ) {
+Model.prototype.$save = function ( _callback ) {
 	var self = this,
 		error = null,
-		isDirty = self.isDirty(),
-		data = self.json(),
-		url = self.url() + ( !isDirty ? '/' + self[ self.__key ] : '' ),
+		isDirty = self.$isDirty(),
+		data = self.$json(),
+		url = self.$url() + ( !isDirty ? '/' + self[ self.__key ] : '' ),
 		method = isDirty ? 'post' : 'put',
 		callback = is.a.func( _callback ) ? _callback : noop;
 
@@ -303,7 +303,7 @@ Model.prototype.save = function ( _callback ) {
 
 };
 
-Model.prototype.url = function ( _url ) {
+Model.prototype.$url = function ( _url ) {
 	var self = this,
 		base = is.empty( self.__base ) ? '' : self.__base,
 		name = is.empty( self.__name ) ? '' : '/' + self.__name.trim().replace( /^\//, '' ),

@@ -8,7 +8,7 @@ module.exports = function ( _model, _data, _method, _url, _callback ) {
 		model = _model,
 		data = _data,
 		url = _url,
-		isDirty = model.isDirty(),
+		isDirty = model.$isDirty(),
 		modelKey,
 		error;
 
@@ -19,7 +19,7 @@ module.exports = function ( _model, _data, _method, _url, _callback ) {
 	}
 
 	request[ method ]( url )[ /get/i.test( method ) ? 'query' : 'send' ]( data )
-		.set( model.headers() )
+		.set( model.$headers() )
 		.type( 'json' )
 		.accept( 'json' )
 		.end( function ( _error, _res ) {
@@ -46,7 +46,7 @@ module.exports = function ( _model, _data, _method, _url, _callback ) {
 			if ( is.array( body ) ) {
 
 				body.forEach( function ( _data ) {
-					items.push( model.clone( _data ) );
+					items.push( model.$clone( _data ) );
 				} );
 
 				model = items;

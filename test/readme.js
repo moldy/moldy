@@ -6,9 +6,9 @@ describe( 'sg-model', function () {
 
 	it( 'Create a Model', function () {
 		var personModel = new Model( 'person' )
-			.property( 'id' )
-			.property( 'name' )
-			.property( 'age' );
+			.$property( 'id' )
+			.$property( 'name' )
+			.$property( 'age' );
 
 		personModel.should.have.a.property( 'id', null );
 		personModel.should.have.a.property( 'name', null );
