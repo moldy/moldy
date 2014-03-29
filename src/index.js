@@ -217,10 +217,6 @@ Model.prototype.$get = function ( _query, _callback ) {
 
 };
 
-Model.prototype.$json = function () {
-	return this.__data;
-};
-
 Model.prototype.$headers = function ( _headers ) {
 	this.__headers = is.an.object( _headers ) ? _headers : this.__headers;
 	return is.not.an.object( _headers ) ? this.__headers : this;
@@ -260,6 +256,10 @@ Model.prototype.$isValid = function () {
 Model.prototype.$key = function ( _key ) {
 	this.__key = _key;
 	return this;
+};
+
+Model.prototype.$json = function () {
+	return this.__data;
 };
 
 Model.prototype.$property = function ( _key, _value ) {
