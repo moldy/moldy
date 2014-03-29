@@ -3,7 +3,8 @@ var is = require( 'sc-is' ),
 	hasKey = require( 'sc-haskey' ),
 	merge = require( 'sc-merge' ),
 	emitter = require( 'emitter-component' ),
-	request = require( './request.ajax.js' );
+	useify = require( 'sc-useify' ),
+	request = require( './request.js' );
 
 var noop = function () {};
 
@@ -321,5 +322,6 @@ Model.prototype.$url = function ( _url ) {
 };
 
 emitter( Model.prototype );
+useify( Model );
 
 module.exports = Model;
