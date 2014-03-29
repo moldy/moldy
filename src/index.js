@@ -1,53 +1,11 @@
 var is = require( 'sc-is' ),
 	cast = require( 'sc-cast' ),
 	hasKey = require( 'sc-haskey' ),
+	helpers = require( './helpers' ),
 	merge = require( 'sc-merge' ),
 	emitter = require( 'emitter-component' ),
 	useify = require( 'sc-useify' ),
 	request = require( './request.js' );
-
-var noop = function () {};
-
-var Attributes = function ( _key, _value ) {
-	return merge( {
-		name: _key || '',
-		type: '',
-		default: null,
-		optional: false
-	}, _value );
-}
-
-var getProperty = function ( _key ) {
-	return function () {
-		return this.__data[ _key ];
-	}
-};
-
-var setProperty = function ( _key ) {
-	return function ( _value ) {
-		var self = this,
-			attributes = self.__attributes[ _key ],
-			value = attributes.type ? cast( _value, attributes.type, attributes[ 'default' ] ) : _value;
-
-		if ( self.__data[ _key ] !== value ) {
-			self.emit( 'change', self.__data[ _key ], value );
-		}
-
-		self.__data[ _key ] = value;
-	}
-};
-
-var setBusy = function ( _self ) {
-	return function () {
-		_self.busy = true;
-	}
-}
-
-var unsetBusy = function ( _self ) {
-	return function () {
-		_self.busy = false;
-	}
-}
 
 var Model = function ( _name, _properties ) {
 	var self = this,
@@ -97,14 +55,14 @@ var Model = function ( _name, _properties ) {
 		self.$property( _key, properties[ 'properties' ][ _key ] );
 	} );
 
-	self.on( 'presave', setBusy( self ) );
-	self.on( 'save', unsetBusy( self ) );
+	self.on( 'presave', helpers.setBusy( self ) );
+	self.on( 'save', helpers.unsetBusy( self ) );
 
-	self.on( 'predestroy', setBusy( self ) );
-	self.on( 'destroy', unsetBusy( self ) );
+	self.on( 'predestroy', helpers.setBusy( self ) );
+	self.on( 'destroy', helpers.unsetBusy( self ) );
 
-	self.on( 'preget', setBusy( self ) );
-	self.on( 'get', unsetBusy( self ) );
+	self.on( 'preget', helpers.setBusy( self ) );
+	self.on( 'get', helpers.unsetBusy( self ) );
 
 };
 
@@ -122,7 +80,7 @@ Model.prototype.$collection = function ( _query ) {
 		url = self.$url(),
 		method = 'get',
 		query = is.an.object( _query ) ? _query : {},
-		callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : noop;
+		callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop;
 
 	self.emit( 'precollection', {
 		model: self,
@@ -145,7 +103,7 @@ Model.prototype.$destroy = function ( _callback ) {
 		data = self.$json(),
 		url = self.$url() + '/' + self[ self.__key ],
 		method = 'delete',
-		callback = is.a.func( _callback ) ? _callback : noop;
+		callback = is.a.func( _callback ) ? _callback : helpers.noop;
 
 	self.emit( 'predestroy', {
 		model: self,
@@ -201,7 +159,7 @@ Model.prototype.$get = function ( _query, _callback ) {
 		url = self.$url(),
 		method = 'get',
 		query = is.an.object( _query ) ? _query : {},
-		callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : noop;
+		callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop;
 
 	self.emit( 'preget', {
 		model: self,
@@ -265,12 +223,12 @@ Model.prototype.$json = function () {
 
 Model.prototype.$property = function ( _key, _value ) {
 	var self = this,
-		attributes = new Attributes( _key, _value );
+		attributes = new helpers.attributes( _key, _value );
 
 	if ( !self.hasOwnProperty( _key ) ) {
 		Object.defineProperty( self, _key, {
-			get: getProperty( _key ),
-			set: setProperty( _key ),
+			get: helpers.getProperty( _key ),
+			set: helpers.setProperty( _key ),
 			enumerable: true
 		} );
 		self.__attributes[ _key ] = attributes;
@@ -292,7 +250,7 @@ Model.prototype.$save = function ( _callback ) {
 		data = self.$json(),
 		url = self.$url() + ( !isDirty ? '/' + self[ self.__key ] : '' ),
 		method = isDirty ? 'post' : 'put',
-		callback = is.a.func( _callback ) ? _callback : noop;
+		callback = is.a.func( _callback ) ? _callback : helpers.noop;
 
 	self.emit( 'presave', {
 		model: self,
