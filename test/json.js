@@ -4,9 +4,12 @@ var Model = require( '../src' ),
 describe( 'json', function () {
 
 	it( 'should return the raw JSON representaiton of the model', function () {
-		var personModel = new Model( 'person' )
-			.$property( 'name' )
-			.$property( 'age' );
+		var personModel = new Model( 'person', {
+			properties: {
+				name: '',
+				age: ''
+			}
+		} );
 
 		personModel.name = 'David';
 		personModel.age = 34;

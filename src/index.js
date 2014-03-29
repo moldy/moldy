@@ -48,8 +48,9 @@ var unsetBusy = function ( _self ) {
 	}
 }
 
-var Model = function ( _name, _key ) {
-	var self = this;
+var Model = function ( _name, _properties ) {
+	var self = this,
+		properties = is.an.object( _properties ) ? _properties : {};
 
 	Object.defineProperties( self, {
 		__attributes: {
@@ -69,18 +70,18 @@ var Model = function ( _name, _key ) {
 			writable: true
 		},
 		__headers: {
-			value: {},
+			value: cast( properties[ 'headers' ], 'object', {} ),
 			writable: true
 		},
 		__key: {
-			value: is.a.string( _key ) && is.not.empty( _key ) ? _key : 'id',
+			value: cast( properties[ 'key' ], 'string', 'id' ) || 'id',
 			writable: true
 		},
 		__name: {
 			value: _name || ''
 		},
 		__url: {
-			value: '',
+			value: cast( properties[ 'url' ], 'string', '' ),
 			writable: true
 		},
 		busy: {
@@ -90,6 +91,10 @@ var Model = function ( _name, _key ) {
 	} );
 
 	self.$property( self.__key );
+
+	Object.keys( cast( properties[ 'properties' ], 'object', {} ) ).forEach( function ( _key ) {
+		self.$property( _key, properties[ 'properties' ][ _key ] );
+	} );
 
 	self.on( 'presave', setBusy( self ) );
 	self.on( 'save', unsetBusy( self ) );
