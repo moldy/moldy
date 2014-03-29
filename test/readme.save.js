@@ -6,7 +6,7 @@ describe( 'save', function () {
 	it( 'To save the model, call `save()`. If the model is `dirty` (has not been saved to the server and therefore does not have a valid `key`) then the http method will be POST. If the model has been saved, then the http method will be PUT', function ( _done ) {
 		var personModel = new Model( 'person' )
 			.$property( 'name' )
-			.$base( 'http://localhost:3000/api' );
+			.$baseUrl( 'http://localhost:3000/api' );
 
 		personModel.name = 'David';
 

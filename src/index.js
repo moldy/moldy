@@ -57,8 +57,8 @@ var Model = function ( _name, _properties ) {
 			value: {},
 			writable: true
 		},
-		__base: {
-			value: '',
+		__baseUrl: {
+			value: cast( properties[ 'baseUrl' ], 'string', '' ),
 			writable: true
 		},
 		__data: {
@@ -107,13 +107,13 @@ var Model = function ( _name, _properties ) {
 
 };
 
-Model.prototype.$base = function ( _base ) {
+Model.prototype.$baseUrl = function ( _base ) {
 	var self = this,
-		url = is.empty( _base ) ? '' : _base;
+		url = cast( _base, 'string', self.__baseUrl || '' );
 
-	self.__base = url.trim().replace( /(\/|\s)+$/g, '' );
+	self.__baseUrl = url.trim().replace( /(\/|\s)+$/g, '' );
 
-	return is.not.a.string( _base ) ? self.__base : self;
+	return is.not.a.string( _base ) ? self.__baseUrl : self;
 };
 
 Model.prototype.$collection = function ( _query ) {
@@ -182,7 +182,7 @@ Model.prototype.$data = function ( _data ) {
 Model.prototype.$clone = function ( _data ) {
 	var self = this,
 		newModel = new Model( self.__name, self.__key )
-			.$base( self.__base )
+			.$baseUrl( self.__baseUrl )
 			.$headers( self.__headers )
 			.$url( self.__url );
 
@@ -310,7 +310,7 @@ Model.prototype.$save = function ( _callback ) {
 
 Model.prototype.$url = function ( _url ) {
 	var self = this,
-		base = is.empty( self.__base ) ? '' : self.__base,
+		base = is.empty( self.__baseUrl ) ? '' : self.__baseUrl,
 		name = is.empty( self.__name ) ? '' : '/' + self.__name.trim().replace( /^\//, '' ),
 		url = _url || self.__url || '',
 		endpoint = base + name + ( is.empty( url ) ? '' : '/' + url.trim().replace( /^\//, '' ) );

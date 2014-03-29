@@ -6,7 +6,7 @@ describe( 'destroy', function () {
 	it( 'To destroy a model, call `destroy()`', function ( _done ) {
 		var personModel = new Model( 'person' )
 			.$property( 'name' )
-			.$base( 'http://localhost:3000/api' );
+			.$baseUrl( 'http://localhost:3000/api' );
 
 		personModel.name = 'David';
 

@@ -18,7 +18,7 @@ describe( 'A model\'s url aka endpoint', function () {
 		personModel.$url( 'v1' );
 		personModel.$url().should.eql( '/person/v1' );
 
-		personModel.$base( '/api' );
+		personModel.$baseUrl( '/api' );
 		personModel.$url().should.eql( '/api/person/v1' );
 
 	} );

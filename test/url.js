@@ -14,10 +14,10 @@ describe( 'url', function () {
 	} );
 
 	it( 'should be the base and the name', function () {
-		var personModel = new Model( 'person' ).$base( '/api/' );
+		var personModel = new Model( 'person' ).$baseUrl( '/api/' );
 		personModel.$url().should.eql( '/api/person' );
 
-		personModel.$base( 'http://domain.com/api' );
+		personModel.$baseUrl( 'http://domain.com/api' );
 		personModel.$url().should.eql( 'http://domain.com/api/person' );
 	} );
 
