@@ -16,9 +16,9 @@ Create a Model.
 
 ```js
 var personModel = new Model( 'person' )
-	.property( 'id' )
-	.property( 'name' )
-	.property( 'age' );
+	.$property( 'id' )
+	.$property( 'name' )
+	.$property( 'age' );
 personModel.should.have.a.property( 'id', null );
 personModel.should.have.a.property( 'name', null );
 personModel.should.have.a.property( 'age', null );
@@ -32,14 +32,14 @@ Properties can by strongly typed. If a type has been defined, values are cast to
 
 ```js
 var personModel = new Model( 'person' )
-	.property( 'age', {
+	.$property( 'age', {
 		type: 'number'
 	} )
-	.property( 'active', {
+	.$property( 'active', {
 		type: 'boolean',
 		default: false
 	} )
-	.property( 'tags', {
+	.$property( 'tags', {
 		type: 'array'
 	} );
 /**
@@ -72,17 +72,17 @@ Properties can be optional. By making a property optional, `isValid()` and `toJs
 
 ```js
 var personModel = new Model( 'person' )
-	.property( 'id' )
-	.property( 'name' )
-	.property( 'age', {
+	.$property( 'id' )
+	.$property( 'name' )
+	.$property( 'age', {
 		type: 'number',
 		optional: true
 	} )
-	.property( 'active', {
+	.$property( 'active', {
 		type: 'boolean',
 		default: false
 	} )
-	.property( 'tags', {
+	.$property( 'tags', {
 		type: 'array',
 		optional: true
 	} );
@@ -92,7 +92,7 @@ var personModel = new Model( 'person' )
  */
 personModel.id = 1;
 personModel.name = 'David';
-personModel.isValid().should.be.ok;
+personModel.$isValid().should.be.ok;
 ```
 
 <a name="sg-model-a-models-url-aka-endpoint"></a>
@@ -101,97 +101,25 @@ A url (endpoint) is automatically generated based on the `Model` name, key, `url
 
 ```js
 var personModel = new Model( 'person' )
-	.property( 'id', {
+	.$property( 'id', {
 		default: '46'
 	} )
-	.property( 'name' );
-personModel.url().should.eql( '/person' );
+	.$property( 'name' );
+personModel.$url().should.eql( '/person' );
 /**
  * The url can be changed using either `base()` or `url()`
  */
-personModel.url( 'v1' );
-personModel.url().should.eql( '/person/v1' );
-personModel.base( '/api' );
-personModel.url().should.eql( '/api/person/v1' );
+personModel.$url( 'v1' );
+personModel.$url().should.eql( '/person/v1' );
+personModel.$baseUrl( '/api' );
+personModel.$url().should.eql( '/api/person/v1' );
 ```
 
 <a name="sg-model-get"></a>
 ## get
-To get by id, give an object with the id.
-
-```js
-var personModel = new Model( 'person', 'guid' )
-	.property( 'name' )
-	.base( 'http://localhost:3000/api' );
-personModel.get( {
-	guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
-}, function ( _error, _res ) {
-	if ( _error ) {
-		return _done( _error );
-	}
-	_done();
-} );
-```
-
 <a name="sg-model-collection"></a>
 ## collection
-To get a collection.
-
-```js
-var personModel = new Model( 'person', 'guid' )
-	.property( 'name' )
-	.base( 'http://localhost:3000/api' );
-personModel.collection( function ( _error, _people ) {
-	if ( _error ) {
-		return _done( _error );
-	}
-	_people.should.be.an.Array.with.a.lengthOf( 3 );
-	_people.forEach( function ( _person ) {
-		_person.should.be.a.Model;
-	} );
-	_done();
-} );
-```
-
 <a name="sg-model-save"></a>
 ## save
-To save the model, call `save()`. If the model is `dirty` (has not been saved to the server and therefore does not have a valid `key`) then the http method will be POST. If the model has been saved, then the http method will be PUT.
-
-```js
-var personModel = new Model( 'person' )
-	.property( 'name' )
-	.base( 'http://localhost:3000/api' );
-personModel.name = 'David';
-personModel.save( function ( _error, _res ) {
-	if ( _error ) {
-		return _done( _error );
-	}
-	personModel.should.eql( _res );
-	personModel.should.have.a.property( 'id' );
-	personModel.name = 'Mr David';
-	personModel.save( function ( _error, _res ) {
-		personModel.should.eql( _res );
-		_done( _error );
-	} );
-} );
-```
-
 <a name="sg-model-destroy"></a>
 ## destroy
-To destroy a model, call `destroy()`.
-
-```js
-var personModel = new Model( 'person' )
-	.property( 'name' )
-	.base( 'http://localhost:3000/api' );
-personModel.name = 'David';
-personModel.save( function ( _error, _res ) {
-	if ( _error ) {
-		return _done( _error );
-	}
-	personModel.destroy( function ( _error, _res ) {
-		_done( _error );
-	} );
-} );
-```
-
