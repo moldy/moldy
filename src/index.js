@@ -5,7 +5,7 @@ var is = require( 'sc-is' ),
 	merge = require( 'sc-merge' ),
 	emitter = require( 'emitter-component' ),
 	useify = require( 'sc-useify' ),
-	request = require( './request.js' );
+	request = require( './request' );
 
 var Model = function ( _name, _properties ) {
 	var self = this,
@@ -132,7 +132,7 @@ Model.prototype.$data = function ( _data ) {
 		data = is.object( _data ) ? _data : {};
 
 	Object.keys( data ).forEach( function ( _key ) {
-		self.$property( _key, _data[ _key ] );
+		self.$property( _key, data[ _key ] );
 	} );
 
 	return self;
@@ -140,16 +140,18 @@ Model.prototype.$data = function ( _data ) {
 
 Model.prototype.$clone = function ( _data ) {
 	var self = this,
-		newModel = new Model( self.__name, self.__key )
-			.$baseUrl( self.__baseUrl )
-			.$headers( self.__headers )
-			.$url( self.__url );
+		data = cast( _data, 'object', {} ),
+		newModel = new Model( self.__name, {
+			baseUrl: self.__baseUrl,
+			headers: self.__headers,
+			key: self.__key,
+			url: self.__url
+		} );
 
 	Object.keys( self.__attributes ).forEach( function ( _propertyKey ) {
 		newModel.$property( _propertyKey, merge( self.__attributes[ _propertyKey ] ) );
+		newModel[ _propertyKey ] = data[ _propertyKey ]
 	} );
-
-	newModel.$data( _data );
 
 	return newModel;
 };
