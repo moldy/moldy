@@ -34,7 +34,7 @@
     "forever": "^0.10.11",
     "gulp-ejs": "^0.2.1",
     "gulp-markdown": "^0.1.2",
-    "sg-model-adapter-ajax": "0.0.0"
+    "sg-model-adapter-ajax": "0.0.1"
   },
   "dependencies": {
     "sc-is": "0.0.3",
