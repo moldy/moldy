@@ -12,11 +12,15 @@ describe( 'property', function () {
 			.$property( 'age', {
 				type: 'number',
 				default: 30
-			} );
+			} )
+			.$property( 'active', 'boolean' );
 
-		Object.keys( personModel.$json() ).should.have.a.lengthOf( 3 );
+		Object.keys( personModel.$json() ).should.have.a.lengthOf( 4 );
 		personModel.should.have.a.property( 'age' ).and.be.a.Number;
 		personModel.should.have.a.property( 'name' ).and.be.a.String;
+
+		personModel.active = 'y';
+		personModel.should.have.a.property( 'active' ).and.be.a.Boolean.and.eql( true );
 	} );
 
 	it( 'set properties using the arguments when instantiating', function () {
@@ -29,12 +33,18 @@ describe( 'property', function () {
 				'age': {
 					type: 'number',
 					default: 30
-				}
+				},
+				'active': 'boolean'
 			}
 		} );
-		Object.keys( personModel.$json() ).should.have.a.lengthOf( 3 );
+
+
+		Object.keys( personModel.$json() ).should.have.a.lengthOf( 4 );
 		personModel.should.have.a.property( 'name' ).and.be.a.String;
 		personModel.should.have.a.property( 'age' ).and.be.a.Number;
+
+		personModel.active = 'y';
+		personModel.should.have.a.property( 'active' ).and.be.a.Boolean.and.eql( true );
 	} );
 
 	it( 'set a property on a manually added key', function () {
