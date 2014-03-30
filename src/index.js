@@ -225,9 +225,11 @@ Model.prototype.$json = function () {
 
 Model.prototype.$property = function ( _key, _value ) {
 	var self = this,
-		attributes = new helpers.attributes( _key, _value );
+		attributes = new helpers.attributes( _key, _value ),
+		existingValue = self[ _key ];
 
-	if ( !self.hasOwnProperty( _key ) ) {
+	if ( !self.hasOwnProperty( _key ) || !self.__attributes.hasOwnProperty( _key ) ) {
+		// if ( !self.hasOwnProperty( _key ) ) {
 		Object.defineProperty( self, _key, {
 			get: helpers.getProperty( _key ),
 			set: helpers.setProperty( _key ),
@@ -236,7 +238,9 @@ Model.prototype.$property = function ( _key, _value ) {
 		self.__attributes[ _key ] = attributes;
 	}
 
-	if ( attributes.optional === false && is.not.nullOrUndefined( attributes[ 'default' ] ) ) {
+	if ( existingValue !== undefined ) {
+		self[ _key ] = existingValue;
+	} else if ( attributes.optional === false && is.not.nullOrUndefined( attributes[ 'default' ] ) ) {
 		self[ _key ] = attributes[ 'default' ];
 	} else if ( attributes.optional === false ) {
 		self.__data[ _key ] = is.empty( attributes.type ) ? undefined : cast( undefined, attributes.type );
