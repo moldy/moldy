@@ -192,7 +192,6 @@ Model.prototype.$headers = function ( _headers ) {
 };
 
 Model.prototype.$isDirty = function () {
-	// TODO: fix this for keyless models
 	return is.empty( this[ this.__key ] );
 };
 
@@ -202,7 +201,6 @@ Model.prototype.$isValid = function () {
 
 	Object.keys( self.__attributes ).forEach( function ( _key ) {
 
-		// TODO: fix this for keyless models
 		if ( self.$isDirty() && _key === self.__key ) {
 			return;
 		}
