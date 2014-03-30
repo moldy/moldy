@@ -132,7 +132,9 @@ Model.prototype.$data = function ( _data ) {
 		data = is.object( _data ) ? _data : {};
 
 	Object.keys( data ).forEach( function ( _key ) {
-		self.$property( _key, data[ _key ] );
+		if ( self.__attributes.hasOwnProperty( _key ) ) {
+			self[ _key ] = data[ _key ];
+		}
 	} );
 
 	return self;
