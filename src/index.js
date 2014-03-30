@@ -223,7 +223,18 @@ Model.prototype.$isValid = function () {
 };
 
 Model.prototype.$json = function () {
-	return this.__data;
+	var data = this.__data,
+		json = {};
+
+	Object.keys( data ).forEach( function ( _key ) {
+		if ( is.not.an.object( data[ _key ] ) ) {
+			json[ _key ] = data[ _key ];
+		} else if ( data[ _key ] instanceof Model ) {
+			json[ _key ] = data[ _key ].$json();
+		}
+	} );
+
+	return json;
 };
 
 Model.prototype.$property = function ( _key, _value ) {
@@ -235,19 +246,28 @@ Model.prototype.$property = function ( _key, _value ) {
 		existingValue = self[ _key ];
 
 	if ( !self.hasOwnProperty( _key ) || !self.__attributes.hasOwnProperty( _key ) ) {
-		Object.defineProperty( self, _key, {
-			get: helpers.getProperty( _key ),
-			set: helpers.setProperty( _key ),
-			enumerable: true
-		} );
+
+		if ( attributes.type === 'model' ) {
+			Object.defineProperty( self, _key, {
+				enumerable: true,
+				value: attributes[ 'default' ]
+			} );
+			self.__data[ _key ] = self[ _key ];
+		} else {
+			Object.defineProperty( self, _key, {
+				get: helpers.getProperty( _key ),
+				set: helpers.setProperty( _key ),
+				enumerable: true
+			} );
+		}
 		self.__attributes[ _key ] = attributes;
 	}
 
 	if ( existingValue !== undefined ) {
 		self[ _key ] = existingValue;
-	} else if ( attributes.optional === false && is.not.nullOrUndefined( attributes[ 'default' ] ) ) {
+	} else if ( is.empty( self[ _key ] ) && attributes.optional === false && is.not.nullOrUndefined( attributes[ 'default' ] ) ) {
 		self[ _key ] = attributes[ 'default' ];
-	} else if ( attributes.optional === false ) {
+	} else if ( is.empty( self[ _key ] ) && attributes.optional === false ) {
 		self.__data[ _key ] = is.empty( attributes.type ) ? undefined : cast( undefined, attributes.type );
 	}
 
