@@ -142,6 +142,57 @@ describe( 'property', function () {
 
 		} );
 
+		it( 'define a child model directly', function () {
+			var addressModel = new Model( 'address', {
+				keyless: true,
+				properties: {
+					'street': {
+						type: 'string',
+						default: 'hemlock'
+					},
+					'suburb': 'string',
+					'country': {
+						optional: true
+					}
+				}
+			} );
+
+			var personModel = new Model( 'person', {
+				properties: {
+					'name': {
+						type: 'string',
+						default: 'David'
+					},
+					'age': {
+						type: 'number',
+						default: 30
+					},
+					'address': addressModel
+				}
+			} );
+
+			Object.keys( personModel.$json() ).should.have.a.lengthOf( 4 );
+			personModel.should.have.a.property( 'name' ).and.be.a.String;
+			personModel.should.have.a.property( 'age' ).and.be.a.Number;
+			personModel.address.street.should.eql( 'hemlock' );
+
+			// ensuring a `model` type cannot be overriden
+			personModel.address = 'wat';
+
+			var personModelJson = personModel.$json();
+
+			personModelJson.should.eql( {
+				id: undefined,
+				name: 'David',
+				age: 30,
+				address: {
+					street: 'hemlock',
+					suburb: null
+				}
+			} );
+
+		} );
+
 	} );
 
 } );
