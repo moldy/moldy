@@ -229,7 +229,6 @@ Model.prototype.$property = function ( _key, _value ) {
 		existingValue = self[ _key ];
 
 	if ( !self.hasOwnProperty( _key ) || !self.__attributes.hasOwnProperty( _key ) ) {
-		// if ( !self.hasOwnProperty( _key ) ) {
 		Object.defineProperty( self, _key, {
 			get: helpers.getProperty( _key ),
 			set: helpers.setProperty( _key ),
