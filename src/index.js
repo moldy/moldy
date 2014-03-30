@@ -242,10 +242,7 @@ Model.prototype.$json = function () {
 
 Model.prototype.$property = function ( _key, _value ) {
 	var self = this,
-		value = is.a.string( _value ) ? {
-			type: _value
-		} : _value,
-		attributes = new helpers.attributes( _key, value ),
+		attributes = new helpers.attributes( _key, _value ),
 		existingValue = self[ _key ];
 
 	if ( !self.hasOwnProperty( _key ) || !self.__attributes.hasOwnProperty( _key ) ) {

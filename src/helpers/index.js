@@ -1,13 +1,29 @@
-var cast = require( 'sc-cast' ),
+var is = require( 'sc-is' ),
+	cast = require( 'sc-cast' ),
 	merge = require( 'sc-merge' );
 
 exports.attributes = function ( _key, _value ) {
+	var value;
+
+	if ( is.a.string( _value ) ) {
+		value = {
+			type: _value
+		};
+	} else if ( is.an.object( _value ) && _value[ '__model' ] === true ) {
+		value = {
+			type: 'model',
+			default: _value
+		}
+	} else {
+		value = _value;
+	}
+
 	return merge( {
 		name: _key || '',
 		type: '',
 		default: null,
 		optional: false
-	}, _value );
+	}, value );
 };
 
 exports.getProperty = function ( _key ) {
