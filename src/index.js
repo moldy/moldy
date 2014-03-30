@@ -36,6 +36,9 @@ var Model = function ( _name, _properties ) {
 			value: cast( properties[ 'key' ], 'string', 'id' ) || 'id',
 			writable: true
 		},
+		__keyless: {
+			value: properties[ 'keyless' ] === true
+		},
 		__name: {
 			value: _name || ''
 		},
@@ -49,7 +52,9 @@ var Model = function ( _name, _properties ) {
 		}
 	} );
 
-	self.$property( self.__key );
+	if ( !properties[ 'keyless' ] ) {
+		self.$property( self.__key );
+	}
 
 	Object.keys( cast( properties[ 'properties' ], 'object', {} ) ).forEach( function ( _key ) {
 		self.$property( _key, properties[ 'properties' ][ _key ] );
@@ -101,7 +106,7 @@ Model.prototype.$destroy = function ( _callback ) {
 	var self = this,
 		isDirty = self.$isDirty(),
 		data = self.$json(),
-		url = self.$url() + '/' + self[ self.__key ],
+		url = self.$url() + ( self.__keyless ? '' : '/' + self[ self.__key ] ),
 		method = 'delete',
 		callback = is.a.func( _callback ) ? _callback : helpers.noop;
 
@@ -147,6 +152,7 @@ Model.prototype.$clone = function ( _data ) {
 			baseUrl: self.__baseUrl,
 			headers: self.__headers,
 			key: self.__key,
+			keyless: self.__keyless,
 			url: self.__url
 		} );
 
@@ -186,6 +192,7 @@ Model.prototype.$headers = function ( _headers ) {
 };
 
 Model.prototype.$isDirty = function () {
+	// TODO: fix this for keyless models
 	return is.empty( this[ this.__key ] );
 };
 
@@ -195,6 +202,7 @@ Model.prototype.$isValid = function () {
 
 	Object.keys( self.__attributes ).forEach( function ( _key ) {
 
+		// TODO: fix this for keyless models
 		if ( self.$isDirty() && _key === self.__key ) {
 			return;
 		}
@@ -204,7 +212,7 @@ Model.prototype.$isValid = function () {
 			type = attributes.type,
 			isRequired = attributes.optional ? false : true,
 			hasNoDefault = is.nullOrUndefined( attributes[ 'default' ] ),
-			isNullOrUndefined = is.nullOrUndefined( value ),
+			isNullOrUndefined = self.__keyless ? false : is.nullOrUndefined( value ),
 			typeIsWrong = is.not.empty( type ) ? is.not.a[ type ]( value ) : isNullOrUndefined;
 
 		if ( isRequired && typeIsWrong ) {
@@ -214,11 +222,6 @@ Model.prototype.$isValid = function () {
 	} );
 
 	return isValid;
-};
-
-Model.prototype.$key = function ( _key ) {
-	this.__key = _key;
-	return this;
 };
 
 Model.prototype.$json = function () {
@@ -255,7 +258,7 @@ Model.prototype.$save = function ( _callback ) {
 		error = null,
 		isDirty = self.$isDirty(),
 		data = self.$json(),
-		url = self.$url() + ( !isDirty ? '/' + self[ self.__key ] : '' ),
+		url = self.$url() + ( !isDirty && !self.__keyless ? '/' + self[ self.__key ] : '' ),
 		method = isDirty ? 'post' : 'put',
 		callback = is.a.func( _callback ) ? _callback : helpers.noop;
 

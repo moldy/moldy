@@ -64,4 +64,15 @@ describe( 'property', function () {
 		personModel.active.should.be.true;
 	} );
 
+	it( 'should not set a key if keyless', function () {
+		var personModel = new Model( 'person', {
+			keyless: true,
+			properties: {
+				name: ''
+			}
+		} );
+
+		personModel.should.not.have.a.property( 'id' );
+
+	} );
 } );
