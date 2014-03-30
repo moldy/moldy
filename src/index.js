@@ -12,6 +12,9 @@ var Model = function ( _name, _properties ) {
 		properties = is.an.object( _properties ) ? _properties : {};
 
 	Object.defineProperties( self, {
+		__model: {
+			value: true
+		},
 		__attributes: {
 			value: {},
 			writable: true
