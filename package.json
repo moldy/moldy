@@ -43,6 +43,7 @@
 		"sc-merge": "0.0.3",
 		"emitter-component": "^1.1.1",
 		"sc-guid": "0.0.4",
-		"sc-useify": "0.0.13"
+		"sc-useify": "0.0.13",
+		"sg-observable-array": "0.0.2"
 	}
 }

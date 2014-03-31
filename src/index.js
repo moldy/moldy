@@ -5,7 +5,8 @@ var is = require( 'sc-is' ),
 	merge = require( 'sc-merge' ),
 	emitter = require( 'emitter-component' ),
 	useify = require( 'sc-useify' ),
-	request = require( './request' );
+	request = require( './request' ),
+	observableArray = require( 'sg-observable-array' );
 
 var Model = function ( _name, _properties ) {
 	var self = this,
@@ -248,11 +249,43 @@ Model.prototype.$property = function ( _key, _value ) {
 	if ( !self.hasOwnProperty( _key ) || !self.__attributes.hasOwnProperty( _key ) ) {
 
 		if ( attributes.type === 'model' ) {
+
 			Object.defineProperty( self, _key, {
+				value: attributes[ 'default' ],
 				enumerable: true,
-				value: attributes[ 'default' ]
 			} );
 			self.__data[ _key ] = self[ _key ];
+
+		} else if ( is.an.array( attributes.type ) ) {
+
+			var array = observableArray( [] ),
+				attributeTypeIsAModel = hasKey( attributes.type[ 0 ], 'properties', 'object' ),
+				attributeTypeIsAString = is.a.string( attributes.type[ 0 ] ) && is.not.empty( attributes.type[ 0 ] ),
+				attributeType = attributeTypeIsAString ? attributes.type[ 0 ] : attributeTypeIsAModel ? attributes.type[ 0 ] : '*';
+
+			Object.defineProperty( self, _key, {
+				value: array,
+				enumerable: true
+			} );
+
+			[ 'push', 'unshift' ].forEach( function ( _method ) {
+				array.on( _method, function () {
+					var args = Array.prototype.slice.call( arguments ),
+						values = [];
+					args.forEach( function ( _item ) {
+						if ( attributeTypeIsAModel ) {
+							var model = new Model( attributeType[ 'name' ], attributeType ),
+								data = is.an.object( _item ) ? _item : attributes[ 'default' ];
+							model.$data( data );
+							values.push( model );
+						} else {
+							values.push( cast( _item, attributeType, attributes[ 'default' ] ) );
+						}
+					} );
+					return array[ '__' + _method ].apply( array, values );
+				} );
+			} );
+
 		} else {
 			Object.defineProperty( self, _key, {
 				get: helpers.getProperty( _key ),
