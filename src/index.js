@@ -43,7 +43,7 @@ var Model = function ( _name, _properties ) {
 			value: properties[ 'keyless' ] === true
 		},
 		__name: {
-			value: _name || ''
+			value: _name || properties[ 'name' ] || ''
 		},
 		__url: {
 			value: cast( properties[ 'url' ], 'string', '' ),
