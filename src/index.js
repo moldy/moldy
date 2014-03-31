@@ -244,11 +244,15 @@ Model.prototype.$json = function () {
 Model.prototype.$property = function ( _key, _value ) {
 	var self = this,
 		attributes = new helpers.attributes( _key, _value ),
-		existingValue = self[ _key ];
+		existingValue = self[ _key ],
+		attributeTypeIsAnArray = is.an.array( attributes.type ),
+		attributeTypeIsAModel = is.a.string( attributes.type ) && /model/.test( attributes.type ),
+		attributeArrayTypeIsAModel = attributeTypeIsAnArray && hasKey( attributes.type[ 0 ], 'properties', 'object' ),
+		attributeArrayTypeIsAString = attributeTypeIsAnArray && is.a.string( attributes.type[ 0 ] ) && is.not.empty( attributes.type[ 0 ] );
 
 	if ( !self.hasOwnProperty( _key ) || !self.__attributes.hasOwnProperty( _key ) ) {
 
-		if ( attributes.type === 'model' ) {
+		if ( attributeTypeIsAModel ) {
 
 			Object.defineProperty( self, _key, {
 				value: attributes[ 'default' ],
@@ -256,12 +260,10 @@ Model.prototype.$property = function ( _key, _value ) {
 			} );
 			self.__data[ _key ] = self[ _key ];
 
-		} else if ( is.an.array( attributes.type ) ) {
+		} else if ( attributeTypeIsAnArray ) {
 
 			var array = observableArray( [] ),
-				attributeTypeIsAModel = hasKey( attributes.type[ 0 ], 'properties', 'object' ),
-				attributeTypeIsAString = is.a.string( attributes.type[ 0 ] ) && is.not.empty( attributes.type[ 0 ] ),
-				attributeType = attributeTypeIsAString ? attributes.type[ 0 ] : attributeTypeIsAModel ? attributes.type[ 0 ] : '*';
+				attributeType = attributeArrayTypeIsAString || attributeArrayTypeIsAModel ? attributes.type[ 0 ] : '*';
 
 			Object.defineProperty( self, _key, {
 				value: array,
@@ -273,7 +275,7 @@ Model.prototype.$property = function ( _key, _value ) {
 					var args = Array.prototype.slice.call( arguments ),
 						values = [];
 					args.forEach( function ( _item ) {
-						if ( attributeTypeIsAModel ) {
+						if ( attributeArrayTypeIsAModel ) {
 							var model = new Model( attributeType[ 'name' ], attributeType ),
 								data = is.an.object( _item ) ? _item : attributes[ 'default' ];
 							model.$data( data );
@@ -293,6 +295,7 @@ Model.prototype.$property = function ( _key, _value ) {
 				enumerable: true
 			} );
 		}
+
 		self.__attributes[ _key ] = attributes;
 	}
 
@@ -301,7 +304,11 @@ Model.prototype.$property = function ( _key, _value ) {
 	} else if ( is.empty( self[ _key ] ) && attributes.optional === false && is.not.nullOrUndefined( attributes[ 'default' ] ) ) {
 		self[ _key ] = attributes[ 'default' ];
 	} else if ( is.empty( self[ _key ] ) && attributes.optional === false ) {
-		self.__data[ _key ] = is.empty( attributes.type ) ? undefined : cast( undefined, attributes.type );
+		if ( attributeTypeIsAnArray || attributeTypeIsAModel ) {
+			self.__data[ _key ] = self[ _key ];
+		} else {
+			self.__data[ _key ] = is.empty( attributes.type ) ? undefined : cast( undefined, attributes.type );
+		}
 	}
 
 	return self;
