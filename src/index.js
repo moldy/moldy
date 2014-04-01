@@ -237,7 +237,6 @@ Model.prototype.$json = function () {
 
 	Object.keys( data ).forEach( function ( _key ) {
 		if ( is.an.array( data[ _key ] ) && data[ _key ][ 0 ] instanceof Model ) {
-			console.warn( 'array of models' );
 			json[ _key ] = [];
 			data[ _key ].forEach( function ( _model ) {
 				json[ _key ].push( _model.$json() );
