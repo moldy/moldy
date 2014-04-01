@@ -220,12 +220,20 @@ Model.prototype.$isValid = function () {
 		var value = self[ _key ],
 			attributes = self.__attributes[ _key ],
 			type = attributes.type,
-			isRequired = attributes.optional ? false : true,
-			hasNoDefault = is.nullOrUndefined( attributes[ 'default' ] ),
-			isNullOrUndefined = self.__keyless ? false : is.nullOrUndefined( value ),
-			typeIsWrong = is.not.empty( type ) ? is.not.a[ type ]( value ) : isNullOrUndefined;
+			arrayOfAType = hasKey( attributes, 'arrayOfAType', 'boolean' ) ? attributes.arrayOfAType === true : false,
+			isRequired = attributes.optional !== true,
+			isNullOrUndefined = self.__keyless ? false : arrayOfAType ? value.length === 0 : is.nullOrUndefined( value ),
+			typeIsWrong = is.not.empty( type ) && is.a.string( type ) ? is.not.a[ type ]( value ) : isNullOrUndefined;
 
-		if ( isRequired && typeIsWrong ) {
+		if ( arrayOfAType && is.not.empty( value ) && value[ 0 ] instanceof Model ) {
+			value.forEach( function ( _item ) {
+				if ( isValid && _item.$isValid() === false ) {
+					isValid = false;
+				}
+			} );
+		}
+
+		if ( isValid && isRequired && typeIsWrong ) {
 			isValid = false;
 		}
 

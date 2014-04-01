@@ -180,7 +180,7 @@ personModel.cars[ 0 ].$json().should.eql( {
 
 <a name="moldy-a-models-url-aka-endpoint"></a>
 ## A model's url aka endpoint
-A url (endpoint) is automatically generated based on the `Model` name, key, `url()` and `base()`.
+A url (endpoint) is automatically generated based on the `Model` name, key, `$url()` and `$baseUrl()`.
 
 ```js
 var personModel = new Model( 'person' )
