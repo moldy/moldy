@@ -251,11 +251,20 @@ Model.prototype.$property = function ( _key, _value ) {
 		existingValue = self[ _key ],
 		attributeTypeIsAnInstantiatedModel = is.a.string( attributes.type ) && /model/.test( attributes.type ),
 		attributeTypeIsAnArray = is.an.array( attributes.type ),
+		valueIsAnArrayModel = is.an.array( _value ) && hasKey( _value[ 0 ], 'properties', 'object' ),
+		valueIsAnArrayString = is.an.array( _value ) && is.a.string( _value[ 0 ] ),
 		attributeArrayTypeIsAModel = attributeTypeIsAnArray && hasKey( attributes.type[ 0 ], 'properties', 'object' ),
 		attributeArrayTypeIsAString = attributeTypeIsAnArray && is.a.string( attributes.type[ 0 ] ) && is.not.empty( attributes.type[ 0 ] ),
-		valueIsAStaticModelSchema = hasKey( _value, 'properties', 'object' );
+		valueIsAStaticModel = hasKey( _value, 'properties', 'object' );
 
 	if ( !self.hasOwnProperty( _key ) || !self.__attributes.hasOwnProperty( _key ) ) {
+
+		if ( valueIsAnArrayModel || valueIsAnArrayString ) {
+			attributes.type = _value;
+			attributeArrayTypeIsAModel = valueIsAnArrayModel;
+			attributeArrayTypeIsAString = valueIsAnArrayString;
+			attributeTypeIsAnArray = true;
+		}
 
 		if ( attributeTypeIsAnInstantiatedModel ) {
 
@@ -266,7 +275,7 @@ Model.prototype.$property = function ( _key, _value ) {
 
 			self.__data[ _key ] = self[ _key ];
 
-		} else if ( valueIsAStaticModelSchema ) {
+		} else if ( valueIsAStaticModel ) {
 
 			Object.defineProperty( self, _key, {
 				value: new Model( _value.name, _value ),

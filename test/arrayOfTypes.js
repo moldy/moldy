@@ -150,4 +150,48 @@ describe( 'array of a type', function () {
 
 	} );
 
+	it( 'an array of models defined directly as the value', function () {
+		var personModel = new Model( 'person', {
+			properties: {
+				tags: [ {
+					properties: {
+						name: 'string',
+						age: 'number'
+					}
+				} ]
+			}
+		} );
+
+		personModel.tags.push( {
+			name: 'david',
+			age: '30'
+		} );
+
+		personModel.tags.should.be.an.Array;
+		personModel.tags[ 0 ].should.be.a.Model;
+		personModel.tags[ 0 ].$json().should.eql( {
+			id: undefined,
+			name: 'david',
+			age: 30
+		} );
+
+		personModel.tags.push( null );
+
+		personModel.tags[ 1 ].should.be.an.Object;
+		personModel.tags[ 1 ].$json().should.eql( {
+			id: undefined,
+			name: null,
+			age: null
+		} );
+
+		personModel.tags.shift();
+		personModel.tags.should.have.a.lengthOf( 1 );
+		personModel.tags[ 0 ].$json().should.eql( {
+			id: undefined,
+			name: null,
+			age: null
+		} );
+
+	} );
+
 } );
