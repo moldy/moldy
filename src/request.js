@@ -25,21 +25,12 @@ module.exports = function ( _model, _data, _method, _url, _callback ) {
 
 		if ( !error ) {
 			if ( is.array( response ) ) {
-
 				response.forEach( function ( _data ) {
 					items.push( model.$clone( _data ) );
 				} );
-
 				model = items;
-
-			} else if ( is.object( response ) ) {
-
-				Object.keys( response ).forEach( function ( _key ) {
-					if ( model.hasOwnProperty( _key ) ) {
-						model[ _key ] = response[ _key ];
-					}
-				} );
-
+			} else {
+				model.$data( response );
 			}
 		}
 
