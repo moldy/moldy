@@ -142,7 +142,11 @@ Model.prototype.$data = function ( _data ) {
 
 	Object.keys( data ).forEach( function ( _key ) {
 		if ( self.__attributes.hasOwnProperty( _key ) ) {
-			if ( is.a.object( data[ _key ] ) && self[ _key ] instanceof Model ) {
+			if ( is.an.array( data[ _key ] ) && hasKey( self.__attributes[ _key ], 'arrayOfAType', 'boolean' ) && self.__attributes[ _key ].arrayOfAType === true ) {
+				data[ _key ].forEach( function ( _model ) {
+					self[ _key ].push( _model );
+				} );
+			} else if ( is.a.object( data[ _key ] ) && self[ _key ] instanceof Model ) {
 				self[ _key ].$data( data[ _key ] );
 			} else {
 				self[ _key ] = data[ _key ];
@@ -267,6 +271,7 @@ Model.prototype.$property = function ( _key, _value ) {
 
 		if ( valueIsAnArrayModel || valueIsAnArrayString ) {
 			attributes.type = _value;
+			attributes.arrayOfAType = true;
 			attributeArrayTypeIsAModel = valueIsAnArrayModel;
 			attributeArrayTypeIsAString = valueIsAnArrayString;
 			attributeTypeIsAnArray = true;

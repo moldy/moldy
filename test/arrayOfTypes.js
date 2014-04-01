@@ -194,4 +194,53 @@ describe( 'array of a type', function () {
 
 	} );
 
+	it( 'should handle an array of a type when given JSON to $data', function () {
+		var personModel = new Model( 'person', {
+			properties: {
+				name: 'string',
+				guests: [ {
+					keyless: true,
+					properties: {
+						name: 'string',
+						age: 'number'
+					}
+				} ]
+			}
+		} );
+
+		personModel.$data( {
+			name: 100,
+			guests: [ {
+				name: 'David',
+				age: '30'
+			}, {
+				name: 'Glen',
+				age: '20'
+			} ]
+		} );
+
+		personModel.guests[ 0 ].should.be.a.Model;
+		personModel.guests[ 1 ].should.be.a.Model;
+
+		personModel.guests.push( {
+			age: '10'
+		} );
+
+		personModel.$json().should.eql( {
+			id: undefined,
+			name: '100',
+			guests: [ {
+				name: 'David',
+				age: 30
+			}, {
+				name: 'Glen',
+				age: 20
+			}, {
+				name: null,
+				age: 10
+			} ]
+		} );
+
+	} );
+
 } );
