@@ -123,6 +123,19 @@ describe( 'Property Attributes', function () {
 			personModel.tags.should.have.a.lengthOf( 2 );
 			personModel.tags.should.eql( [ 'yellow', '1' ] );
 
+			/**
+			 * A gotcha for using primitive types in this context is that they are not sanitized
+			 * based on the schema if they are changed directly
+			 */
+			personModel.tags[ 1 ] = 1;
+
+			/**
+			 * Technically this should have cast the number `1` to a string but it was a design
+			 * decision not to add getters/setters to each item in an array. A santize method will
+			 * be added in the next version
+			 */
+			personModel.tags[ 1 ].should.equal( 1 );
+
 		} );
 
 		it( 'Array types can also be model schemas', function () {

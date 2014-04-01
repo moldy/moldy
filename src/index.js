@@ -142,7 +142,11 @@ Model.prototype.$data = function ( _data ) {
 
 	Object.keys( data ).forEach( function ( _key ) {
 		if ( self.__attributes.hasOwnProperty( _key ) ) {
-			self[ _key ] = data[ _key ];
+			if ( is.a.object( data[ _key ] ) && self[ _key ] instanceof Model ) {
+				self[ _key ].$data( data[ _key ] );
+			} else {
+				self[ _key ] = data[ _key ];
+			}
 		}
 	} );
 
@@ -245,19 +249,30 @@ Model.prototype.$property = function ( _key, _value ) {
 	var self = this,
 		attributes = new helpers.attributes( _key, _value ),
 		existingValue = self[ _key ],
+		attributeTypeIsAnInstantiatedModel = is.a.string( attributes.type ) && /model/.test( attributes.type ),
 		attributeTypeIsAnArray = is.an.array( attributes.type ),
-		attributeTypeIsAModel = is.a.string( attributes.type ) && /model/.test( attributes.type ),
 		attributeArrayTypeIsAModel = attributeTypeIsAnArray && hasKey( attributes.type[ 0 ], 'properties', 'object' ),
-		attributeArrayTypeIsAString = attributeTypeIsAnArray && is.a.string( attributes.type[ 0 ] ) && is.not.empty( attributes.type[ 0 ] );
+		attributeArrayTypeIsAString = attributeTypeIsAnArray && is.a.string( attributes.type[ 0 ] ) && is.not.empty( attributes.type[ 0 ] ),
+		valueIsAStaticModelSchema = hasKey( _value, 'properties', 'object' );
 
 	if ( !self.hasOwnProperty( _key ) || !self.__attributes.hasOwnProperty( _key ) ) {
 
-		if ( attributeTypeIsAModel ) {
+		if ( attributeTypeIsAnInstantiatedModel ) {
 
 			Object.defineProperty( self, _key, {
 				value: attributes[ 'default' ],
 				enumerable: true,
 			} );
+
+			self.__data[ _key ] = self[ _key ];
+
+		} else if ( valueIsAStaticModelSchema ) {
+
+			Object.defineProperty( self, _key, {
+				value: new Model( _value.name, _value ),
+				enumerable: true,
+			} );
+
 			self.__data[ _key ] = self[ _key ];
 
 		} else if ( attributeTypeIsAnArray ) {
@@ -304,7 +319,7 @@ Model.prototype.$property = function ( _key, _value ) {
 	} else if ( is.empty( self[ _key ] ) && attributes.optional === false && is.not.nullOrUndefined( attributes[ 'default' ] ) ) {
 		self[ _key ] = attributes[ 'default' ];
 	} else if ( is.empty( self[ _key ] ) && attributes.optional === false ) {
-		if ( attributeTypeIsAnArray || attributeTypeIsAModel ) {
+		if ( attributeTypeIsAnArray || attributeTypeIsAnInstantiatedModel ) {
 			self.__data[ _key ] = self[ _key ];
 		} else {
 			self.__data[ _key ] = is.empty( attributes.type ) ? undefined : cast( undefined, attributes.type );

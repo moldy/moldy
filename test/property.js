@@ -96,6 +96,7 @@ describe( 'property', function () {
 						type: 'string',
 						default: 'hemlock'
 					},
+					'number': 'number',
 					'suburb': 'string',
 					'country': {
 						optional: true
@@ -120,6 +121,8 @@ describe( 'property', function () {
 				}
 			} );
 
+			personModel.address.number = '17';
+
 			Object.keys( personModel.$json() ).should.have.a.lengthOf( 4 );
 			personModel.should.have.a.property( 'name' ).and.be.a.String;
 			personModel.should.have.a.property( 'age' ).and.be.a.Number;
@@ -136,6 +139,7 @@ describe( 'property', function () {
 				age: 30,
 				address: {
 					street: 'hemlock',
+					number: 17,
 					suburb: null
 				}
 			} );
