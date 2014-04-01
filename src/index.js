@@ -231,11 +231,18 @@ Model.prototype.$isValid = function () {
 };
 
 Model.prototype.$json = function () {
-	var data = this.__data,
+	var self = this,
+		data = self.__data,
 		json = {};
 
 	Object.keys( data ).forEach( function ( _key ) {
-		if ( is.not.an.object( data[ _key ] ) ) {
+		if ( is.an.array( data[ _key ] ) && data[ _key ][ 0 ] instanceof Model ) {
+			console.warn( 'array of models' );
+			json[ _key ] = [];
+			data[ _key ].forEach( function ( _model ) {
+				json[ _key ].push( _model.$json() );
+			} );
+		} else if ( is.not.an.object( data[ _key ] ) ) {
 			json[ _key ] = data[ _key ];
 		} else if ( data[ _key ] instanceof Model ) {
 			json[ _key ] = data[ _key ].$json();
@@ -293,6 +300,8 @@ Model.prototype.$property = function ( _key, _value ) {
 				value: array,
 				enumerable: true
 			} );
+
+			self.__data[ _key ] = self[ _key ];
 
 			[ 'push', 'unshift' ].forEach( function ( _method ) {
 				array.on( _method, function () {
