@@ -10,14 +10,14 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/davidtsuji/sg-model"
+		"url": "https://github.com/moldy/moldy"
 	},
 	"author": "David Tsuji",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/davidtsuji/sg-model/issues"
+		"url": "https://github.com/moldy/moldy/issues"
 	},
-	"homepage": "https://github.com/davidtsuji/sg-model",
+	"homepage": "https://github.com/moldy/moldy",
 	"devDependencies": {
 		"mocha": "^1.18.2",
 		"should": "^3.1.4",

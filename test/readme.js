@@ -2,7 +2,7 @@ var Model = require( '../src' ),
 	guid = require( 'sc-guid' ),
 	should = require( 'should' );
 
-describe( 'sg-model', function () {
+describe( 'moldy', function () {
 
 	it( 'Create a Model', function () {
 		var personModel = new Model( 'person' )
