@@ -8,8 +8,7 @@ describe( 'save', function () {
 			.$baseUrl( 'http://localhost:3000/empty-body' );
 
 		personModel.$save( function ( _error, _res ) {
-			_error.should.be.an.instanceOf( Error );
-			_done();
+			_done( _error );
 		} );
 
 	} );

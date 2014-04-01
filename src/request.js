@@ -5,6 +5,7 @@ var is = require( 'sc-is' ),
 module.exports = function ( _model, _data, _method, _url, _callback ) {
 	var model = _model,
 		items = [],
+		responseShouldContainAnId = hasKey( _data, model.__key ) && is.not.empty( _data[ model.__key ] ) && /get/.test( _method ),
 		isDirty = model.$isDirty();
 
 	model.middleware( 'adapter', function ( _error, _response ) {
@@ -16,7 +17,7 @@ module.exports = function ( _model, _data, _method, _url, _callback ) {
 			error = new Error( 'An unknown error occurred' );
 		}
 
-		if ( !error && isDirty && is.object( response ) && !hasKey( response, model.__key ) ) {
+		if ( !error && isDirty && is.object( response ) && ( responseShouldContainAnId && !hasKey( response, model.__key ) ) ) {
 			error = new Error( 'The response from the server did not contain a valid `' + model.__key + '`' );
 		}
 
