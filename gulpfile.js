@@ -7,9 +7,9 @@ var gulp = require( 'gulp' ),
 	worker;
 
 gulp.task( 'compressScripts', [ 'scripts' ], function () {
-	return gulp.src( [ './dist/sgModel.js' ] )
+	return gulp.src( [ './dist/moldy.js' ] )
 		.pipe( uglify() )
-		.pipe( rename( 'sgModel.min.js' ) )
+		.pipe( rename( 'moldy.min.js' ) )
 		.pipe( gulp.dest( './dist/' ) );
 } );
 
@@ -25,9 +25,9 @@ gulp.task( 'scriptSrc', function () {
 	return gulp.src( [ './src/index.js' ] )
 		.pipe( browserify( {
 			debug: true,
-			standalone: 'sgModel'
+			standalone: 'moldy'
 		} ) )
-		.pipe( rename( 'sgModel.js' ) )
+		.pipe( rename( 'moldy.js' ) )
 		.pipe( gulp.dest( './dist/' ) );
 } );
 
