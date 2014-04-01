@@ -1,49 +1,49 @@
 {
-  "name": "moldy",
-  "version": "0.0.10",
-  "description": "",
-  "main": "src/index.js",
-  "scripts": {
-    "pretest": "./node_modules/.bin/forever start server.js",
-    "test": "mocha test/*.js",
-    "posttest": "mocha test/readme.js -R markdown > README.md; ./node_modules/.bin/forever stop server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/moldy/moldy"
-  },
-  "author": "David Tsuji",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/moldy/moldy/issues"
-  },
-  "homepage": "https://github.com/moldy/moldy",
-  "devDependencies": {
-    "mocha": "^1.18.2",
-    "should": "^3.1.4",
-    "express": "^3.5.0",
-    "browserify": "^3.33.0",
-    "uglify-js": "^2.4.13",
-    "gulp": "^3.5.6",
-    "gulp-shell": "^0.2.4",
-    "gulp-uglify": "^0.2.1",
-    "gulp-browserify": "^0.5.0",
-    "gulp-rename": "^1.2.0",
-    "gulp-livereload": "^1.2.0",
-    "underscore": "^1.6.0",
-    "forever": "^0.10.11",
-    "gulp-ejs": "^0.2.1",
-    "gulp-markdown": "^0.1.2",
-    "sg-model-adapter-ajax": "0.0.1"
-  },
-  "dependencies": {
-    "sc-is": "0.0.3",
-    "sc-cast": "0.0.3",
-    "sc-haskey": "0.0.2",
-    "sc-merge": "0.0.3",
-    "emitter-component": "^1.1.1",
-    "sc-guid": "0.0.4",
-    "sc-useify": "0.0.13",
-    "sg-observable-array": "0.0.2"
-  }
+	"name": "moldy",
+	"version": "0.0.10",
+	"description": "",
+	"main": "src/index.js",
+	"scripts": {
+		"pretest": "./node_modules/.bin/forever start server.js",
+		"test": "mocha test/*.js",
+		"posttest": "mocha test/readme.js -R markdown > README.md; ./node_modules/.bin/forever stop server.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/moldy/moldy"
+	},
+	"author": "David Tsuji",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/moldy/moldy/issues"
+	},
+	"homepage": "https://github.com/moldy/moldy",
+	"devDependencies": {
+		"mocha": "^1.18.2",
+		"should": "^3.1.4",
+		"express": "^3.5.0",
+		"browserify": "^3.33.0",
+		"uglify-js": "^2.4.13",
+		"gulp": "^3.5.6",
+		"gulp-shell": "^0.2.4",
+		"gulp-uglify": "^0.2.1",
+		"gulp-browserify": "^0.5.0",
+		"gulp-rename": "^1.2.0",
+		"gulp-livereload": "^1.2.0",
+		"underscore": "^1.6.0",
+		"forever": "^0.10.11",
+		"gulp-ejs": "^0.2.1",
+		"gulp-markdown": "^0.1.2",
+		"moldy-adapter-ajax": "0.0.1"
+	},
+	"dependencies": {
+		"sc-is": "0.0.3",
+		"sc-cast": "0.0.3",
+		"sc-haskey": "0.0.2",
+		"sc-merge": "0.0.3",
+		"emitter-component": "^1.1.1",
+		"sc-guid": "0.0.4",
+		"sc-useify": "0.0.13",
+		"sg-observable-array": "0.0.2"
+	}
 }

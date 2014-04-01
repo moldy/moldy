@@ -1,7 +1,7 @@
 var Model = require( '../src' ),
 	should = require( 'should' );
 
-Model.use( 'adapter', require( 'sg-model-adapter-ajax' ) );
+Model.use( 'adapter', require( 'moldy-adapter-ajax' ) );
 
 describe( 'save', function () {
 
