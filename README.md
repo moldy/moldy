@@ -200,9 +200,46 @@ personModel.$url().should.eql( '/api/person/v1' );
 
 <a name="moldy-get"></a>
 ## get
+To get by id, give an object with the id.
+
+```js
+var personModel = new Model( 'person', 'guid' )
+	.$property( 'name' )
+	.$baseUrl( 'http://localhost:3000/api' );
+personModel.$get( {
+	guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
+}, function ( _error, _res ) {
+	if ( _error ) {
+		return _done( _error );
+	}
+	_done();
+} );
+```
+
 <a name="moldy-collection"></a>
 ## collection
 <a name="moldy-save"></a>
 ## save
+To save the model, call `save()`. If the model is `dirty` (has not been saved to the server and therefore does not have a valid `key`) then the http method will be POST. If the model has been saved, then the http method will be PUT.
+
+```js
+var personModel = new Model( 'person' )
+	.$property( 'name' )
+	.$baseUrl( 'http://localhost:3000/api' );
+personModel.name = 'David';
+personModel.$save( function ( _error, _res ) {
+	if ( _error ) {
+		return _done( _error );
+	}
+	personModel.should.eql( _res );
+	personModel.should.have.a.property( 'id' );
+	personModel.name = 'Mr David';
+	personModel.$save( function ( _error, _res ) {
+		personModel.should.eql( _res );
+		_done( _error );
+	} );
+} );
+```
+
 <a name="moldy-destroy"></a>
 ## destroy

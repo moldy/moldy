@@ -8,8 +8,9 @@ module.exports = function ( _model, _data, _method, _url, _callback ) {
 		isDirty = model.$isDirty();
 
 	model.middleware( 'adapter', function ( _error, _response ) {
-		var error = _error,
-			response = _response;
+		var args = Array.prototype.slice.call( arguments ),
+			error = _error === model ? null : args.shift(),
+			response = args.shift();
 
 		if ( error && !( error instanceof Error ) ) {
 			error = new Error( 'An unknown error occurred' );
