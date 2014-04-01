@@ -3,7 +3,7 @@ var Model = require( '../src' ),
 
 describe( 'A model\'s url aka endpoint', function () {
 
-	it( 'A url (endpoint) is automatically generated based on the `Model` name, key, `url()` and `base()`', function () {
+	it( 'A url (endpoint) is automatically generated based on the `Model` name, key, `$url()` and `$baseUrl()`', function () {
 		var personModel = new Model( 'person' )
 			.$property( 'id', {
 				default: '46'
