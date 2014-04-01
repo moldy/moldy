@@ -58,4 +58,30 @@ describe( 'isValid', function () {
 
 	} );
 
+	it( 'should be able to handle it when the model contains an array of a model type with an optional variation', function () {
+		var personModel = new Model( 'person', {
+			properties: {
+				name: 'string',
+				tags: {
+					type: [ {
+						keyless: true,
+						properties: {
+							name: {
+								type: 'string',
+								optional: true
+							}
+						}
+					} ]
+				}
+			}
+		} );
+
+		personModel.$isValid().should.not.be.ok;
+		personModel.name = 'David';
+		personModel.$isValid().should.not.be.ok;
+		personModel.tags.push( 'guy' );
+		personModel.$isValid().should.be.ok;
+
+	} );
+
 } );

@@ -279,7 +279,6 @@ Model.prototype.$property = function ( _key, _value ) {
 
 		if ( valueIsAnArrayModel || valueIsAnArrayString ) {
 			attributes.type = _value;
-			attributes.arrayOfAType = true;
 			attributeArrayTypeIsAModel = valueIsAnArrayModel;
 			attributeArrayTypeIsAString = valueIsAnArrayString;
 			attributeTypeIsAnArray = true;
@@ -307,6 +306,8 @@ Model.prototype.$property = function ( _key, _value ) {
 
 			var array = observableArray( [] ),
 				attributeType = attributeArrayTypeIsAString || attributeArrayTypeIsAModel ? attributes.type[ 0 ] : '*';
+
+			attributes.arrayOfAType = true;
 
 			Object.defineProperty( self, _key, {
 				value: array,
