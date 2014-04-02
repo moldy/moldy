@@ -21,6 +21,7 @@ describe( 'json', function () {
 		data.should.have.a.property( 'id', undefined );
 		data.should.have.a.property( 'name', 'David' );
 		data.should.have.a.property( 'age', 34 );
+		data.should.not.have.a.property( '_callbacks' );
 
 	} );
 

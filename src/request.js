@@ -8,7 +8,7 @@ module.exports = function ( _model, _data, _method, _url, _callback ) {
 		responseShouldContainAnId = hasKey( _data, model.__key ) && is.not.empty( _data[ model.__key ] ) && /get/.test( _method ),
 		isDirty = model.$isDirty();
 
-	model.middleware( 'adapter', function ( _error, _response ) {
+	model.middleware( function ( _error, _response ) {
 		var args = Array.prototype.slice.call( arguments ),
 			error = _error === model ? null : args.shift(),
 			response = args.shift();

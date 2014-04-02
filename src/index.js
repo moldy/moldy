@@ -399,4 +399,10 @@ Model.prototype.$url = function ( _url ) {
 emitter( Model.prototype );
 useify( Model );
 
-module.exports = Model;
+exports = module.exports = Model;
+
+/**
+ * Expose built in middleware
+ */
+exports.schema = require( './middleware/schema.middleware' );
+exports.ajax = require( './middleware/ajax.middleware' );

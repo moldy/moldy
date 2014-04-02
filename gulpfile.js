@@ -1,24 +1,14 @@
 var gulp = require( 'gulp' ),
 	browserify = require( 'gulp-browserify' ),
-	cluster = require( 'cluster' ),
 	rename = require( 'gulp-rename' ),
 	shell = require( 'gulp-shell' ),
-	uglify = require( 'gulp-uglify' ),
-	worker;
+	uglify = require( 'gulp-uglify' );
 
 gulp.task( 'compressScripts', [ 'scripts' ], function () {
 	return gulp.src( [ './dist/moldy.js' ] )
 		.pipe( uglify() )
 		.pipe( rename( 'moldy.min.js' ) )
 		.pipe( gulp.dest( './dist/' ) );
-} );
-
-gulp.task( 'server', function () {
-	cluster.setupMaster( {
-		exec: "./server.js"
-	} );
-	if ( worker ) worker.kill();
-	worker = cluster.fork();
 } );
 
 gulp.task( 'scriptSrc', function () {
