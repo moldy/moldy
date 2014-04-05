@@ -1,12 +1,12 @@
-var is = require( 'sc-is' ),
-	cast = require( 'sc-cast' ),
+var cast = require( 'sc-cast' ),
+	emitter = require( 'emitter-component' ),
 	hasKey = require( 'sc-haskey' ),
 	helpers = require( './helpers' ),
+	is = require( 'sc-is' ),
 	merge = require( 'sc-merge' ),
-	emitter = require( 'emitter-component' ),
-	useify = require( 'sc-useify' ),
+	observableArray = require( 'sg-observable-array' ),
 	request = require( './request' ),
-	observableArray = require( 'sg-observable-array' );
+	useify = require( 'sc-useify' );
 
 var Moldy = function ( _name, _properties ) {
 	var self = this,
