@@ -8,12 +8,12 @@ var is = require( 'sc-is' ),
 	request = require( './request' ),
 	observableArray = require( 'sg-observable-array' );
 
-var Model = function ( _name, _properties ) {
+var Moldy = function ( _name, _properties ) {
 	var self = this,
 		properties = is.an.object( _properties ) ? _properties : {};
 
 	Object.defineProperties( self, {
-		__model: {
+		__moldy: {
 			value: true
 		},
 		__attributes: {
@@ -75,7 +75,7 @@ var Model = function ( _name, _properties ) {
 
 };
 
-Model.prototype.$baseUrl = function ( _base ) {
+Moldy.prototype.$baseUrl = function ( _base ) {
 	var self = this,
 		url = cast( _base, 'string', self.__baseUrl || '' );
 
@@ -84,7 +84,7 @@ Model.prototype.$baseUrl = function ( _base ) {
 	return is.not.a.string( _base ) ? self.__baseUrl : self;
 };
 
-Model.prototype.$collection = function ( _query ) {
+Moldy.prototype.$collection = function ( _query ) {
 	var self = this,
 		url = self.$url(),
 		method = 'get',
@@ -92,7 +92,7 @@ Model.prototype.$collection = function ( _query ) {
 		callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop;
 
 	self.emit( 'precollection', {
-		model: self,
+		moldy: self,
 		method: method,
 		query: query,
 		url: url,
@@ -106,7 +106,7 @@ Model.prototype.$collection = function ( _query ) {
 
 };
 
-Model.prototype.$destroy = function ( _callback ) {
+Moldy.prototype.$destroy = function ( _callback ) {
 	var self = this,
 		isDirty = self.$isDirty(),
 		data = self.$json(),
@@ -115,7 +115,7 @@ Model.prototype.$destroy = function ( _callback ) {
 		callback = is.a.func( _callback ) ? _callback : helpers.noop;
 
 	self.emit( 'predestroy', {
-		model: self,
+		moldy: self,
 		data: data,
 		method: method,
 		url: url,
@@ -131,22 +131,22 @@ Model.prototype.$destroy = function ( _callback ) {
 			callback.apply( self, arguments );
 		} );
 	} else {
-		callback.apply( self, [ new Error( 'This model cannot be destroyed because it has not been saved to the server yet.' ) ] );
+		callback.apply( self, [ new Error( 'This moldy cannot be destroyed because it has not been saved to the server yet.' ) ] );
 	}
 
 };
 
-Model.prototype.$data = function ( _data ) {
+Moldy.prototype.$data = function ( _data ) {
 	var self = this,
 		data = is.object( _data ) ? _data : {};
 
 	Object.keys( data ).forEach( function ( _key ) {
 		if ( self.__attributes.hasOwnProperty( _key ) ) {
 			if ( is.an.array( data[ _key ] ) && hasKey( self.__attributes[ _key ], 'arrayOfAType', 'boolean' ) && self.__attributes[ _key ].arrayOfAType === true ) {
-				data[ _key ].forEach( function ( _model ) {
-					self[ _key ].push( _model );
+				data[ _key ].forEach( function ( _moldy ) {
+					self[ _key ].push( _moldy );
 				} );
-			} else if ( is.a.object( data[ _key ] ) && self[ _key ] instanceof Model ) {
+			} else if ( is.a.object( data[ _key ] ) && self[ _key ] instanceof Moldy ) {
 				self[ _key ].$data( data[ _key ] );
 			} else {
 				self[ _key ] = data[ _key ];
@@ -157,10 +157,10 @@ Model.prototype.$data = function ( _data ) {
 	return self;
 };
 
-Model.prototype.$clone = function ( _data ) {
+Moldy.prototype.$clone = function ( _data ) {
 	var self = this,
 		data = cast( _data, 'object', {} ),
-		newModel = new Model( self.__name, {
+		newMoldy = new Moldy( self.__name, {
 			baseUrl: self.__baseUrl,
 			headers: self.__headers,
 			key: self.__key,
@@ -169,14 +169,14 @@ Model.prototype.$clone = function ( _data ) {
 		} );
 
 	Object.keys( self.__attributes ).forEach( function ( _propertyKey ) {
-		newModel.$property( _propertyKey, merge( self.__attributes[ _propertyKey ] ) );
-		newModel[ _propertyKey ] = data[ _propertyKey ]
+		newMoldy.$property( _propertyKey, merge( self.__attributes[ _propertyKey ] ) );
+		newMoldy[ _propertyKey ] = data[ _propertyKey ]
 	} );
 
-	return newModel;
+	return newMoldy;
 };
 
-Model.prototype.$get = function ( _query, _callback ) {
+Moldy.prototype.$get = function ( _query, _callback ) {
 	var self = this,
 		url = self.$url(),
 		method = 'get',
@@ -184,7 +184,7 @@ Model.prototype.$get = function ( _query, _callback ) {
 		callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop;
 
 	self.emit( 'preget', {
-		model: self,
+		moldy: self,
 		method: method,
 		query: query,
 		url: url,
@@ -198,16 +198,16 @@ Model.prototype.$get = function ( _query, _callback ) {
 
 };
 
-Model.prototype.$headers = function ( _headers ) {
+Moldy.prototype.$headers = function ( _headers ) {
 	this.__headers = is.an.object( _headers ) ? _headers : this.__headers;
 	return is.not.an.object( _headers ) ? this.__headers : this;
 };
 
-Model.prototype.$isDirty = function () {
+Moldy.prototype.$isDirty = function () {
 	return is.empty( this[ this.__key ] );
 };
 
-Model.prototype.$isValid = function () {
+Moldy.prototype.$isValid = function () {
 	var self = this,
 		isValid = true;
 
@@ -225,7 +225,7 @@ Model.prototype.$isValid = function () {
 			isNullOrUndefined = self.__keyless ? false : arrayOfAType ? value.length === 0 : is.nullOrUndefined( value ),
 			typeIsWrong = is.not.empty( type ) && is.a.string( type ) ? is.not.a[ type ]( value ) : isNullOrUndefined;
 
-		if ( arrayOfAType && is.not.empty( value ) && value[ 0 ] instanceof Model ) {
+		if ( arrayOfAType && is.not.empty( value ) && value[ 0 ] instanceof Moldy ) {
 			value.forEach( function ( _item ) {
 				if ( isValid && _item.$isValid() === false ) {
 					isValid = false;
@@ -242,20 +242,20 @@ Model.prototype.$isValid = function () {
 	return isValid;
 };
 
-Model.prototype.$json = function () {
+Moldy.prototype.$json = function () {
 	var self = this,
 		data = self.__data,
 		json = {};
 
 	Object.keys( data ).forEach( function ( _key ) {
-		if ( is.an.array( data[ _key ] ) && data[ _key ][ 0 ] instanceof Model ) {
+		if ( is.an.array( data[ _key ] ) && data[ _key ][ 0 ] instanceof Moldy ) {
 			json[ _key ] = [];
-			data[ _key ].forEach( function ( _model ) {
-				json[ _key ].push( _model.$json() );
+			data[ _key ].forEach( function ( _moldy ) {
+				json[ _key ].push( _moldy.$json() );
 			} );
 		} else if ( is.not.an.object( data[ _key ] ) ) {
 			json[ _key ] = data[ _key ];
-		} else if ( data[ _key ] instanceof Model ) {
+		} else if ( data[ _key ] instanceof Moldy ) {
 			json[ _key ] = data[ _key ].$json();
 		}
 	} );
@@ -263,28 +263,28 @@ Model.prototype.$json = function () {
 	return json;
 };
 
-Model.prototype.$property = function ( _key, _value ) {
+Moldy.prototype.$property = function ( _key, _value ) {
 	var self = this,
 		attributes = new helpers.attributes( _key, _value ),
 		existingValue = self[ _key ],
-		attributeTypeIsAnInstantiatedModel = is.a.string( attributes.type ) && /model/.test( attributes.type ),
+		attributeTypeIsAnInstantiatedMoldy = is.a.string( attributes.type ) && /moldy/.test( attributes.type ),
 		attributeTypeIsAnArray = is.an.array( attributes.type ),
-		valueIsAnArrayModel = is.an.array( _value ) && hasKey( _value[ 0 ], 'properties', 'object' ),
+		valueIsAnArrayMoldy = is.an.array( _value ) && hasKey( _value[ 0 ], 'properties', 'object' ),
 		valueIsAnArrayString = is.an.array( _value ) && is.a.string( _value[ 0 ] ),
-		attributeArrayTypeIsAModel = attributeTypeIsAnArray && hasKey( attributes.type[ 0 ], 'properties', 'object' ),
+		attributeArrayTypeIsAMoldy = attributeTypeIsAnArray && hasKey( attributes.type[ 0 ], 'properties', 'object' ),
 		attributeArrayTypeIsAString = attributeTypeIsAnArray && is.a.string( attributes.type[ 0 ] ) && is.not.empty( attributes.type[ 0 ] ),
-		valueIsAStaticModel = hasKey( _value, 'properties', 'object' );
+		valueIsAStaticMoldy = hasKey( _value, 'properties', 'object' );
 
 	if ( !self.hasOwnProperty( _key ) || !self.__attributes.hasOwnProperty( _key ) ) {
 
-		if ( valueIsAnArrayModel || valueIsAnArrayString ) {
+		if ( valueIsAnArrayMoldy || valueIsAnArrayString ) {
 			attributes.type = _value;
-			attributeArrayTypeIsAModel = valueIsAnArrayModel;
+			attributeArrayTypeIsAMoldy = valueIsAnArrayMoldy;
 			attributeArrayTypeIsAString = valueIsAnArrayString;
 			attributeTypeIsAnArray = true;
 		}
 
-		if ( attributeTypeIsAnInstantiatedModel ) {
+		if ( attributeTypeIsAnInstantiatedMoldy ) {
 
 			Object.defineProperty( self, _key, {
 				value: attributes[ 'default' ],
@@ -293,10 +293,10 @@ Model.prototype.$property = function ( _key, _value ) {
 
 			self.__data[ _key ] = self[ _key ];
 
-		} else if ( valueIsAStaticModel ) {
+		} else if ( valueIsAStaticMoldy ) {
 
 			Object.defineProperty( self, _key, {
-				value: new Model( _value.name, _value ),
+				value: new Moldy( _value.name, _value ),
 				enumerable: true,
 			} );
 
@@ -305,7 +305,7 @@ Model.prototype.$property = function ( _key, _value ) {
 		} else if ( attributeTypeIsAnArray ) {
 
 			var array = observableArray( [] ),
-				attributeType = attributeArrayTypeIsAString || attributeArrayTypeIsAModel ? attributes.type[ 0 ] : '*';
+				attributeType = attributeArrayTypeIsAString || attributeArrayTypeIsAMoldy ? attributes.type[ 0 ] : '*';
 
 			attributes.arrayOfAType = true;
 
@@ -321,11 +321,11 @@ Model.prototype.$property = function ( _key, _value ) {
 					var args = Array.prototype.slice.call( arguments ),
 						values = [];
 					args.forEach( function ( _item ) {
-						if ( attributeArrayTypeIsAModel ) {
-							var model = new Model( attributeType[ 'name' ], attributeType ),
+						if ( attributeArrayTypeIsAMoldy ) {
+							var moldy = new Moldy( attributeType[ 'name' ], attributeType ),
 								data = is.an.object( _item ) ? _item : attributes[ 'default' ];
-							model.$data( data );
-							values.push( model );
+							moldy.$data( data );
+							values.push( moldy );
 						} else {
 							values.push( cast( _item, attributeType, attributes[ 'default' ] ) );
 						}
@@ -350,7 +350,7 @@ Model.prototype.$property = function ( _key, _value ) {
 	} else if ( is.empty( self[ _key ] ) && attributes.optional === false && is.not.nullOrUndefined( attributes[ 'default' ] ) ) {
 		self[ _key ] = attributes[ 'default' ];
 	} else if ( is.empty( self[ _key ] ) && attributes.optional === false ) {
-		if ( attributeTypeIsAnArray || attributeTypeIsAnInstantiatedModel ) {
+		if ( attributeTypeIsAnArray || attributeTypeIsAnInstantiatedMoldy ) {
 			self.__data[ _key ] = self[ _key ];
 		} else {
 			self.__data[ _key ] = is.empty( attributes.type ) ? undefined : cast( undefined, attributes.type );
@@ -360,7 +360,7 @@ Model.prototype.$property = function ( _key, _value ) {
 	return self;
 };
 
-Model.prototype.$save = function ( _callback ) {
+Moldy.prototype.$save = function ( _callback ) {
 	var self = this,
 		error = null,
 		isDirty = self.$isDirty(),
@@ -370,7 +370,7 @@ Model.prototype.$save = function ( _callback ) {
 		callback = is.a.func( _callback ) ? _callback : helpers.noop;
 
 	self.emit( 'presave', {
-		model: self,
+		moldy: self,
 		data: data,
 		method: method,
 		url: url,
@@ -384,7 +384,7 @@ Model.prototype.$save = function ( _callback ) {
 
 };
 
-Model.prototype.$url = function ( _url ) {
+Moldy.prototype.$url = function ( _url ) {
 	var self = this,
 		base = is.empty( self.__baseUrl ) ? '' : self.__baseUrl,
 		name = is.empty( self.__name ) ? '' : '/' + self.__name.trim().replace( /^\//, '' ),
@@ -396,13 +396,13 @@ Model.prototype.$url = function ( _url ) {
 	return is.not.a.string( _url ) ? endpoint : self;
 };
 
-emitter( Model.prototype );
-useify( Model );
+emitter( Moldy.prototype );
+useify( Moldy );
 
-exports = module.exports = Model;
+exports = module.exports = Moldy;
 
 /**
  * Expose built in middleware
  */
-exports.schema = require( './middleware/schema.middleware' );
-exports.ajax = require( './middleware/ajax.middleware' );
+// exports.schema = require( './middleware/schema.middleware' );
+// exports.ajax = require( './middleware/ajax.middleware' );

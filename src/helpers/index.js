@@ -9,9 +9,9 @@ exports.attributes = function ( _key, _value ) {
 		value = {
 			type: _value
 		};
-	} else if ( is.an.object( _value ) && _value[ '__model' ] === true ) {
+	} else if ( is.an.object( _value ) && _value[ '__moldy' ] === true ) {
 		value = {
-			type: 'model',
+			type: 'moldy',
 			default: _value
 		}
 	} else {

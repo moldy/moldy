@@ -88,7 +88,7 @@ describe( 'property', function () {
 
 	describe( 'child models', function () {
 
-		it( 'should be able to define a model for a property i.e. child model', function () {
+		it( 'should be able to define a moldy for a property i.e. child moldy', function () {
 			var addressMoldy = new Moldy( 'address', {
 				keyless: true,
 				properties: {
@@ -115,7 +115,7 @@ describe( 'property', function () {
 						default: 30
 					},
 					'address': {
-						type: 'model',
+						type: 'moldy',
 						default: addressMoldy
 					}
 				}
@@ -128,7 +128,7 @@ describe( 'property', function () {
 			personMoldy.should.have.a.property( 'age' ).and.be.a.Number;
 			personMoldy.address.street.should.eql( 'hemlock' );
 
-			// ensuring a `model` type cannot be overriden
+			// ensuring a `moldy` type cannot be overriden
 			personMoldy.address = 'wat';
 
 			var personMoldyJson = personMoldy.$json();
@@ -146,7 +146,7 @@ describe( 'property', function () {
 
 		} );
 
-		it( 'define a child model directly', function () {
+		it( 'define a child moldy directly', function () {
 			var addressMoldy = new Moldy( 'address', {
 				keyless: true,
 				properties: {
@@ -180,7 +180,7 @@ describe( 'property', function () {
 			personMoldy.should.have.a.property( 'age' ).and.be.a.Number;
 			personMoldy.address.street.should.eql( 'hemlock' );
 
-			// ensuring a `model` type cannot be overriden
+			// ensuring a `moldy` type cannot be overriden
 			personMoldy.address = 'wat';
 
 			var personMoldyJson = personMoldy.$json();
