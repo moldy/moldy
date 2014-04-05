@@ -13,16 +13,16 @@
  
 <a name="moldy"></a>
 # moldy
-Create a Model.
+Create a Moldy.
 
 ```js
-var personModel = new Model( 'person' )
+var personMoldy = new Moldy( 'person' )
 	.$property( 'id' )
 	.$property( 'name' )
 	.$property( 'age' );
-personModel.should.have.a.property( 'id', null );
-personModel.should.have.a.property( 'name', null );
-personModel.should.have.a.property( 'age', null );
+personMoldy.should.have.a.property( 'id', null );
+personMoldy.should.have.a.property( 'name', null );
+personMoldy.should.have.a.property( 'age', null );
 ```
 
 <a name="moldy-property-attributes"></a>
@@ -32,39 +32,42 @@ personModel.should.have.a.property( 'age', null );
 Properties can by strongly typed. If a type has been defined, values are cast to that type automatically. If a value cannot be cast to a type then the value will be set to `null` or the `default` if it has been defined.
 
 ```js
-var personModel = new Model( 'person' )
-	.$property( 'age', {
-		type: 'number'
-	} )
-	.$property( 'active', {
-		type: 'boolean',
-		default: false
-	} )
-	.$property( 'tags', {
-		type: 'array'
-	} );
-/**
- * try to cast `age` to a `Number`
- */
-personModel.age = '13';
-personModel.age.should.equal( 13 ).and.be.an.instanceOf( Number );
-/**
- * try to cast `active` as a `Boolean`
- */
-personModel.active = 1;
-personModel.active.should.equal( true ).and.be.an.instanceOf( Boolean );
-/**
- * `active` is typed as a `Boolean` _and_ a `default` has been defined. When an
- * assigned value that cannot be cast as a `Boolean` is set then the `default` will
- * apply.
- */
-personModel.active = 'this is not a boolean';
-should( personModel.active ).equal( false ).and.be.an.instanceOf( Boolean );
-/**
- * try to cast `tags` as an `Array`
- */
-personModel.tags = 'lorem';
-should( personModel.tags ).eql( [ 'lorem' ] ).and.be.an.instanceOf( Array );
+var personMoldy = new Moldy( 'person', {
+				properties: {
+					'age': 'number',
+					'active': {
+						type: 'boolean',
+						default: false
+					},
+					'tags': 'array'
+				}
+			} );
+			/**
+			 * When a model's properties have been `typed` the assigned values are cast on the fly
+			 * to ensure the model's data remains sanitized.
+			 */
+			/**
+			 * Cast a `string` for `age` to a `number`
+			 */
+			personMoldy.age = '13';
+			personMoldy.age.should.equal( 13 ).and.be.an.instanceOf( Number );
+			/**
+			 * Cast a truthy `string` for `active` as a `boolean`
+			 */
+			personMoldy.active = 'yes';
+			personMoldy.active.should.equal( true ).and.be.an.instanceOf( Boolean );
+			/**
+			 * `active` is typed as a `boolean` _and_ a `default` has been defined. When an
+			 * assigned value that cannot be cast as a `boolean` is set then the `default` will
+			 * apply.
+			 */
+			personMoldy.active = 'this is not a boolean';
+			should( personMoldy.active ).equal( false ).and.be.an.instanceOf( Boolean );
+			/**
+			 * Cast a `string` for `tags` as an `array`
+			 */
+			personMoldy.tags = 'lorem';
+			should( personMoldy.tags ).eql( [ 'lorem' ] ).and.be.an.instanceOf( Array );
 ```
 
 <a name="moldy-property-attributes-optional"></a>
@@ -72,7 +75,7 @@ should( personModel.tags ).eql( [ 'lorem' ] ).and.be.an.instanceOf( Array );
 Properties can be optional. By making a property optional, `isValid()` and `toJson()` will ignore it if is has not been set.
 
 ```js
-var personModel = new Model( 'person' )
+var personMoldy = new Moldy( 'person' )
 	.$property( 'id' )
 	.$property( 'name' )
 	.$property( 'age', {
@@ -91,9 +94,9 @@ var personModel = new Model( 'person' )
  * To ensure this `person` is valid we only need to set the `id` and `name` because
  * the other keys are either `optional` or have `defaults`.
  */
-personModel.id = 1;
-personModel.name = 'David';
-personModel.$isValid().should.be.ok;
+personMoldy.id = 1;
+personMoldy.name = 'David';
+personMoldy.$isValid().should.be.ok;
 ```
 
 <a name="moldy-property-attributes-arrays-of-a-type"></a>
@@ -101,7 +104,7 @@ personModel.$isValid().should.be.ok;
 A property can be defined as `array` of a type like an `array` of `strings`, or an `array` of `numbers`.
 
 ```js
-var personModel = new Model( 'person' )
+var personMoldy = new Moldy( 'person' )
 	.$property( 'id' )
 	.$property( 'tags', {
 		type: [ 'string' ]
@@ -110,46 +113,46 @@ var personModel = new Model( 'person' )
  * When defining an array of a type, the arrays are normal arrays however they have been
  * extended to allow hooks into the necessary methods for sanitization.
  */
-personModel.tags.should.be.an.Array;
-personModel.tags.should.have.a.property( 'length' ).and.be.a.Number;
-personModel.tags.should.have.a.property( 'pop' ).and.be.a.Function;
-personModel.tags.should.have.a.property( 'push' ).and.be.a.Function;
-personModel.tags.should.have.a.property( 'reverse' ).and.be.a.Function;
-personModel.tags.should.have.a.property( 'shift' ).and.be.a.Function;
-personModel.tags.should.have.a.property( 'sort' ).and.be.a.Function;
-personModel.tags.should.have.a.property( 'splice' ).and.be.a.Function;
-personModel.tags.should.have.a.property( 'unshift' ).and.be.a.Function;
+personMoldy.tags.should.be.an.Array;
+personMoldy.tags.should.have.a.property( 'length' ).and.be.a.Number;
+personMoldy.tags.should.have.a.property( 'pop' ).and.be.a.Function;
+personMoldy.tags.should.have.a.property( 'push' ).and.be.a.Function;
+personMoldy.tags.should.have.a.property( 'reverse' ).and.be.a.Function;
+personMoldy.tags.should.have.a.property( 'shift' ).and.be.a.Function;
+personMoldy.tags.should.have.a.property( 'sort' ).and.be.a.Function;
+personMoldy.tags.should.have.a.property( 'splice' ).and.be.a.Function;
+personMoldy.tags.should.have.a.property( 'unshift' ).and.be.a.Function;
 /**
  * Pushing a value - like normal
  */
-personModel.tags.push( 'yellow' );
+personMoldy.tags.push( 'yellow' );
 /**
  * We are pushing a `number` here to show how the value will be cast to a string
  */
-personModel.tags.push( 1 );
+personMoldy.tags.push( 1 );
 /**
  * The value `1` is now a string
  */
-personModel.tags[ 1 ].should.equal( '1' );
-personModel.tags.should.have.a.lengthOf( 2 );
-personModel.tags.should.eql( [ 'yellow', '1' ] );
+personMoldy.tags[ 1 ].should.equal( '1' );
+personMoldy.tags.should.have.a.lengthOf( 2 );
+personMoldy.tags.should.eql( [ 'yellow', '1' ] );
 /**
  * A gotcha for using primitive types in this context is that they are not sanitized
  * based on the schema if they are changed directly
  */
-personModel.tags[ 1 ] = 1;
+personMoldy.tags[ 1 ] = 1;
 /**
  * Technically this should have cast the number `1` to a string but it was a design
  * decision not to add getters/setters to each item in an array. A santize method will
  * be added in the next version
  */
-personModel.tags[ 1 ].should.equal( 1 );
+personMoldy.tags[ 1 ].should.equal( 1 );
 ```
 
 Array types can also be model schemas.
 
 ```js
-var personModel = new Model( 'person' )
+var personMoldy = new Moldy( 'person' )
 	.$property( 'cars', {
 		type: [ {
 			name: 'car',
@@ -166,11 +169,11 @@ var personModel = new Model( 'person' )
 /**
  * Note, we are missing the `model` key and the `year` is a string
  */
-personModel.cars.push( {
+personMoldy.cars.push( {
 	make: 'honda',
 	year: '2010'
 } );
-personModel.cars[ 0 ].$json().should.eql( {
+personMoldy.cars[ 0 ].$json().should.eql( {
 	id: undefined,
 	make: 'honda',
 	model: '',
@@ -180,22 +183,22 @@ personModel.cars[ 0 ].$json().should.eql( {
 
 <a name="moldy-a-models-url-aka-endpoint"></a>
 ## A model's url aka endpoint
-A url (endpoint) is automatically generated based on the `Model` name, key, `$url()` and `$baseUrl()`.
+A url (endpoint) is automatically generated based on the `Moldy` name, key, `$url()` and `$baseUrl()`.
 
 ```js
-var personModel = new Model( 'person' )
+var personMoldy = new Moldy( 'person' )
 	.$property( 'id', {
 		default: '46'
 	} )
 	.$property( 'name' );
-personModel.$url().should.eql( '/person' );
+personMoldy.$url().should.eql( '/person' );
 /**
  * The url can be changed using either `base()` or `url()`
  */
-personModel.$url( 'v1' );
-personModel.$url().should.eql( '/person/v1' );
-personModel.$baseUrl( '/api' );
-personModel.$url().should.eql( '/api/person/v1' );
+personMoldy.$url( 'v1' );
+personMoldy.$url().should.eql( '/person/v1' );
+personMoldy.$baseUrl( '/api' );
+personMoldy.$url().should.eql( '/api/person/v1' );
 ```
 
 <a name="moldy-get"></a>
@@ -203,10 +206,10 @@ personModel.$url().should.eql( '/api/person/v1' );
 To get by id, give an object with the id.
 
 ```js
-var personModel = new Model( 'person', 'guid' )
+var personMoldy = new Moldy( 'person', 'guid' )
 	.$property( 'name' )
 	.$baseUrl( 'http://localhost:3000/api' );
-personModel.$get( {
+personMoldy.$get( {
 	guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
 }, function ( _error, _res ) {
 	if ( _error ) {
@@ -223,19 +226,19 @@ personModel.$get( {
 To save the model, call `save()`. If the model is `dirty` (has not been saved to the server and therefore does not have a valid `key`) then the http method will be POST. If the model has been saved, then the http method will be PUT.
 
 ```js
-var personModel = new Model( 'person' )
+var personMoldy = new Moldy( 'person' )
 	.$property( 'name' )
 	.$baseUrl( 'http://localhost:3000/api' );
-personModel.name = 'David';
-personModel.$save( function ( _error, _res ) {
+personMoldy.name = 'David';
+personMoldy.$save( function ( _error, _res ) {
 	if ( _error ) {
 		return _done( _error );
 	}
-	personModel.should.eql( _res );
-	personModel.should.have.a.property( 'id' );
-	personModel.name = 'Mr David';
-	personModel.$save( function ( _error, _res ) {
-		personModel.should.eql( _res );
+	personMoldy.should.eql( _res );
+	personMoldy.should.have.a.property( 'id' );
+	personMoldy.name = 'Mr David';
+	personMoldy.$save( function ( _error, _res ) {
+		personMoldy.should.eql( _res );
 		_done( _error );
 	} );
 } );
