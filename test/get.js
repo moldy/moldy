@@ -14,6 +14,7 @@ describe( 'get', function () {
 
 		personMoldy.$get( function ( _error, _res ) {
 			_res.should.not.be.an.Array.and.be.a.Moldy;
+			_res.should.equal( personMoldy );
 			_res.$json().should.eql( {
 				guid: '5a55a128-0ad7-49a5-801a-04a7030385ff',
 				name: 'Goodman Delgado'
@@ -39,6 +40,7 @@ describe( 'get', function () {
 				return _done( _error );
 			}
 
+			bennett.should.equal( personMoldy );
 			bennett.should.be.an.instanceOf( Moldy );
 			bennett.name.should.eql( 'Bennett Sanchez' );
 			bennett.name = 'Mr Bennett Sanchez';

@@ -103,7 +103,7 @@ Moldy.prototype.$clone = function ( _data ) {
 	return newMoldy;
 };
 
-Moldy.prototype.$collection = function ( _query ) {
+Moldy.prototype.$collection = function ( _query, _callback ) {
 	var self = this,
 		url = self.$url(),
 		method = 'get',
@@ -119,13 +119,19 @@ Moldy.prototype.$collection = function ( _query ) {
 	} );
 
 	request( self, query, method, url, function ( _error, _res ) {
-		self.emit( 'collection', _error, _res );
-		callback.apply( self, arguments );
+		var res = cast( _res instanceof Moldy || is.an.array( _res ) ? _res : null, 'array', [] );
+		self.emit( 'collection', _error, res );
+		callback.apply( self, [ _error, res ] );
 	} );
 
 };
 
 Moldy.prototype.$destroy = function ( _callback ) {
+
+	if ( this.__destroyed ) {
+		return helpers.destroyedError( self );
+	}
+
 	var self = this,
 		isDirty = self.$isDirty(),
 		data = self.$json(),
@@ -143,9 +149,7 @@ Moldy.prototype.$destroy = function ( _callback ) {
 
 	if ( !isDirty ) {
 		request( self, data, method, url, function () {
-
 			self.emit( 'destroy', self );
-
 			self.__destroyed = true;
 			callback.apply( self, arguments );
 		} );
@@ -156,6 +160,11 @@ Moldy.prototype.$destroy = function ( _callback ) {
 };
 
 Moldy.prototype.$data = function ( _data ) {
+
+	if ( this.__destroyed ) {
+		return helpers.destroyedError( self );
+	}
+
 	var self = this,
 		data = is.object( _data ) ? _data : {};
 
@@ -183,6 +192,10 @@ Moldy.prototype.$get = function ( _query, _callback ) {
 		query = is.an.object( _query ) ? _query : {},
 		callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop;
 
+	if ( self.__destroyed ) {
+		return callback.apply( self, [ helpers.destroyedError( self ) ] );
+	}
+
 	self.emit( 'preget', {
 		moldy: self,
 		method: method,
@@ -192,7 +205,13 @@ Moldy.prototype.$get = function ( _query, _callback ) {
 	} );
 
 	request( self, query, method, url, function ( _error, _res ) {
-		var res = _res instanceof Moldy ? _res : is.an.array( _res ) ? _res[ 0 ] : _res;
+		var res = _res instanceof Moldy ? _res : null;
+
+		if ( is.an.array( _res ) && _res[ 0 ] instanceof Moldy ) {
+			self.$data( _res[ 0 ].$json() );
+			res = self;
+		}
+
 		self.emit( 'get', _error, res );
 		callback.apply( self, [ _error, res ] );
 	} );
@@ -200,15 +219,26 @@ Moldy.prototype.$get = function ( _query, _callback ) {
 };
 
 Moldy.prototype.$headers = function ( _headers ) {
-	this.__headers = is.an.object( _headers ) ? _headers : this.__headers;
-	return is.not.an.object( _headers ) ? this.__headers : this;
+	var self = this;
+
+	if ( self.__destroyed ) {
+		return helpers.destroyedError( self );
+	}
+
+	self.__headers = is.an.object( _headers ) ? _headers : self.__headers;
+	return is.not.an.object( _headers ) ? self.__headers : self;
 };
 
 Moldy.prototype.$isDirty = function () {
-	return is.empty( this[ this.__key ] );
+	return this.__destroyed ? true : is.empty( this[ this.__key ] );
 };
 
 Moldy.prototype.$isValid = function () {
+
+	if ( this.__destroyed ) {
+		return false;
+	}
+
 	var self = this,
 		isValid = true;
 
@@ -244,6 +274,11 @@ Moldy.prototype.$isValid = function () {
 };
 
 Moldy.prototype.$json = function () {
+
+	if ( this.__destroyed ) {
+		return helpers.destroyedError( self );
+	}
+
 	var self = this,
 		data = self.__data,
 		json = {};
@@ -265,6 +300,11 @@ Moldy.prototype.$json = function () {
 };
 
 Moldy.prototype.$property = function ( _key, _value ) {
+
+	if ( this.__destroyed ) {
+		return helpers.destroyedError( self );
+	}
+
 	var self = this,
 		attributes = new helpers.attributes( _key, _value ),
 		existingValue = self[ _key ],
@@ -369,6 +409,10 @@ Moldy.prototype.$save = function ( _callback ) {
 		url = self.$url() + ( !isDirty && !self.__keyless ? '/' + self[ self.__key ] : '' ),
 		method = isDirty ? 'post' : 'put',
 		callback = is.a.func( _callback ) ? _callback : helpers.noop;
+
+	if ( self.__destroyed ) {
+		return callback.apply( self, [ helpers.destroyedError( self ) ] );
+	}
 
 	self.emit( 'presave', {
 		moldy: self,
