@@ -1,22 +1,22 @@
-var Model = require( '../src' ),
+var Moldy = require( '../src' ),
 	should = require( 'should' );
 
 describe( 'destroy', function () {
 
 	it( 'To destroy a model, call `destroy()`', function ( _done ) {
-		var personModel = new Model( 'person' )
+		var personMoldy = new Moldy( 'person' )
 			.$property( 'name' )
 			.$baseUrl( 'http://localhost:3000/api' );
 
-		personModel.name = 'David';
+		personMoldy.name = 'David';
 
-		personModel.$save( function ( _error, _res ) {
+		personMoldy.$save( function ( _error, _res ) {
 
 			if ( _error ) {
 				return _done( _error );
 			}
 
-			personModel.$destroy( function ( _error, _res ) {
+			personMoldy.$destroy( function ( _error, _res ) {
 
 				_done( _error );
 

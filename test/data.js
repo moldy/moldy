@@ -1,10 +1,10 @@
-var Model = require( '../src' ),
+var Moldy = require( '../src' ),
 	should = require( 'should' );
 
 describe( 'data', function () {
 
 	it( 'should set the data', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			properties: {
 				name: {
 					type: 'string',
@@ -17,19 +17,19 @@ describe( 'data', function () {
 			}
 		} );
 
-		personModel.should.have.a.property( 'age' ).and.be.a.Number.and.eql( 30 );
-		personModel.should.have.a.property( 'name' ).and.be.a.String.and.eql( 'David' );
+		personMoldy.should.have.a.property( 'age' ).and.be.a.Number.and.eql( 30 );
+		personMoldy.should.have.a.property( 'name' ).and.be.a.String.and.eql( 'David' );
 
-		personModel.$data( {
+		personMoldy.$data( {
 			name: 'Max',
 			age: '1',
 			invalidKey: true
 		} );
 
-		Object.keys( personModel.$json() ).should.have.a.lengthOf( 3 );
-		personModel.should.have.a.property( 'age' ).and.be.a.Number.and.eql( 1 );
-		personModel.should.have.a.property( 'name' ).and.be.a.String.and.eql( 'Max' );
-		personModel.should.not.have.a.property( 'invalidKey' );
+		Object.keys( personMoldy.$json() ).should.have.a.lengthOf( 3 );
+		personMoldy.should.have.a.property( 'age' ).and.be.a.Number.and.eql( 1 );
+		personMoldy.should.have.a.property( 'name' ).and.be.a.String.and.eql( 'Max' );
+		personMoldy.should.not.have.a.property( 'invalidKey' );
 
 	} );
 

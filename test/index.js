@@ -1,15 +1,15 @@
-var Model = require( '../src' ),
+var Moldy = require( '../src' ),
 	should = require( 'should' );
 
-Model.use( Model.ajax );
+Moldy.use( require( 'moldy-adapter-ajax' ) );
 
 describe( 'save', function () {
 
 	it( 'instantiate using', function ( _done ) {
-		var personModel = new Model( 'person' )
+		var personMoldy = new Moldy( 'person' )
 			.$baseUrl( 'http://localhost:3000/empty-body' );
 
-		personModel.$save( function ( _error, _res ) {
+		personMoldy.$save( function ( _error, _res ) {
 			_done( _error );
 		} );
 

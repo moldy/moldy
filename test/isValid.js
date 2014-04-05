@@ -1,42 +1,42 @@
-var Model = require( '../src' ),
+var Moldy = require( '../src' ),
 	should = require( 'should' );
 
 describe( 'isValid', function () {
 
 	it( 'should be invalid with no type and no value', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			properties: {
 				name: 'string',
 				age: 'number'
 			}
 		} );
 
-		personModel.$isValid().should.not.be.ok;
-		personModel.name = 'David';
-		personModel.$isValid().should.not.be.ok;
-		personModel.age = '30';
-		personModel.$isValid().should.be.ok;
+		personMoldy.$isValid().should.not.be.ok;
+		personMoldy.name = 'David';
+		personMoldy.$isValid().should.not.be.ok;
+		personMoldy.age = '30';
+		personMoldy.$isValid().should.be.ok;
 
 	} );
 
 	it( 'should be able to handle it when the model contains an array of a primitive type', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			properties: {
 				name: 'string',
 				tags: [ 'string' ]
 			}
 		} );
 
-		personModel.$isValid().should.not.be.ok;
-		personModel.name = 'David';
-		personModel.$isValid().should.not.be.ok;
-		personModel.tags.push( 1 );
-		personModel.$isValid().should.be.ok;
+		personMoldy.$isValid().should.not.be.ok;
+		personMoldy.name = 'David';
+		personMoldy.$isValid().should.not.be.ok;
+		personMoldy.tags.push( 1 );
+		personMoldy.$isValid().should.be.ok;
 
 	} );
 
 	it( 'should be able to handle it when the model contains an array of a model type', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			properties: {
 				name: 'string',
 				tags: [ {
@@ -48,18 +48,18 @@ describe( 'isValid', function () {
 			}
 		} );
 
-		personModel.$isValid().should.not.be.ok;
-		personModel.name = 'David';
-		personModel.$isValid().should.not.be.ok;
-		personModel.tags.push( 'guy' );
-		personModel.$isValid().should.not.be.ok;
-		personModel.tags[ 0 ].name = 'guy';
-		personModel.$isValid().should.be.ok;
+		personMoldy.$isValid().should.not.be.ok;
+		personMoldy.name = 'David';
+		personMoldy.$isValid().should.not.be.ok;
+		personMoldy.tags.push( 'guy' );
+		personMoldy.$isValid().should.not.be.ok;
+		personMoldy.tags[ 0 ].name = 'guy';
+		personMoldy.$isValid().should.be.ok;
 
 	} );
 
 	it( 'should be able to handle it when the model contains an array of a model type with an optional variation', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			properties: {
 				name: 'string',
 				tags: {
@@ -76,11 +76,11 @@ describe( 'isValid', function () {
 			}
 		} );
 
-		personModel.$isValid().should.not.be.ok;
-		personModel.name = 'David';
-		personModel.$isValid().should.not.be.ok;
-		personModel.tags.push( 'guy' );
-		personModel.$isValid().should.be.ok;
+		personMoldy.$isValid().should.not.be.ok;
+		personMoldy.name = 'David';
+		personMoldy.$isValid().should.not.be.ok;
+		personMoldy.tags.push( 'guy' );
+		personMoldy.$isValid().should.be.ok;
 
 	} );
 

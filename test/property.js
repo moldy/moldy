@@ -1,10 +1,10 @@
-var Model = require( '../src' ),
+var Moldy = require( '../src' ),
 	should = require( 'should' );
 
 describe( 'property', function () {
 
 	it( 'set properties using $property', function () {
-		var personModel = new Model( 'person' )
+		var personMoldy = new Moldy( 'person' )
 			.$property( 'name', {
 				type: 'string',
 				default: 'David'
@@ -15,16 +15,16 @@ describe( 'property', function () {
 			} )
 			.$property( 'active', 'boolean' );
 
-		Object.keys( personModel.$json() ).should.have.a.lengthOf( 4 );
-		personModel.should.have.a.property( 'age' ).and.be.a.Number;
-		personModel.should.have.a.property( 'name' ).and.be.a.String;
+		Object.keys( personMoldy.$json() ).should.have.a.lengthOf( 4 );
+		personMoldy.should.have.a.property( 'age' ).and.be.a.Number;
+		personMoldy.should.have.a.property( 'name' ).and.be.a.String;
 
-		personModel.active = 'y';
-		personModel.should.have.a.property( 'active' ).and.be.a.Boolean.and.eql( true );
+		personMoldy.active = 'y';
+		personMoldy.should.have.a.property( 'active' ).and.be.a.Boolean.and.eql( true );
 	} );
 
 	it( 'set properties using the arguments when instantiating', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			properties: {
 				'name': {
 					type: 'string',
@@ -39,16 +39,16 @@ describe( 'property', function () {
 		} );
 
 
-		Object.keys( personModel.$json() ).should.have.a.lengthOf( 4 );
-		personModel.should.have.a.property( 'name' ).and.be.a.String;
-		personModel.should.have.a.property( 'age' ).and.be.a.Number;
+		Object.keys( personMoldy.$json() ).should.have.a.lengthOf( 4 );
+		personMoldy.should.have.a.property( 'name' ).and.be.a.String;
+		personMoldy.should.have.a.property( 'age' ).and.be.a.Number;
 
-		personModel.active = 'y';
-		personModel.should.have.a.property( 'active' ).and.be.a.Boolean.and.eql( true );
+		personMoldy.active = 'y';
+		personMoldy.should.have.a.property( 'active' ).and.be.a.Boolean.and.eql( true );
 	} );
 
 	it( 'set a property on a manually added key', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			properties: {
 				'name': {
 					type: 'string',
@@ -61,35 +61,35 @@ describe( 'property', function () {
 			}
 		} );
 
-		personModel.active = 'true';
+		personMoldy.active = 'true';
 
-		Object.keys( personModel.$json() ).should.have.a.lengthOf( 3 );
-		personModel.should.have.a.property( 'name' ).and.be.a.String;
-		personModel.should.have.a.property( 'age' ).and.be.a.Number;
+		Object.keys( personMoldy.$json() ).should.have.a.lengthOf( 3 );
+		personMoldy.should.have.a.property( 'name' ).and.be.a.String;
+		personMoldy.should.have.a.property( 'age' ).and.be.a.Number;
 
-		personModel.$property( 'active', {
+		personMoldy.$property( 'active', {
 			type: 'boolean'
 		} );
 
-		personModel.active.should.be.true;
+		personMoldy.active.should.be.true;
 	} );
 
 	it( 'should not set a key if keyless', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			keyless: true,
 			properties: {
 				name: ''
 			}
 		} );
 
-		personModel.should.not.have.a.property( 'id' );
+		personMoldy.should.not.have.a.property( 'id' );
 
 	} );
 
 	describe( 'child models', function () {
 
 		it( 'should be able to define a model for a property i.e. child model', function () {
-			var addressModel = new Model( 'address', {
+			var addressMoldy = new Moldy( 'address', {
 				keyless: true,
 				properties: {
 					'street': {
@@ -104,7 +104,7 @@ describe( 'property', function () {
 				}
 			} );
 
-			var personModel = new Model( 'person', {
+			var personMoldy = new Moldy( 'person', {
 				properties: {
 					'name': {
 						type: 'string',
@@ -116,24 +116,24 @@ describe( 'property', function () {
 					},
 					'address': {
 						type: 'model',
-						default: addressModel
+						default: addressMoldy
 					}
 				}
 			} );
 
-			personModel.address.number = '17';
+			personMoldy.address.number = '17';
 
-			Object.keys( personModel.$json() ).should.have.a.lengthOf( 4 );
-			personModel.should.have.a.property( 'name' ).and.be.a.String;
-			personModel.should.have.a.property( 'age' ).and.be.a.Number;
-			personModel.address.street.should.eql( 'hemlock' );
+			Object.keys( personMoldy.$json() ).should.have.a.lengthOf( 4 );
+			personMoldy.should.have.a.property( 'name' ).and.be.a.String;
+			personMoldy.should.have.a.property( 'age' ).and.be.a.Number;
+			personMoldy.address.street.should.eql( 'hemlock' );
 
 			// ensuring a `model` type cannot be overriden
-			personModel.address = 'wat';
+			personMoldy.address = 'wat';
 
-			var personModelJson = personModel.$json();
+			var personMoldyJson = personMoldy.$json();
 
-			personModelJson.should.eql( {
+			personMoldyJson.should.eql( {
 				id: undefined,
 				name: 'David',
 				age: 30,
@@ -147,7 +147,7 @@ describe( 'property', function () {
 		} );
 
 		it( 'define a child model directly', function () {
-			var addressModel = new Model( 'address', {
+			var addressMoldy = new Moldy( 'address', {
 				keyless: true,
 				properties: {
 					'street': {
@@ -161,7 +161,7 @@ describe( 'property', function () {
 				}
 			} );
 
-			var personModel = new Model( 'person', {
+			var personMoldy = new Moldy( 'person', {
 				properties: {
 					'name': {
 						type: 'string',
@@ -171,21 +171,21 @@ describe( 'property', function () {
 						type: 'number',
 						default: 30
 					},
-					'address': addressModel
+					'address': addressMoldy
 				}
 			} );
 
-			Object.keys( personModel.$json() ).should.have.a.lengthOf( 4 );
-			personModel.should.have.a.property( 'name' ).and.be.a.String;
-			personModel.should.have.a.property( 'age' ).and.be.a.Number;
-			personModel.address.street.should.eql( 'hemlock' );
+			Object.keys( personMoldy.$json() ).should.have.a.lengthOf( 4 );
+			personMoldy.should.have.a.property( 'name' ).and.be.a.String;
+			personMoldy.should.have.a.property( 'age' ).and.be.a.Number;
+			personMoldy.address.street.should.eql( 'hemlock' );
 
 			// ensuring a `model` type cannot be overriden
-			personModel.address = 'wat';
+			personMoldy.address = 'wat';
 
-			var personModelJson = personModel.$json();
+			var personMoldyJson = personMoldy.$json();
 
-			personModelJson.should.eql( {
+			personMoldyJson.should.eql( {
 				id: undefined,
 				name: 'David',
 				age: 30,

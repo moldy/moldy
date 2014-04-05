@@ -1,10 +1,10 @@
-var Model = require( '../src' ),
+var Moldy = require( '../src' ),
 	should = require( 'should' );
 
 describe( 'array of a type', function () {
 
 	it( 'an array of booleans', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			properties: {
 				tags: {
 					type: [ 'boolean' ],
@@ -13,18 +13,18 @@ describe( 'array of a type', function () {
 			}
 		} );
 
-		personModel.tags.push( true, false );
-		personModel.tags.unshift( 'y', 'n' );
-		personModel.tags.unshift( 'true' );
-		personModel.tags.push( undefined );
+		personMoldy.tags.push( true, false );
+		personMoldy.tags.unshift( 'y', 'n' );
+		personMoldy.tags.unshift( 'true' );
+		personMoldy.tags.push( undefined );
 
-		personModel.tags.should.eql( [ true, true, false, true, false, false ] );
-		personModel.tags.shift();
-		personModel.tags.should.eql( [ true, false, true, false, false ] );
+		personMoldy.tags.should.eql( [ true, true, false, true, false, false ] );
+		personMoldy.tags.shift();
+		personMoldy.tags.should.eql( [ true, false, true, false, false ] );
 	} );
 
 	it( 'an array of numbers', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			properties: {
 				tags: {
 					type: [ 'number' ],
@@ -33,18 +33,18 @@ describe( 'array of a type', function () {
 			}
 		} );
 
-		personModel.tags.push( 4, 5 );
-		personModel.tags.unshift( '2', '3' );
-		personModel.tags.unshift( '1' );
-		personModel.tags.push( undefined );
+		personMoldy.tags.push( 4, 5 );
+		personMoldy.tags.unshift( '2', '3' );
+		personMoldy.tags.unshift( '1' );
+		personMoldy.tags.push( undefined );
 
-		personModel.tags.should.eql( [ 1, 2, 3, 4, 5, 100 ] );
-		personModel.tags.shift();
-		personModel.tags.should.eql( [ 2, 3, 4, 5, 100 ] );
+		personMoldy.tags.should.eql( [ 1, 2, 3, 4, 5, 100 ] );
+		personMoldy.tags.shift();
+		personMoldy.tags.should.eql( [ 2, 3, 4, 5, 100 ] );
 	} );
 
 	it( 'an array of objects', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			properties: {
 				tags: {
 					type: [ 'object' ],
@@ -53,24 +53,24 @@ describe( 'array of a type', function () {
 			}
 		} );
 
-		personModel.tags.push( '{}', '{"c":"c"}' );
-		personModel.tags.unshift( {
+		personMoldy.tags.push( '{}', '{"c":"c"}' );
+		personMoldy.tags.unshift( {
 			a: 'a'
 		}, {
 			b: 'b'
 		} );
-		personModel.tags.unshift( {} );
-		personModel.tags.push( undefined );
+		personMoldy.tags.unshift( {} );
+		personMoldy.tags.push( undefined );
 
-		personModel.tags.should.eql( [ {}, {
+		personMoldy.tags.should.eql( [ {}, {
 			a: 'a'
 		}, {
 			b: 'b'
 		}, {}, {
 			c: 'c'
 		}, {} ] );
-		personModel.tags.shift();
-		personModel.tags.should.eql( [ {
+		personMoldy.tags.shift();
+		personMoldy.tags.should.eql( [ {
 			a: 'a'
 		}, {
 			b: 'b'
@@ -80,7 +80,7 @@ describe( 'array of a type', function () {
 	} );
 
 	it( 'an array of strings', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			properties: {
 				tags: {
 					type: [ 'string' ],
@@ -89,18 +89,18 @@ describe( 'array of a type', function () {
 			}
 		} );
 
-		personModel.tags.push( 4, 5 );
-		personModel.tags.unshift( 2, 3 );
-		personModel.tags.unshift( 1 );
-		personModel.tags.push( undefined );
+		personMoldy.tags.push( 4, 5 );
+		personMoldy.tags.unshift( 2, 3 );
+		personMoldy.tags.unshift( 1 );
+		personMoldy.tags.push( undefined );
 
-		personModel.tags.should.eql( [ '1', '2', '3', '4', '5', 'empty' ] );
-		personModel.tags.shift();
-		personModel.tags.should.eql( [ '2', '3', '4', '5', 'empty' ] );
+		personMoldy.tags.should.eql( [ '1', '2', '3', '4', '5', 'empty' ] );
+		personMoldy.tags.shift();
+		personMoldy.tags.should.eql( [ '2', '3', '4', '5', 'empty' ] );
 	} );
 
 	it( 'an array of models', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			properties: {
 				tags: {
 					type: [ {
@@ -118,31 +118,31 @@ describe( 'array of a type', function () {
 			}
 		} );
 
-		personModel.tags.push( {
+		personMoldy.tags.push( {
 			name: 'david',
 			age: '30'
 		} );
 
-		personModel.tags.should.be.an.Array;
-		personModel.tags[ 0 ].should.be.a.Model;
-		personModel.tags[ 0 ].$json().should.eql( {
+		personMoldy.tags.should.be.an.Array;
+		personMoldy.tags[ 0 ].should.be.a.Moldy;
+		personMoldy.tags[ 0 ].$json().should.eql( {
 			id: undefined,
 			name: 'david',
 			age: 30
 		} );
 
-		personModel.tags.push( null );
+		personMoldy.tags.push( null );
 
-		personModel.tags[ 1 ].should.be.an.Object;
-		personModel.tags[ 1 ].$json().should.eql( {
+		personMoldy.tags[ 1 ].should.be.an.Object;
+		personMoldy.tags[ 1 ].$json().should.eql( {
 			id: undefined,
 			name: 'Nameless',
 			age: 0
 		} );
 
-		personModel.tags.shift();
-		personModel.tags.should.have.a.lengthOf( 1 );
-		personModel.tags[ 0 ].$json().should.eql( {
+		personMoldy.tags.shift();
+		personMoldy.tags.should.have.a.lengthOf( 1 );
+		personMoldy.tags[ 0 ].$json().should.eql( {
 			id: undefined,
 			name: 'Nameless',
 			age: 0
@@ -151,7 +151,7 @@ describe( 'array of a type', function () {
 	} );
 
 	it( 'an array of models defined directly as the value', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			properties: {
 				tags: [ {
 					properties: {
@@ -162,31 +162,31 @@ describe( 'array of a type', function () {
 			}
 		} );
 
-		personModel.tags.push( {
+		personMoldy.tags.push( {
 			name: 'david',
 			age: '30'
 		} );
 
-		personModel.tags.should.be.an.Array;
-		personModel.tags[ 0 ].should.be.a.Model;
-		personModel.tags[ 0 ].$json().should.eql( {
+		personMoldy.tags.should.be.an.Array;
+		personMoldy.tags[ 0 ].should.be.a.Moldy;
+		personMoldy.tags[ 0 ].$json().should.eql( {
 			id: undefined,
 			name: 'david',
 			age: 30
 		} );
 
-		personModel.tags.push( null );
+		personMoldy.tags.push( null );
 
-		personModel.tags[ 1 ].should.be.an.Object;
-		personModel.tags[ 1 ].$json().should.eql( {
+		personMoldy.tags[ 1 ].should.be.an.Object;
+		personMoldy.tags[ 1 ].$json().should.eql( {
 			id: undefined,
 			name: null,
 			age: null
 		} );
 
-		personModel.tags.shift();
-		personModel.tags.should.have.a.lengthOf( 1 );
-		personModel.tags[ 0 ].$json().should.eql( {
+		personMoldy.tags.shift();
+		personMoldy.tags.should.have.a.lengthOf( 1 );
+		personMoldy.tags[ 0 ].$json().should.eql( {
 			id: undefined,
 			name: null,
 			age: null
@@ -195,7 +195,7 @@ describe( 'array of a type', function () {
 	} );
 
 	it( 'should handle an array of a type when given JSON to $data', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			properties: {
 				name: 'string',
 				guests: [ {
@@ -208,7 +208,7 @@ describe( 'array of a type', function () {
 			}
 		} );
 
-		personModel.$data( {
+		personMoldy.$data( {
 			name: 100,
 			guests: [ {
 				name: 'David',
@@ -219,14 +219,14 @@ describe( 'array of a type', function () {
 			} ]
 		} );
 
-		personModel.guests[ 0 ].should.be.a.Model;
-		personModel.guests[ 1 ].should.be.a.Model;
+		personMoldy.guests[ 0 ].should.be.a.Moldy;
+		personMoldy.guests[ 1 ].should.be.a.Moldy;
 
-		personModel.guests.push( {
+		personMoldy.guests.push( {
 			age: '10'
 		} );
 
-		personModel.$json().should.eql( {
+		personMoldy.$json().should.eql( {
 			id: undefined,
 			name: '100',
 			guests: [ {

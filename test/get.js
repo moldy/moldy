@@ -1,16 +1,16 @@
-var Model = require( '../src' ),
+var Moldy = require( '../src' ),
 	should = require( 'should' );
 
 describe( 'get', function () {
 
 	it( 'get by id', function ( _done ) {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			key: 'guid'
 		} )
 			.$property( 'name' )
 			.$baseUrl( 'http://localhost:3000/api' );
 
-		personModel.$get( {
+		personMoldy.$get( {
 			guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
 		}, function ( _error, bennett ) {
 
@@ -18,7 +18,7 @@ describe( 'get', function () {
 				return _done( _error );
 			}
 
-			bennett.should.be.an.instanceOf( Model );
+			bennett.should.be.an.instanceOf( Moldy );
 			bennett.name.should.eql( 'Bennett Sanchez' );
 			bennett.name = 'Mr Bennett Sanchez';
 

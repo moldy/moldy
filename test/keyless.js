@@ -1,49 +1,49 @@
-var Model = require( '../src' ),
+var Moldy = require( '../src' ),
 	should = require( 'should' );
 
 describe( 'keyless', function () {
 
 	it( 'keyless model', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			keyless: true,
 			properties: {
 				name: 'string'
 			}
 		} );
 
-		personModel.name = 6;
+		personMoldy.name = 6;
 
-		Object.keys( personModel.$json() ).should.have.a.lengthOf( 1 );
-		personModel.name.should.equal( '6' );
-		personModel.should.not.have.a.property( 'id' );
+		Object.keys( personMoldy.$json() ).should.have.a.lengthOf( 1 );
+		personMoldy.name.should.equal( '6' );
+		personMoldy.should.not.have.a.property( 'id' );
 
 	} );
 
 	it( 'keyless model is always $isDirty', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			keyless: true,
 			properties: {
 				name: 'string'
 			}
 		} );
 
-		personModel.$isDirty().should.be.true;
-		personModel.name = 'David';
-		personModel.$isDirty().should.be.true;
+		personMoldy.$isDirty().should.be.true;
+		personMoldy.name = 'David';
+		personMoldy.$isDirty().should.be.true;
 
 	} );
 
 	it( 'keyless model $isValid', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			keyless: true,
 			properties: {
 				name: 'string'
 			}
 		} );
 
-		personModel.$isValid().should.be.false;
-		personModel.name = 'David';
-		personModel.$isValid().should.be.true;
+		personMoldy.$isValid().should.be.false;
+		personMoldy.name = 'David';
+		personMoldy.$isValid().should.be.true;
 	} );
 
 } );

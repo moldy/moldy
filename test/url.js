@@ -1,24 +1,24 @@
-var Model = require( '../src' ),
+var Moldy = require( '../src' ),
 	should = require( 'should' );
 
 describe( 'url', function () {
 
 	it( 'should be empty', function () {
-		var personModel = new Model();
-		personModel.$url().should.eql( '' );
+		var personMoldy = new Moldy();
+		personMoldy.$url().should.eql( '' );
 	} );
 
 	it( 'should be the name', function () {
-		var personModel = new Model( 'person' );
-		personModel.$url().should.eql( '/person' );
+		var personMoldy = new Moldy( 'person' );
+		personMoldy.$url().should.eql( '/person' );
 	} );
 
 	it( 'should be the base and the name', function () {
-		var personModel = new Model( 'person' ).$baseUrl( '/api/' );
-		personModel.$url().should.eql( '/api/person' );
+		var personMoldy = new Moldy( 'person' ).$baseUrl( '/api/' );
+		personMoldy.$url().should.eql( '/api/person' );
 
-		personModel.$baseUrl( 'http://domain.com/api' );
-		personModel.$url().should.eql( 'http://domain.com/api/person' );
+		personMoldy.$baseUrl( 'http://domain.com/api' );
+		personMoldy.$url().should.eql( 'http://domain.com/api/person' );
 	} );
 
 } );

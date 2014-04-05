@@ -1,10 +1,10 @@
-var Model = require( '../src' ),
+var Moldy = require( '../src' ),
 	should = require( 'should' );
 
 describe( 'properties with sub models', function () {
 
 	it( 'sub model', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			properties: {
 				'name': 'string',
 				'car': {
@@ -21,16 +21,16 @@ describe( 'properties with sub models', function () {
 			}
 		} );
 
-		personModel.car.should.be.a.Model;
-		personModel.car.make = 'honda';
-		personModel.car.year = '2010';
+		personMoldy.car.should.be.a.Moldy;
+		personMoldy.car.make = 'honda';
+		personMoldy.car.year = '2010';
 
-		personModel.car.year.should.equal( 2010 );
+		personMoldy.car.year.should.equal( 2010 );
 
 	} );
 
 	it( 'sub sub model', function () {
-		var personModel = new Model( 'person', {
+		var personMoldy = new Moldy( 'person', {
 			properties: {
 				'name': 'string',
 				'car': {
@@ -68,7 +68,7 @@ describe( 'properties with sub models', function () {
 		} );
 
 
-		personModel.$data( {
+		personMoldy.$data( {
 			name: 'david',
 			car: {
 				make: 'honda',
@@ -82,20 +82,20 @@ describe( 'properties with sub models', function () {
 			}
 		} );
 
-		personModel.car.should.be.a.Model;
-		personModel.car.make = 'honda';
-		personModel.car.model = '';
-		personModel.car.year = '2010';
+		personMoldy.car.should.be.a.Moldy;
+		personMoldy.car.make = 'honda';
+		personMoldy.car.model = '';
+		personMoldy.car.year = '2010';
 
-		personModel.car.accessories.should.be.a.Model;
-		personModel.car.accessories.hasWheels.should.be.true;
-		personModel.car.accessories.isPainted.should.be.false;
+		personMoldy.car.accessories.should.be.a.Moldy;
+		personMoldy.car.accessories.hasWheels.should.be.true;
+		personMoldy.car.accessories.isPainted.should.be.false;
 
-		personModel.car.accessories.engine.should.be.a.Model;
-		personModel.car.accessories.engine.size.should.equal( '2l' );
-		personModel.car.accessories.engine.cylinders.should.equal( 4 );
+		personMoldy.car.accessories.engine.should.be.a.Moldy;
+		personMoldy.car.accessories.engine.size.should.equal( '2l' );
+		personMoldy.car.accessories.engine.cylinders.should.equal( 4 );
 
-		personModel.$json().should.eql( {
+		personMoldy.$json().should.eql( {
 			id: undefined,
 			name: 'david',
 			car: {

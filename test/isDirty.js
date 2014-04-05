@@ -4,20 +4,20 @@ var Model = require( '../src' ),
 describe( 'isDirty', function () {
 
 	it( 'should be dirty if the `key` is empty', function () {
-		var personModel = new Model( 'person' )
+		var personMoldy = new Model( 'person' )
 			.$property( 'name' );
 
-		personModel.$isDirty().should.be.ok;
+		personMoldy.$isDirty().should.be.ok;
 
 	} );
 
 	it( 'should _not_ be dirty if the `key` is not empty', function () {
-		var personModel = new Model( 'person' )
+		var personMoldy = new Model( 'person' )
 			.$property( 'name' );
 
-		personModel.id = 1;
+		personMoldy.id = 1;
 
-		personModel.$isDirty().should.be.not.ok;
+		personMoldy.$isDirty().should.be.not.ok;
 
 	} );
 
