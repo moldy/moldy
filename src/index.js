@@ -84,6 +84,25 @@ Moldy.prototype.$baseUrl = function ( _base ) {
 	return is.not.a.string( _base ) ? self.__baseUrl : self;
 };
 
+Moldy.prototype.$clone = function ( _data ) {
+	var self = this,
+		data = cast( _data, 'object', {} ),
+		newMoldy = new Moldy( self.__name, {
+			baseUrl: self.__baseUrl,
+			headers: self.__headers,
+			key: self.__key,
+			keyless: self.__keyless,
+			url: self.__url
+		} );
+
+	Object.keys( self.__attributes ).forEach( function ( _propertyKey ) {
+		newMoldy.$property( _propertyKey, merge( self.__attributes[ _propertyKey ] ) );
+		newMoldy[ _propertyKey ] = data[ _propertyKey ]
+	} );
+
+	return newMoldy;
+};
+
 Moldy.prototype.$collection = function ( _query ) {
 	var self = this,
 		url = self.$url(),
@@ -155,25 +174,6 @@ Moldy.prototype.$data = function ( _data ) {
 	} );
 
 	return self;
-};
-
-Moldy.prototype.$clone = function ( _data ) {
-	var self = this,
-		data = cast( _data, 'object', {} ),
-		newMoldy = new Moldy( self.__name, {
-			baseUrl: self.__baseUrl,
-			headers: self.__headers,
-			key: self.__key,
-			keyless: self.__keyless,
-			url: self.__url
-		} );
-
-	Object.keys( self.__attributes ).forEach( function ( _propertyKey ) {
-		newMoldy.$property( _propertyKey, merge( self.__attributes[ _propertyKey ] ) );
-		newMoldy[ _propertyKey ] = data[ _propertyKey ]
-	} );
-
-	return newMoldy;
 };
 
 Moldy.prototype.$get = function ( _query, _callback ) {
