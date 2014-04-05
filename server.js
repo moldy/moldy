@@ -41,7 +41,7 @@ app.get( '/api/person', function ( _req, _res ) {
 } );
 
 app.post( '/api/person', function ( _req, _res ) {
-	_req.body.id = guid.generate();
+	_req.body.guid = guid.generate();
 	_res.json( _req.body );
 } );
 

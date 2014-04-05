@@ -34,7 +34,7 @@ exports.getProperty = function ( _key ) {
 
 exports.destroyedError = function ( _moldy ) {
 	var item = typeof _moldy === 'object' ? _moldy : {};
-	return new Error( 'The item with the key `' + item[ item[ '__key' ] ] + '` has been destroyed' );
+	return new Error( 'The given moldy item `' + item.__name + '` has been destroyed' );
 };
 
 exports.setBusy = function ( _self ) {

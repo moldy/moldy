@@ -4,9 +4,13 @@ var Moldy = require( '../src' ),
 describe( 'destroy', function () {
 
 	it( 'To destroy a model, call `destroy()`', function ( _done ) {
-		var personMoldy = new Moldy( 'person' )
-			.$property( 'name' )
-			.$baseUrl( 'http://localhost:3000/api' );
+		var personMoldy = new Moldy( 'person', {
+			key: 'guid',
+			baseUrl: 'http://localhost:3000/api',
+			properties: {
+				name: 'string'
+			}
+		} );
 
 		personMoldy.name = 'David';
 

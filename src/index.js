@@ -86,7 +86,7 @@ Moldy.prototype.$baseUrl = function ( _base ) {
 
 Moldy.prototype.$clone = function ( _data ) {
 	var self = this,
-		data = cast( _data, 'object', {} ),
+		data = is.an.object( _data ) ? _data : self.__data,
 		newMoldy = new Moldy( self.__name, {
 			baseUrl: self.__baseUrl,
 			headers: self.__headers,
@@ -127,17 +127,16 @@ Moldy.prototype.$collection = function ( _query, _callback ) {
 };
 
 Moldy.prototype.$destroy = function ( _callback ) {
-
-	if ( this.__destroyed ) {
-		return helpers.destroyedError( self );
-	}
-
 	var self = this,
 		isDirty = self.$isDirty(),
 		data = self.$json(),
 		url = self.$url() + ( self.__keyless ? '' : '/' + self[ self.__key ] ),
 		method = 'delete',
 		callback = is.a.func( _callback ) ? _callback : helpers.noop;
+
+	if ( self.__destroyed ) {
+		return callback.apply( self, [ helpers.destroyedError( self ) ] );
+	}
 
 	self.emit( 'predestroy', {
 		moldy: self,
@@ -151,6 +150,7 @@ Moldy.prototype.$destroy = function ( _callback ) {
 		request( self, data, method, url, function () {
 			self.emit( 'destroy', self );
 			self.__destroyed = true;
+			self[ self.__key ] = undefined;
 			callback.apply( self, arguments );
 		} );
 	} else {
@@ -160,13 +160,12 @@ Moldy.prototype.$destroy = function ( _callback ) {
 };
 
 Moldy.prototype.$data = function ( _data ) {
-
-	if ( this.__destroyed ) {
-		return helpers.destroyedError( self );
-	}
-
 	var self = this,
 		data = is.object( _data ) ? _data : {};
+
+	if ( self.__destroyed ) {
+		return helpers.destroyedError( self );
+	}
 
 	Object.keys( data ).forEach( function ( _key ) {
 		if ( self.__attributes.hasOwnProperty( _key ) ) {
@@ -190,11 +189,8 @@ Moldy.prototype.$get = function ( _query, _callback ) {
 		url = self.$url(),
 		method = 'get',
 		query = is.an.object( _query ) ? _query : {},
-		callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop;
-
-	if ( self.__destroyed ) {
-		return callback.apply( self, [ helpers.destroyedError( self ) ] );
-	}
+		callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop
+		wasDestroyed = self.__destroyed;
 
 	self.emit( 'preget', {
 		moldy: self,
@@ -204,12 +200,18 @@ Moldy.prototype.$get = function ( _query, _callback ) {
 		callback: callback
 	} );
 
+	self.__destroyed = false;
+
 	request( self, query, method, url, function ( _error, _res ) {
 		var res = _res instanceof Moldy ? _res : null;
 
 		if ( is.an.array( _res ) && _res[ 0 ] instanceof Moldy ) {
 			self.$data( _res[ 0 ].$json() );
 			res = self;
+		}
+
+		if ( _error && wasDestroyed ) {
+			self.__destroyed = true;
 		}
 
 		self.emit( 'get', _error, res );
@@ -274,11 +276,6 @@ Moldy.prototype.$isValid = function () {
 };
 
 Moldy.prototype.$json = function () {
-
-	if ( this.__destroyed ) {
-		return helpers.destroyedError( self );
-	}
-
 	var self = this,
 		data = self.__data,
 		json = {};
@@ -300,11 +297,6 @@ Moldy.prototype.$json = function () {
 };
 
 Moldy.prototype.$property = function ( _key, _value ) {
-
-	if ( this.__destroyed ) {
-		return helpers.destroyedError( self );
-	}
-
 	var self = this,
 		attributes = new helpers.attributes( _key, _value ),
 		existingValue = self[ _key ],
@@ -410,9 +402,7 @@ Moldy.prototype.$save = function ( _callback ) {
 		method = isDirty ? 'post' : 'put',
 		callback = is.a.func( _callback ) ? _callback : helpers.noop;
 
-	if ( self.__destroyed ) {
-		return callback.apply( self, [ helpers.destroyedError( self ) ] );
-	}
+	self.__destroyed = false;
 
 	self.emit( 'presave', {
 		moldy: self,
