@@ -3,10 +3,42 @@ var Moldy = require( '../src' ),
 
 describe( 'get', function () {
 
-	it( 'To get by id, give an object with the id', function ( _done ) {
-		var personMoldy = new Moldy( 'person', 'guid' )
-			.$property( 'name' )
-			.$baseUrl( 'http://localhost:3000/api' );
+	it( '$get will only return a single entity. If an adapter responds with an array the first item will be returned', function ( _done ) {
+		var personMoldy = new Moldy( 'person', {
+			key: 'guid',
+			baseUrl: 'http://localhost:3000/api',
+			properties: {
+				name: ''
+			}
+		} );
+
+		/**
+		 * In this example the end point GET `http://localhost:3000/api` returns an array of items.
+		 * Moldy will return the first item out of the array. If you need to return an array you can
+		 * use the $collection method.
+		 */
+		personMoldy.$get( function ( _error, _res ) {
+
+			if ( _error ) {
+				return _done( _error );
+			}
+
+			_res.should.not.be.an.Array;
+
+			_done();
+
+		} );
+
+	} );
+
+	it( 'To get by `id` or `key`, give an object with appropriate conditions', function ( _done ) {
+		var personMoldy = new Moldy( 'person', {
+			key: 'guid',
+			baseUrl: 'http://localhost:3000/api',
+			properties: {
+				name: ''
+			}
+		} );
 
 		personMoldy.$get( {
 			guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'

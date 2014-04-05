@@ -3,12 +3,33 @@ var Moldy = require( '../src' ),
 
 describe( 'get', function () {
 
+	it( 'get', function ( _done ) {
+		var personMoldy = new Moldy( 'person', {
+			key: 'guid',
+			baseUrl: 'http://localhost:3000/api',
+			properties: {
+				name: ''
+			}
+		} );
+
+		personMoldy.$get( function ( _error, _res ) {
+			_res.should.not.be.an.Array.and.be.a.Moldy;
+			_res.$json().should.eql( {
+				guid: '5a55a128-0ad7-49a5-801a-04a7030385ff',
+				name: 'Goodman Delgado'
+			} )
+			_done( _error );
+		} );
+	} );
+
 	it( 'get by id', function ( _done ) {
 		var personMoldy = new Moldy( 'person', {
-			key: 'guid'
-		} )
-			.$property( 'name' )
-			.$baseUrl( 'http://localhost:3000/api' );
+			key: 'guid',
+			baseUrl: 'http://localhost:3000/api',
+			properties: {
+				name: ''
+			}
+		} );
 
 		personMoldy.$get( {
 			guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
@@ -22,15 +43,7 @@ describe( 'get', function () {
 			bennett.name.should.eql( 'Bennett Sanchez' );
 			bennett.name = 'Mr Bennett Sanchez';
 
-			bennett.$save( function ( _error, _res ) {
-
-				if ( _error ) {
-					return _done( _error );
-				}
-
-				_done();
-
-			} );
+			bennett.$save( _done );
 
 		} );
 

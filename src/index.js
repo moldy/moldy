@@ -192,8 +192,9 @@ Moldy.prototype.$get = function ( _query, _callback ) {
 	} );
 
 	request( self, query, method, url, function ( _error, _res ) {
-		self.emit( 'get', _error, _res );
-		callback.apply( self, arguments );
+		var res = _res instanceof Moldy ? _res : is.an.array( _res ) ? _res[ 0 ] : _res;
+		self.emit( 'get', _error, res );
+		callback.apply( self, [ _error, res ] );
 	} );
 
 };
