@@ -5,12 +5,12 @@ describe( 'url', function () {
 
 	it( 'should be empty', function () {
 		var personMoldy = new Moldy();
-		personMoldy.$url().should.eql( '' );
+		personMoldy.$url().should.eql( Moldy.defaults.baseUrl );
 	} );
 
 	it( 'should be the name', function () {
 		var personMoldy = new Moldy( 'person' );
-		personMoldy.$url().should.eql( '/person' );
+		personMoldy.$url().should.eql( personMoldy.$baseUrl() + '/person' );
 	} );
 
 	it( 'should be the base and the name', function () {

@@ -3,10 +3,31 @@ var Moldy = require( '../src' ),
 
 describe( 'get', function () {
 
+	it( 'To get by `id` or `key`, give an object with appropriate conditions', function ( _done ) {
+		var personMoldy = new Moldy( 'person', {
+			key: 'guid',
+			properties: {
+				name: ''
+			}
+		} );
+
+		personMoldy.$get( {
+			guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
+		}, function ( _error, _res ) {
+
+			if ( _error ) {
+				return _done( _error );
+			}
+
+			_done();
+
+		} );
+
+	} );
+
 	it( '$get will only return a single entity. If an adapter responds with an array the first item will be returned', function ( _done ) {
 		var personMoldy = new Moldy( 'person', {
 			key: 'guid',
-			baseUrl: 'http://localhost:3000/api',
 			properties: {
 				name: ''
 			}
@@ -24,29 +45,6 @@ describe( 'get', function () {
 			}
 
 			_res.should.not.be.an.Array;
-
-			_done();
-
-		} );
-
-	} );
-
-	it( 'To get by `id` or `key`, give an object with appropriate conditions', function ( _done ) {
-		var personMoldy = new Moldy( 'person', {
-			key: 'guid',
-			baseUrl: 'http://localhost:3000/api',
-			properties: {
-				name: ''
-			}
-		} );
-
-		personMoldy.$get( {
-			guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
-		}, function ( _error, _res ) {
-
-			if ( _error ) {
-				return _done( _error );
-			}
 
 			_done();
 

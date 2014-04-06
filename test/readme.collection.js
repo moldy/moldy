@@ -4,9 +4,12 @@ var Moldy = require( '../src' ),
 describe( 'collection', function () {
 
 	it( 'To get a collection', function ( _done ) {
-		var personMoldy = new Moldy( 'person', 'guid' )
-			.$property( 'name' )
-			.$baseUrl( 'http://localhost:3000/api' );
+		var personMoldy = new Moldy( 'person', {
+			key: 'guid',
+			properties: {
+				name: 'string'
+			}
+		} );
 
 		personMoldy.$collection( function ( _error, _people ) {
 

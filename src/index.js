@@ -79,7 +79,7 @@ Moldy.prototype.$baseUrl = function ( _base ) {
 	var self = this,
 		url = cast( _base, 'string', self.__baseUrl || '' );
 
-	self.__baseUrl = url.trim().replace( /(\/|\s)+$/g, '' );
+	self.__baseUrl = url.trim().replace( /(\/|\s)+$/g, '' ) || Moldy.defaults.baseUrl || '';
 
 	return is.not.a.string( _base ) ? self.__baseUrl : self;
 };
@@ -88,7 +88,7 @@ Moldy.prototype.$clone = function ( _data ) {
 	var self = this,
 		data = is.an.object( _data ) ? _data : self.__data,
 		newMoldy = new Moldy( self.__name, {
-			baseUrl: self.__baseUrl,
+			baseUrl: self.$baseUrl(),
 			headers: self.__headers,
 			key: self.__key,
 			keyless: self.__keyless,
@@ -421,7 +421,7 @@ Moldy.prototype.$save = function ( _callback ) {
 
 Moldy.prototype.$url = function ( _url ) {
 	var self = this,
-		base = is.empty( self.__baseUrl ) ? '' : self.__baseUrl,
+		base = is.empty( self.$baseUrl() ) ? '' : self.$baseUrl(),
 		name = is.empty( self.__name ) ? '' : '/' + self.__name.trim().replace( /^\//, '' ),
 		url = _url || self.__url || '',
 		endpoint = base + name + ( is.empty( url ) ? '' : '/' + url.trim().replace( /^\//, '' ) );
@@ -435,6 +435,9 @@ emitter( Moldy.prototype );
 useify( Moldy );
 
 exports = module.exports = Moldy;
+exports.defaults = {
+	baseUrl: ''
+};
 
 /**
  * Expose built in middleware

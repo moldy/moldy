@@ -6,7 +6,6 @@ describe( 'get', function () {
 	it( 'get', function ( _done ) {
 		var personMoldy = new Moldy( 'person', {
 			key: 'guid',
-			baseUrl: 'http://localhost:3000/api',
 			properties: {
 				name: ''
 			}
@@ -26,7 +25,6 @@ describe( 'get', function () {
 	it( 'get by id', function ( _done ) {
 		var personMoldy = new Moldy( 'person', {
 			key: 'guid',
-			baseUrl: 'http://localhost:3000/api',
 			properties: {
 				name: ''
 			}

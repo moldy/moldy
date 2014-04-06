@@ -6,7 +6,6 @@ describe( 'destroy', function () {
 	it( 'To destroy a model, call `destroy()`', function ( _done ) {
 		var personMoldy = new Moldy( 'person', {
 			key: 'guid',
-			baseUrl: 'http://localhost:3000/api',
 			properties: {
 				name: 'string'
 			}
@@ -22,6 +21,9 @@ describe( 'destroy', function () {
 
 			personMoldy.$destroy( function ( _error, _res ) {
 
+				personMoldy.$isDirty().should.be.true;
+				personMoldy.$isValid().should.be.false;
+				personMoldy.__destroyed.should.be.true;
 				_done( _error );
 
 			} );

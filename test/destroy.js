@@ -6,7 +6,6 @@ describe( 'destroy', function () {
 	it( 'should destroy', function ( _done ) {
 		var personMoldy = new Moldy( 'person', {
 			key: 'guid',
-			baseUrl: 'http://localhost:3000/api',
 			properties: {
 				name: 'string',
 				age: 'number'
@@ -42,7 +41,6 @@ describe( 'destroy', function () {
 	it( 'should remove the `key` after being destroying', function ( _done ) {
 		var personMoldy = new Moldy( 'person', {
 			key: 'guid',
-			baseUrl: 'http://localhost:3000/api',
 			properties: {
 				name: 'string',
 				age: 'number'
@@ -58,11 +56,10 @@ describe( 'destroy', function () {
 
 	} );
 
-	describe( "ensuring all methods handle gracefully after being destroyed", function () {
+	describe( 'ensuring all methods handle gracefully after being destroyed', function () {
 
 		var schema = {
 			key: 'guid',
-			baseUrl: 'http://localhost:3000/api',
 			properties: {
 				name: 'string',
 				age: 'number'
@@ -74,7 +71,7 @@ describe( 'destroy', function () {
 
 			personMoldy.$get( function () {
 				personMoldy.$destroy( function () {
-					personMoldy.$baseUrl().should.equal( schema.baseUrl );
+					personMoldy.$baseUrl().should.equal( Moldy.defaults.baseUrl );
 					_done();
 				} );
 			} );
@@ -248,7 +245,7 @@ describe( 'destroy', function () {
 
 			personMoldy.$get( function () {
 				personMoldy.$destroy( function ( _error ) {
-					personMoldy.$url().should.equal( schema.baseUrl + '/' + personMoldy.__name );
+					personMoldy.$url().should.equal( Moldy.defaults.baseUrl + '/' + personMoldy.__name );
 					_done( _error );
 				} );
 			} );
