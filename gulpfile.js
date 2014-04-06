@@ -1,5 +1,7 @@
 var gulp = require( 'gulp' ),
 	browserify = require( 'gulp-browserify' ),
+	jshint = require( 'gulp-jshint' ),
+	jshintReporter = require( "jshint-stylish" ),
 	rename = require( 'gulp-rename' ),
 	shell = require( 'gulp-shell' ),
 	uglify = require( 'gulp-uglify' );
@@ -9,6 +11,12 @@ gulp.task( 'compressScripts', [ 'scripts' ], function () {
 		.pipe( uglify() )
 		.pipe( rename( 'moldy.min.js' ) )
 		.pipe( gulp.dest( './dist/' ) );
+} );
+
+gulp.task( "jshint", function () {
+	return gulp.src( [ "./src/scripts/**/*.js", "test/**/*.js" ] )
+		.pipe( jshint() )
+		.pipe( jshint.reporter( jshintReporter ) );
 } );
 
 gulp.task( 'scriptSrc', function () {
@@ -21,7 +29,7 @@ gulp.task( 'scriptSrc', function () {
 		.pipe( gulp.dest( './dist/' ) );
 } );
 
-gulp.task( 'test', function () {
+gulp.task( 'test', [ 'jshint' ], function () {
 	return gulp.src( '' ).pipe( shell( [ 'npm test' ] ) );
 } );
 
