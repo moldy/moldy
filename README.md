@@ -186,29 +186,43 @@ personMoldy.cars[ 0 ].$json().should.eql( {
 A url (endpoint) is automatically generated based on the `Moldy` name, key, `$url()` and `$baseUrl()`.
 
 ```js
-var personMoldy = new Moldy( 'person' )
-	.$property( 'id', {
-		default: '46'
-	} )
-	.$property( 'name' );
-personMoldy.$url().should.eql( '/person' );
+var personMoldy = new Moldy( 'person', {
+	baseUrl: '/api'
+} );
+personMoldy.$url().should.eql( '/api/person' );
 /**
  * The url can be changed using either `base()` or `url()`
  */
 personMoldy.$url( 'v1' );
-personMoldy.$url().should.eql( '/person/v1' );
-personMoldy.$baseUrl( '/api' );
 personMoldy.$url().should.eql( '/api/person/v1' );
 ```
 
 <a name="moldy-get"></a>
 ## get
+To get by `id` or `key`, give an object with appropriate conditions.
+
+```js
+var personMoldy = new Moldy( 'person', {
+	key: 'guid',
+	properties: {
+		name: ''
+	}
+} );
+personMoldy.$get( {
+	guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
+}, function ( _error, _res ) {
+	if ( _error ) {
+		return _done( _error );
+	}
+	_done();
+} );
+```
+
 $get will only return a single entity. If an adapter responds with an array the first item will be returned.
 
 ```js
 var personMoldy = new Moldy( 'person', {
 	key: 'guid',
-	baseUrl: 'http://localhost:3000/api',
 	properties: {
 		name: ''
 	}
@@ -227,26 +241,6 @@ personMoldy.$get( function ( _error, _res ) {
 } );
 ```
 
-To get by `id` or `key`, give an object with appropriate conditions.
-
-```js
-var personMoldy = new Moldy( 'person', {
-	key: 'guid',
-	baseUrl: 'http://localhost:3000/api',
-	properties: {
-		name: ''
-	}
-} );
-personMoldy.$get( {
-	guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
-}, function ( _error, _res ) {
-	if ( _error ) {
-		return _done( _error );
-	}
-	_done();
-} );
-```
-
 <a name="moldy-collection"></a>
 ## collection
 <a name="moldy-save"></a>
@@ -254,9 +248,11 @@ personMoldy.$get( {
 To save the model, call `save()`. If the model is `dirty` (has not been saved to the server and therefore does not have a valid `key`) then the http method will be POST. If the model has been saved, then the http method will be PUT.
 
 ```js
-var personMoldy = new Moldy( 'person' )
-	.$property( 'name' )
-	.$baseUrl( 'http://localhost:3000/api' );
+var personMoldy = new Moldy( 'person', {
+	properties: {
+		name: 'string'
+	}
+} );
 personMoldy.name = 'David';
 personMoldy.$save( function ( _error, _res ) {
 	if ( _error ) {

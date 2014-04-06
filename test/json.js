@@ -62,7 +62,7 @@ describe( 'json', function () {
 
 		data.should.have.a.property( 'id' );
 		data.should.have.a.property( 'name' );
-		data.should.have.a.property( 'age', 34 )
+		data.should.have.a.property( 'age', 34 );
 
 	} );
 

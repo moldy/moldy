@@ -17,7 +17,7 @@ describe( 'get', function () {
 			_res.$json().should.eql( {
 				guid: '5a55a128-0ad7-49a5-801a-04a7030385ff',
 				name: 'Goodman Delgado'
-			} )
+			} );
 			_done( _error );
 		} );
 	} );
