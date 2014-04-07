@@ -1,7 +1,7 @@
 var Moldy = require( '../src' ),
 	should = require( 'should' );
 
-Moldy.use( require( 'moldy-adapter-ajax' ) );
+Moldy.use( require( 'moldy-ajax-adapter' ) );
 Moldy.defaults.baseUrl = 'http://localhost:3000/api';
 
 describe( 'save', function () {
