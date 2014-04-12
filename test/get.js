@@ -49,4 +49,41 @@ describe( 'get', function () {
 
 	} );
 
+	it( 'get with an array of a type', function ( _done ) {
+		var personMoldy = new Moldy( 'person', {
+			key: 'guid',
+			properties: {
+				name: 'string',
+				friends: [ {
+					keyless: true,
+					properties: {
+						id: 'string',
+						name: 'string',
+						age: {
+							type: 'number',
+							default: 10
+						}
+					}
+				} ]
+			}
+		} );
+
+		personMoldy.$get( function ( _error, _res ) {
+			_res.should.not.be.an.Array.and.be.a.Moldy;
+			_res.should.equal( personMoldy );
+			_res.friends.should.be.an.Array;
+			_res.friends[ 0 ].id.should.be.a.String.and.equal( '0' );
+			_res.friends[ 0 ].name.should.be.a.String.and.equal( 'Blake Oneill' );
+			_res.friends[ 0 ].age.should.be.a.Number.and.equal( 10 );
+			_res.friends[ 1 ].id.should.be.a.String.and.equal( '1' );
+			_res.friends[ 1 ].name.should.be.a.String.and.equal( 'Hardin Jenkins' );
+			_res.friends[ 1 ].age.should.be.a.Number.and.equal( 10 );
+			_res.friends[ 2 ].id.should.be.a.String.and.equal( '2' );
+			_res.friends[ 2 ].name.should.be.a.String.and.equal( 'Kasey Jacobson' );
+			_res.friends[ 2 ].age.should.be.a.Number.and.equal( 10 );
+			_done( _error );
+		} );
+
+	} );
+
 } );

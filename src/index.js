@@ -97,7 +97,13 @@ Moldy.prototype.$clone = function ( _data ) {
 
 	Object.keys( self.__attributes ).forEach( function ( _propertyKey ) {
 		newMoldy.$property( _propertyKey, merge( self.__attributes[ _propertyKey ] ) );
-		newMoldy[ _propertyKey ] = data[ _propertyKey ]
+		if ( is.an.array( newMoldy[ _propertyKey ] ) && is.an.array( data[ _propertyKey ] ) ) {
+			data[ _propertyKey ].forEach( function ( _dataItem ) {
+				newMoldy[ _propertyKey ].push( _dataItem );
+			} );
+		} else {
+			newMoldy[ _propertyKey ] = data[ _propertyKey ]
+		}
 	} );
 
 	return newMoldy;
