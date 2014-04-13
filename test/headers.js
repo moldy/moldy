@@ -18,4 +18,25 @@ describe( 'headers', function () {
 		} );
 
 	} );
+
+	it( 'should be able to set the headers at a global level', function () {
+
+		Moldy.defaults.headers = {
+			'identity': '8d1a4f19-9796-49de-9f54-03da30a92242'
+		};
+
+		var personMoldy = new Moldy( 'person', {
+			headers: {
+				'chicken': 'tasty'
+			}
+		} );
+
+		personMoldy.$headers().should.eql( {
+			'chicken': 'tasty',
+			'identity': '8d1a4f19-9796-49de-9f54-03da30a92242'
+		} );
+
+		Moldy.defaults.headers = {};
+
+	} );
 } );

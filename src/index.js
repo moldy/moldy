@@ -33,7 +33,7 @@ var Moldy = function ( _name, _properties ) {
 			writable: true
 		},
 		__headers: {
-			value: cast( properties[ 'headers' ], 'object', {} ),
+			value: merge( {}, cast( properties[ 'headers' ], 'object', {} ), cast( Moldy.defaults.headers, 'object', {} ) ),
 			writable: true
 		},
 		__key: {
@@ -442,7 +442,8 @@ useify( Moldy );
 
 exports = module.exports = Moldy;
 exports.defaults = {
-	baseUrl: ''
+	baseUrl: '',
+	headers: {}
 };
 
 /**
