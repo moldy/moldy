@@ -445,9 +445,3 @@ exports.defaults = {
 	baseUrl: '',
 	headers: {}
 };
-
-/**
- * Expose built in middleware
- */
-// exports.schema = require( './middleware/schema.middleware' );
-// exports.ajax = require( './middleware/ajax.middleware' );
