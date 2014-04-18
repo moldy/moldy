@@ -24,7 +24,7 @@
     "express": "^3.5.0",
     "browserify": "^3.33.0",
     "uglify-js": "^2.4.13",
-    "gulp": "^3.5.6",
+    "gulp": "^3.6.1",
     "gulp-shell": "^0.2.4",
     "gulp-uglify": "^0.2.1",
     "gulp-browserify": "^0.5.0",

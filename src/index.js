@@ -292,10 +292,8 @@ Moldy.prototype.$json = function () {
 			data[ _key ].forEach( function ( _moldy ) {
 				json[ _key ].push( _moldy.$json() );
 			} );
-		} else if ( is.not.an.object( data[ _key ] ) ) {
-			json[ _key ] = data[ _key ];
-		} else if ( data[ _key ] instanceof Moldy ) {
-			json[ _key ] = data[ _key ].$json();
+		} else {
+			json[ _key ] = data[ _key ] instanceof Moldy ? data[ _key ].$json() : data[ _key ];
 		}
 	} );
 

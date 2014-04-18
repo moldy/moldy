@@ -243,4 +243,70 @@ describe( 'array of a type', function () {
 
 	} );
 
+	it( 'should handle an array of a model with an optional object', function () {
+		var personMoldy = new Moldy( 'person', {
+			properties: {
+				name: 'string',
+				guests: [ {
+					keyless: true,
+					properties: {
+						name: 'string',
+						age: 'number',
+						address: {
+							type: 'object',
+							optional: true
+						}
+					}
+				} ]
+			}
+		} );
+
+		personMoldy.guests.push( {
+			name: 'david'
+		} );
+
+		personMoldy.$json().should.eql( {
+			id: undefined,
+			name: null,
+			guests: [ {
+				name: 'david',
+				age: null
+			} ]
+		} );
+
+		personMoldy.$json().should.eql( {
+			id: undefined,
+			name: null,
+			guests: [ {
+				name: 'david',
+				age: null
+			} ]
+		} );
+
+		personMoldy.guests.push( {
+			name: 'max',
+			address: {
+				suburb: 'warner',
+				country: 'australia'
+			}
+		} );
+
+		personMoldy.$json().should.eql( {
+			id: undefined,
+			name: null,
+			guests: [ {
+				name: 'david',
+				age: null
+			}, {
+				name: 'max',
+				age: null,
+				address: {
+					suburb: 'warner',
+					country: 'australia'
+				}
+			} ]
+		} );
+
+	} );
+
 } );

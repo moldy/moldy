@@ -101,4 +101,31 @@ describe( 'json', function () {
 
 	} );
 
+	it( 'should handle properties with object types', function () {
+		var personMoldy = new Moldy( 'person', {} )
+			.$property( 'name' )
+			.$property( 'age' )
+			.$property( 'address', {
+				type: 'object'
+			} );
+
+		personMoldy.address = {
+			suburb: 'warner',
+			country: 'australia'
+		};
+
+		var data = personMoldy.$json();
+
+		data.should.eql( {
+			id: undefined,
+			name: null,
+			age: null,
+			address: {
+				suburb: 'warner',
+				country: 'australia'
+			}
+		} );
+
+	} );
+
 } );
