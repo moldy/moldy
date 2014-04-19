@@ -84,6 +84,22 @@ Moldy.prototype.$baseUrl = function ( _base ) {
 	return is.not.a.string( _base ) ? self.__baseUrl : self;
 };
 
+Moldy.prototype.$clear = function () {
+	var self = this;
+
+	Object.keys( self.__attributes ).forEach( function ( _key ) {
+		if ( hasKey( self[ _key ], '__moldy', 'boolean' ) && self[ _key ].__moldy === true ) {
+			self[ _key ].$clear();
+		} else if ( self.__attributes[ _key ].arrayOfAType ) {
+			while ( self[ _key ].length > 0 ) {
+				self[ _key ].shift();
+			}
+		} else {
+			self[ _key ] = self.__data[ _key ] = void 0;
+		}
+	} );
+};
+
 Moldy.prototype.$clone = function ( _data ) {
 	var self = this,
 		data = is.an.object( _data ) ? _data : self.__data,
