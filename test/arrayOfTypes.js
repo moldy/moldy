@@ -4,7 +4,7 @@ var Moldy = require( '../src' ),
 describe( 'array of a type', function () {
 
 	it( 'an array of booleans', function () {
-		var personMoldy = new Moldy( 'person', {
+		var personMoldy = Moldy.create( 'person', {
 			properties: {
 				tags: {
 					type: [ 'boolean' ],
@@ -24,7 +24,7 @@ describe( 'array of a type', function () {
 	} );
 
 	it( 'an array of numbers', function () {
-		var personMoldy = new Moldy( 'person', {
+		var personMoldy = Moldy.create( 'person', {
 			properties: {
 				tags: {
 					type: [ 'number' ],
@@ -44,7 +44,7 @@ describe( 'array of a type', function () {
 	} );
 
 	it( 'an array of objects', function () {
-		var personMoldy = new Moldy( 'person', {
+		var personMoldy = Moldy.create( 'person', {
 			properties: {
 				tags: {
 					type: [ 'object' ],
@@ -80,7 +80,7 @@ describe( 'array of a type', function () {
 	} );
 
 	it( 'an array of strings', function () {
-		var personMoldy = new Moldy( 'person', {
+		var personMoldy = Moldy.create( 'person', {
 			properties: {
 				tags: {
 					type: [ 'string' ],
@@ -100,7 +100,7 @@ describe( 'array of a type', function () {
 	} );
 
 	it( 'an array of models', function () {
-		var personMoldy = new Moldy( 'person', {
+		var personMoldy = Moldy.create( 'person', {
 			properties: {
 				tags: {
 					type: [ {
@@ -151,7 +151,7 @@ describe( 'array of a type', function () {
 	} );
 
 	it( 'an array of models defined directly as the value', function () {
-		var personMoldy = new Moldy( 'person', {
+		var personMoldy = Moldy.create( 'person', {
 			properties: {
 				tags: [ {
 					properties: {
@@ -195,7 +195,7 @@ describe( 'array of a type', function () {
 	} );
 
 	it( 'should handle an array of a type when given JSON to $data', function () {
-		var personMoldy = new Moldy( 'person', {
+		var personMoldy = Moldy.create( 'person', {
 			properties: {
 				name: 'string',
 				guests: [ {
@@ -244,7 +244,7 @@ describe( 'array of a type', function () {
 	} );
 
 	it( 'should handle an array of a model with an optional object', function () {
-		var personMoldy = new Moldy( 'person', {
+		var personMoldy = Moldy.create( 'person', {
 			properties: {
 				name: 'string',
 				guests: [ {

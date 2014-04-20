@@ -4,7 +4,7 @@ var Moldy = require( '../src' ),
 describe( 'clear', function () {
 
 	it( 'should clear all the values the data', function () {
-		var personMoldy = new Moldy( 'person', {
+		var personMoldy = Moldy.create( 'person', {
 			properties: {
 				name: 'string',
 				age: 'number',

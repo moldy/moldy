@@ -16,10 +16,10 @@
 Create a Moldy.
 
 ```js
-var personMoldy = new Moldy( 'person' )
-	.$property( 'id' )
-	.$property( 'name' )
-	.$property( 'age' );
+var personMoldy = Moldy.create( 'person' )
+  .$property( 'id' )
+  .$property( 'name' )
+  .$property( 'age' );
 personMoldy.should.have.a.property( 'id', null );
 personMoldy.should.have.a.property( 'name', null );
 personMoldy.should.have.a.property( 'age', null );
@@ -32,42 +32,42 @@ personMoldy.should.have.a.property( 'age', null );
 Properties can by strongly typed. If a type has been defined, values are cast to that type automatically. If a value cannot be cast to a type then the value will be set to `null` or the `default` if it has been defined.
 
 ```js
-var personMoldy = new Moldy( 'person', {
-				properties: {
-					'age': 'number',
-					'active': {
-						type: 'boolean',
-						default: false
-					},
-					'tags': 'array'
-				}
-			} );
-			/**
-			 * When a model's properties have been `typed` the assigned values are cast on the fly
-			 * to ensure the model's data remains sanitized.
-			 */
-			/**
-			 * Cast a `string` for `age` to a `number`
-			 */
-			personMoldy.age = '13';
-			personMoldy.age.should.equal( 13 ).and.be.an.instanceOf( Number );
-			/**
-			 * Cast a truthy `string` for `active` as a `boolean`
-			 */
-			personMoldy.active = 'yes';
-			personMoldy.active.should.equal( true ).and.be.an.instanceOf( Boolean );
-			/**
-			 * `active` is typed as a `boolean` _and_ a `default` has been defined. When an
-			 * assigned value that cannot be cast as a `boolean` is set then the `default` will
-			 * apply.
-			 */
-			personMoldy.active = 'this is not a boolean';
-			should( personMoldy.active ).equal( false ).and.be.an.instanceOf( Boolean );
-			/**
-			 * Cast a `string` for `tags` as an `array`
-			 */
-			personMoldy.tags = 'lorem';
-			should( personMoldy.tags ).eql( [ 'lorem' ] ).and.be.an.instanceOf( Array );
+var personMoldy = Moldy.create( 'person', {
+        properties: {
+          'age': 'number',
+          'active': {
+            type: 'boolean',
+            default: false
+          },
+          'tags': 'array'
+        }
+      } );
+      /**
+       * When a model's properties have been `typed` the assigned values are cast on the fly
+       * to ensure the model's data remains sanitized.
+       */
+      /**
+       * Cast a `string` for `age` to a `number`
+       */
+      personMoldy.age = '13';
+      personMoldy.age.should.equal( 13 ).and.be.an.instanceOf( Number );
+      /**
+       * Cast a truthy `string` for `active` as a `boolean`
+       */
+      personMoldy.active = 'yes';
+      personMoldy.active.should.equal( true ).and.be.an.instanceOf( Boolean );
+      /**
+       * `active` is typed as a `boolean` _and_ a `default` has been defined. When an
+       * assigned value that cannot be cast as a `boolean` is set then the `default` will
+       * apply.
+       */
+      personMoldy.active = 'this is not a boolean';
+      should( personMoldy.active ).equal( false ).and.be.an.instanceOf( Boolean );
+      /**
+       * Cast a `string` for `tags` as an `array`
+       */
+      personMoldy.tags = 'lorem';
+      should( personMoldy.tags ).eql( [ 'lorem' ] ).and.be.an.instanceOf( Array );
 ```
 
 <a name="moldy-property-attributes-optional"></a>
@@ -75,21 +75,21 @@ var personMoldy = new Moldy( 'person', {
 Properties can be optional. By making a property optional, `isValid()` and `toJson()` will ignore it if is has not been set.
 
 ```js
-var personMoldy = new Moldy( 'person' )
-	.$property( 'id' )
-	.$property( 'name' )
-	.$property( 'age', {
-		type: 'number',
-		optional: true
-	} )
-	.$property( 'active', {
-		type: 'boolean',
-		default: false
-	} )
-	.$property( 'tags', {
-		type: 'array',
-		optional: true
-	} );
+var personMoldy = Moldy.create( 'person' )
+  .$property( 'id' )
+  .$property( 'name' )
+  .$property( 'age', {
+    type: 'number',
+    optional: true
+  } )
+  .$property( 'active', {
+    type: 'boolean',
+    default: false
+  } )
+  .$property( 'tags', {
+    type: 'array',
+    optional: true
+  } );
 /**
  * To ensure this `person` is valid we only need to set the `id` and `name` because
  * the other keys are either `optional` or have `defaults`.
@@ -104,11 +104,11 @@ personMoldy.$isValid().should.be.ok;
 A property can be defined as `array` of a type like an `array` of `strings`, or an `array` of `numbers`.
 
 ```js
-var personMoldy = new Moldy( 'person' )
-	.$property( 'id' )
-	.$property( 'tags', {
-		type: [ 'string' ]
-	} );
+var personMoldy = Moldy.create( 'person' )
+  .$property( 'id' )
+  .$property( 'tags', {
+    type: [ 'string' ]
+  } );
 /**
  * When defining an array of a type, the arrays are normal arrays however they have been
  * extended to allow hooks into the necessary methods for sanitization.
@@ -152,32 +152,32 @@ personMoldy.tags[ 1 ].should.equal( 1 );
 Array types can also be model schemas.
 
 ```js
-var personMoldy = new Moldy( 'person' )
-	.$property( 'cars', {
-		type: [ {
-			name: 'car',
-			properties: {
-				make: 'string',
-				model: {
-					type: 'string',
-					default: ''
-				},
-				year: 'number'
-			}
-		} ]
-	} );
+var personMoldy = Moldy.create( 'person' )
+  .$property( 'cars', {
+    type: [ {
+      name: 'car',
+      properties: {
+        make: 'string',
+        model: {
+          type: 'string',
+          default: ''
+        },
+        year: 'number'
+      }
+    } ]
+  } );
 /**
  * Note, we are missing the `model` key and the `year` is a string
  */
 personMoldy.cars.push( {
-	make: 'honda',
-	year: '2010'
+  make: 'honda',
+  year: '2010'
 } );
 personMoldy.cars[ 0 ].$json().should.eql( {
-	id: undefined,
-	make: 'honda',
-	model: '',
-	year: 2010
+  id: undefined,
+  make: 'honda',
+  model: '',
+  year: 2010
 } );
 ```
 
@@ -186,8 +186,8 @@ personMoldy.cars[ 0 ].$json().should.eql( {
 A url (endpoint) is automatically generated based on the `Moldy` name, key, `$url()` and `$baseUrl()`.
 
 ```js
-var personMoldy = new Moldy( 'person', {
-	baseUrl: '/api'
+var personMoldy = Moldy.create( 'person', {
+  baseUrl: '/api'
 } );
 personMoldy.$url().should.eql( '/api/person' );
 /**
@@ -202,30 +202,30 @@ personMoldy.$url().should.eql( '/api/person/v1' );
 To get by `id` or `key`, give an object with appropriate conditions.
 
 ```js
-var personMoldy = new Moldy( 'person', {
-	key: 'guid',
-	properties: {
-		name: ''
-	}
+var personMoldy = Moldy.create( 'person', {
+  key: 'guid',
+  properties: {
+    name: ''
+  }
 } );
 personMoldy.$get( {
-	guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
+  guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
 }, function ( _error, _res ) {
-	if ( _error ) {
-		return _done( _error );
-	}
-	_done();
+  if ( _error ) {
+    return _done( _error );
+  }
+  _done();
 } );
 ```
 
 $get will only return a single entity. If an adapter responds with an array the first item will be returned.
 
 ```js
-var personMoldy = new Moldy( 'person', {
-	key: 'guid',
-	properties: {
-		name: ''
-	}
+var personMoldy = Moldy.create( 'person', {
+  key: 'guid',
+  properties: {
+    name: ''
+  }
 } );
 /**
  * In this example the end point GET `http://localhost:3000/api` returns an array of items.
@@ -233,11 +233,11 @@ var personMoldy = new Moldy( 'person', {
  * use the $collection method.
  */
 personMoldy.$get( function ( _error, _res ) {
-	if ( _error ) {
-		return _done( _error );
-	}
-	_res.should.not.be.an.Array;
-	_done();
+  if ( _error ) {
+    return _done( _error );
+  }
+  _res.should.not.be.an.Array;
+  _done();
 } );
 ```
 
@@ -248,23 +248,23 @@ personMoldy.$get( function ( _error, _res ) {
 To save the model, call `save()`. If the model is `dirty` (has not been saved to the server and therefore does not have a valid `key`) then the http method will be POST. If the model has been saved, then the http method will be PUT.
 
 ```js
-var personMoldy = new Moldy( 'person', {
-	properties: {
-		name: 'string'
-	}
+var personMoldy = Moldy.create( 'person', {
+  properties: {
+    name: 'string'
+  }
 } );
 personMoldy.name = 'David';
 personMoldy.$save( function ( _error, _res ) {
-	if ( _error ) {
-		return _done( _error );
-	}
-	personMoldy.should.eql( _res );
-	personMoldy.should.have.a.property( 'id' );
-	personMoldy.name = 'Mr David';
-	personMoldy.$save( function ( _error, _res ) {
-		personMoldy.should.eql( _res );
-		_done( _error );
-	} );
+  if ( _error ) {
+    return _done( _error );
+  }
+  personMoldy.should.eql( _res );
+  personMoldy.should.have.a.property( 'id' );
+  personMoldy.name = 'Mr David';
+  personMoldy.$save( function ( _error, _res ) {
+    personMoldy.should.eql( _res );
+    _done( _error );
+  } );
 } );
 ```
 

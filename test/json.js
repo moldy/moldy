@@ -4,7 +4,7 @@ var Moldy = require( '../src' ),
 describe( 'json', function () {
 
 	it( 'should return the raw JSON representaiton of the model', function () {
-		var personMoldy = new Moldy( 'person', {
+		var personMoldy = Moldy.create( 'person', {
 			properties: {
 				name: 'string',
 				age: 'number'
@@ -25,7 +25,7 @@ describe( 'json', function () {
 	} );
 
 	it( 'should return all properties even when they have not been set', function () {
-		var personMoldy = new Moldy( 'person' )
+		var personMoldy = Moldy.create( 'person' )
 			.$property( 'name' )
 			.$property( 'age' );
 
@@ -40,7 +40,7 @@ describe( 'json', function () {
 	} );
 
 	it( 'should handle optional properties', function () {
-		var personMoldy = new Moldy( 'person' )
+		var personMoldy = Moldy.create( 'person' )
 			.$property( 'name' )
 			.$property( 'age', {
 				optional: true
@@ -67,7 +67,7 @@ describe( 'json', function () {
 	} );
 
 	it( 'should handle optional properties with defaults', function () {
-		var personMoldy = new Moldy( 'person' )
+		var personMoldy = Moldy.create( 'person' )
 			.$property( 'name' )
 			.$property( 'age', {
 				optional: true,
@@ -85,7 +85,7 @@ describe( 'json', function () {
 	} );
 
 	it( 'should handle properties with defaults', function () {
-		var personMoldy = new Moldy( 'person' )
+		var personMoldy = Moldy.create( 'person' )
 			.$property( 'name' )
 			.$property( 'age', {
 				default: 0
@@ -102,7 +102,7 @@ describe( 'json', function () {
 	} );
 
 	it( 'should handle properties with object types', function () {
-		var personMoldy = new Moldy( 'person', {} )
+		var personMoldy = Moldy.create( 'person', {} )
 			.$property( 'name' )
 			.$property( 'age' )
 			.$property( 'address', {
