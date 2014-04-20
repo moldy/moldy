@@ -1,23 +1,14 @@
-var useify = require( 'sc-useify' ),
-    defaultConfiguration = {
-      baseUrl: '',
-      headers: {}
-    },
-    moldyAPI = { };
+var config = require( './config.json' ),
+	moldyApi = {},
+	useify = require( 'sc-useify' );
 
-useify( moldyAPI );
+useify( moldyApi );
 
-var Moldy = require( './moldy' )( defaultConfiguration, moldyAPI.middleware );
+var Moldy = require( './moldy' )( config.defaults, moldyApi.middleware );
 
-moldyAPI.create = function ( _name, _properties ) {
-    return new Moldy( _name, _properties );
+moldyApi.create = function ( _name, _properties ) {
+	return new Moldy( _name, _properties );
 };
 
-exports = module.exports = moldyAPI;
-
-exports.defaults = defaultConfiguration
-/**
- * Expose built in middleware
- */
-// exports.schema = require( './middleware/schema.middleware' );
-// exports.ajax = require( './middleware/ajax.middleware' );
+exports = module.exports = moldyApi;
+exports.defaults = config.defaults;
