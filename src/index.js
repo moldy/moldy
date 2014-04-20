@@ -169,8 +169,8 @@ Moldy.prototype.$destroy = function ( _callback ) {
 	} );
 
 	if ( !isDirty ) {
-		request( self, data, method, url, function () {
-			self.emit( 'destroy', self );
+		request( self, data, method, url, function ( _error, _res ) {
+			self.emit( 'destroy', _error, _res );
 			self.__destroyed = true;
 			self[ self.__key ] = undefined;
 			callback.apply( self, arguments );
