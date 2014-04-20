@@ -87,6 +87,22 @@ exports = module.exports = function ( defaultConfiguration, defaultMiddleware ) 
     self.__baseUrl = url.trim().replace( /(\/|\s)+$/g, '' ) || defaultConfiguration.baseUrl || '';
 
     return is.not.a.string( _base ) ? self.__baseUrl : self;
+};
+
+Moldy.prototype.$clear = function () {
+	var self = this;
+
+	Object.keys( self.__attributes ).forEach( function ( _key ) {
+		if ( hasKey( self[ _key ], '__moldy', 'boolean' ) && self[ _key ].__moldy === true ) {
+			self[ _key ].$clear();
+		} else if ( self.__attributes[ _key ].arrayOfAType ) {
+			while ( self[ _key ].length > 0 ) {
+				self[ _key ].shift();
+			}
+		} else {
+			self[ _key ] = self.__data[ _key ] = void 0;
+		}
+	} );
   };
 
   Moldy.prototype.$clone = function ( _data ) {
@@ -158,8 +174,8 @@ exports = module.exports = function ( defaultConfiguration, defaultMiddleware ) 
     } );
 
     if ( !isDirty ) {
-      request( self, data, method, url, function () {
-        self.emit( 'destroy', self );
+		request( self, data, method, url, function ( _error, _res ) {
+			self.emit( 'destroy', _error, _res );
         self.__destroyed = true;
         self[ self.__key ] = undefined;
         callback.apply( self, arguments );
@@ -202,8 +218,6 @@ exports = module.exports = function ( defaultConfiguration, defaultMiddleware ) 
       query = is.an.object( _query ) ? _query : {},
       callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop
       wasDestroyed = self.__destroyed;
-
-    console.log( url );
     
     self.emit( 'preget', {
       moldy: self,
@@ -299,10 +313,8 @@ exports = module.exports = function ( defaultConfiguration, defaultMiddleware ) 
         data[ _key ].forEach( function ( _moldy ) {
           json[ _key ].push( _moldy.$json() );
         } );
-      } else if ( is.not.an.object( data[ _key ] ) ) {
-        json[ _key ] = data[ _key ];
-      } else if ( data[ _key ] instanceof Moldy ) {
-        json[ _key ] = data[ _key ].$json();
+		} else {
+			json[ _key ] = data[ _key ] instanceof Moldy ? data[ _key ].$json() : data[ _key ];
       }
     } );
 
