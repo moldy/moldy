@@ -1,6 +1,6 @@
 {
   "name": "moldy",
-  "version": "0.0.29",
+  "version": "0.1.0",
   "description": "",
   "main": "src/index.js",
   "scripts": {
@@ -46,6 +46,6 @@
     "sc-merge": "0.0.3",
     "sc-guid": "0.0.4",
     "sc-useify": "0.0.13",
-		"sg-observable-array": "0.0.2"
+    "sg-observable-array": "0.0.2"
   }
 }
