@@ -5,7 +5,7 @@ var Moldy = require( '../src' ),
 describe( 'moldy', function () {
 
   it( 'Create a Moldy', function () {
-    var personMoldy = Moldy.create( 'person' )
+    var personMoldy = Moldy.extend( 'person' ).create()
       .$property( 'id' )
       .$property( 'name' )
       .$property( 'age' );

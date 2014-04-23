@@ -4,14 +4,14 @@ var Moldy = require( '../src' ),
 describe( 'headers', function () {
 
   it( 'should be able to add headers', function () {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       headers: {
         'X-API-KEY': 'ec5c6970-a8e3-4294-ef78-48043e88d05b'
       },
       properties: {
         name: ''
       }
-    } );
+    } ).create();
 
     personMoldy.$headers().should.eql( {
       'X-API-KEY': 'ec5c6970-a8e3-4294-ef78-48043e88d05b'
@@ -25,11 +25,11 @@ describe( 'headers', function () {
       'identity': '8d1a4f19-9796-49de-9f54-03da30a92242'
     };
 
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       headers: {
         'chicken': 'tasty'
       }
-    } );
+    } ).create( );
 
     personMoldy.$headers().should.eql( {
       'chicken': 'tasty',

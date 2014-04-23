@@ -4,13 +4,13 @@ var Moldy = require( '../src' ),
 describe( 'destroy', function () {
 
   it( 'should destroy', function ( _done ) {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       key: 'guid',
       properties: {
         name: 'string',
         age: 'number'
       }
-    } );
+    } ).create();
 
     personMoldy.$get( function ( _error ) {
       personMoldy.__destroyed.should.be.false;
@@ -23,12 +23,12 @@ describe( 'destroy', function () {
   } );
 
   it( 'should fail destroying a dirty moldy', function ( _done ) {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       properties: {
         name: 'string',
         age: 'number'
       }
-    } );
+    } ).create();
 
     personMoldy.$destroy( function ( _error, _res ) {
       _error.should.be.an.Error;
@@ -39,13 +39,13 @@ describe( 'destroy', function () {
   } );
 
   it( 'should remove the `key` after being destroying', function ( _done ) {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       key: 'guid',
       properties: {
         name: 'string',
         age: 'number'
       }
-    } );
+    } ).create();
 
     personMoldy.$get( function () {
       personMoldy.$destroy( function () {
@@ -67,7 +67,7 @@ describe( 'destroy', function () {
     };
 
     it( '$baseUrl still works after destroyed', function ( _done ) {
-      var personMoldy = Moldy.create( 'person', schema );
+      var personMoldy = Moldy.extend( 'person', schema ).create();
 
       personMoldy.$get( function () {
         personMoldy.$destroy( function () {
@@ -79,7 +79,7 @@ describe( 'destroy', function () {
     } );
 
     it( '$clone still works however the `key` should', function ( _done ) {
-      var personMoldy = Moldy.create( 'person', schema ),
+      var personMoldy = Moldy.extend( 'person', schema ).create(),
         originalPersonJson;
 
       personMoldy.$get( function () {
@@ -100,7 +100,7 @@ describe( 'destroy', function () {
     } );
 
     it( '$collection still works', function ( _done ) {
-      var personMoldy = Moldy.create( 'person', schema );
+      var personMoldy = Moldy.extend( 'person', schema ).create();
 
       personMoldy.$get( function () {
         personMoldy.$destroy( function () {
@@ -114,7 +114,7 @@ describe( 'destroy', function () {
     } );
 
     it( '$destroy should fail', function ( _done ) {
-      var personMoldy = Moldy.create( 'person', schema );
+      var personMoldy = Moldy.extend( 'person', schema ).create();
 
       personMoldy.$get( function () {
         personMoldy.$destroy( function () {
@@ -128,7 +128,7 @@ describe( 'destroy', function () {
     } );
 
     it( '$data should return an Error', function ( _done ) {
-      var personMoldy = Moldy.create( 'person', schema );
+      var personMoldy = Moldy.extend( 'person', schema ).create();
 
       personMoldy.$get( function () {
         personMoldy.$destroy( function ( _error ) {
@@ -144,7 +144,7 @@ describe( 'destroy', function () {
     } );
 
     it( '$get should remove the __destroyed flag and populate the object with the new data', function ( _done ) {
-      var personMoldy = Moldy.create( 'person', schema );
+      var personMoldy = Moldy.extend( 'person', schema ).create();
 
       personMoldy.$get( function () {
         personMoldy.$destroy( function ( _error ) {
@@ -160,7 +160,7 @@ describe( 'destroy', function () {
     } );
 
     it( '$headers still works', function ( _done ) {
-      var personMoldy = Moldy.create( 'person', schema );
+      var personMoldy = Moldy.extend( 'person', schema ).create();
 
       personMoldy.$get( function () {
         personMoldy.$destroy( function ( _error ) {
@@ -171,7 +171,7 @@ describe( 'destroy', function () {
     } );
 
     it( '$isDirty returns true', function ( _done ) {
-      var personMoldy = Moldy.create( 'person', schema );
+      var personMoldy = Moldy.extend( 'person', schema ).create();
 
       personMoldy.$get( function () {
         personMoldy.$destroy( function ( _error ) {
@@ -182,7 +182,7 @@ describe( 'destroy', function () {
     } );
 
     it( '$isValid returns false', function ( _done ) {
-      var personMoldy = Moldy.create( 'person', schema );
+      var personMoldy = Moldy.extend( 'person', schema ).create();
 
       personMoldy.$get( function () {
         personMoldy.$destroy( function ( _error ) {
@@ -193,7 +193,7 @@ describe( 'destroy', function () {
     } );
 
     it( '$json returns the data however the `key` should be `undefined`', function ( _done ) {
-      var personMoldy = Moldy.create( 'person', schema );
+      var personMoldy = Moldy.extend( 'person', schema ).create();
 
       personMoldy.$get( function () {
         var json = personMoldy.$json();
@@ -209,7 +209,7 @@ describe( 'destroy', function () {
     } );
 
     it( '$property still works', function ( _done ) {
-      var personMoldy = Moldy.create( 'person', schema );
+      var personMoldy = Moldy.extend( 'person', schema ).create();
 
       personMoldy.$get( function () {
         personMoldy.should.not.have.a.property( 'gender' );
@@ -225,7 +225,7 @@ describe( 'destroy', function () {
     } );
 
     it( '$save still works - should create a new record and therefore have a new `key`', function ( _done ) {
-      var personMoldy = Moldy.create( 'person', schema );
+      var personMoldy = Moldy.extend( 'person', schema ).create();
 
       personMoldy.$get( function () {
         var oldGuid = personMoldy.guid;
@@ -241,7 +241,7 @@ describe( 'destroy', function () {
     } );
 
     it( '$url still works', function ( _done ) {
-      var personMoldy = Moldy.create( 'person', schema );
+      var personMoldy = Moldy.extend( 'person', schema ).create();
 
       personMoldy.$get( function () {
         personMoldy.$destroy( function ( _error ) {

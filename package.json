@@ -6,7 +6,7 @@
   "scripts": {
     "pretest": "./node_modules/.bin/forever start server.js",
     "test": "mocha test/*.js",
-    "posttest": "mocha test/readme.js -R markdown > README.md; ./node_modules/.bin/forever stop server.js"
+    "posttest": [ "mocha test/readme.js -R markdown > README.md", "./node_modules/.bin/forever stop server.js" ]
   },
   "repository": {
     "type": "git",

@@ -4,7 +4,7 @@ var Moldy = require( '../src' ),
 describe( 'isDirty', function () {
 
   it( 'should be dirty if the `key` is empty', function () {
-    var personMoldy = Moldy.create( 'person' )
+    var personMoldy = Moldy.extend( 'person' ).create()
       .$property( 'name' );
 
     personMoldy.$isDirty().should.be.ok;
@@ -12,7 +12,7 @@ describe( 'isDirty', function () {
   } );
 
   it( 'should _not_ be dirty if the `key` is not empty', function () {
-    var personMoldy = Moldy.create( 'person' )
+    var personMoldy = Moldy.extend( 'person' ).create()
       .$property( 'name' );
 
     personMoldy.id = 1;

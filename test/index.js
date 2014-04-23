@@ -1,13 +1,14 @@
 var Moldy = require( '../src' ),
   should = require( 'should' );
 
-Moldy.use( require( 'moldy-ajax-adapter' ) );
-Moldy.defaults.baseUrl = 'http://localhost:3000/api';
+require( './setup' )( Moldy )();
 
 describe( 'save', function () {
 
+  //before( require( './setup' )( Moldy ) );
+  
   it( 'instantiate using', function ( _done ) {
-    var personMoldy = Moldy.create( 'person' );
+    var personMoldy = Moldy.extend( 'person' ).create( );
 
     personMoldy.$save( function ( _error, _res ) {
       _done( _error );

@@ -3,13 +3,15 @@ var Moldy = require( '../src' ),
 
 describe( 'destroy', function () {
 
+  //before( require( './setup' )( Moldy ) );
+
   it( 'To destroy a model, call `destroy()`', function ( _done ) {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       key: 'guid',
       properties: {
         name: 'string'
       }
-    } );
+    } ).create();
 
     personMoldy.name = 'David';
 

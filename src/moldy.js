@@ -6,14 +6,15 @@ var cast = require( 'sc-cast' ),
   merge = require( 'sc-merge' ),
   observableArray = require( 'sg-observable-array' ),
   request = require( './request' ),
+  extend = helpers.extendObject,
   useify = require( 'sc-useify' );
 
 exports = module.exports = function ( defaultConfiguration, defaultMiddleware ) {
 
-
   var Moldy = function ( _name, _properties ) {
     var self = this,
-      properties = is.an.object( _properties ) ? _properties : {};
+      properties = is.an.object( _properties ) ? _properties : {},
+      initial = properties.initial || {};
 
     Object.defineProperties( self, {
       __moldy: {
@@ -67,6 +68,12 @@ exports = module.exports = function ( defaultConfiguration, defaultMiddleware ) 
       self.$property( _key, properties[ 'properties' ][ _key ] );
     } );
 
+    for( var i in initial ) {
+      if( initial.hasOwnProperty( i ) ) {
+        this[ i ] = initial;
+      }
+    }
+
     self.on( 'presave', helpers.setBusy( self ) );
     self.on( 'save', helpers.unsetBusy( self ) );
 
@@ -90,19 +97,19 @@ exports = module.exports = function ( defaultConfiguration, defaultMiddleware ) 
 };
 
 Moldy.prototype.$clear = function () {
-	var self = this;
+  var self = this;
 
-	Object.keys( self.__attributes ).forEach( function ( _key ) {
-		if ( hasKey( self[ _key ], '__moldy', 'boolean' ) && self[ _key ].__moldy === true ) {
-			self[ _key ].$clear();
-		} else if ( self.__attributes[ _key ].arrayOfAType ) {
-			while ( self[ _key ].length > 0 ) {
-				self[ _key ].shift();
-			}
-		} else {
-			self[ _key ] = self.__data[ _key ] = void 0;
-		}
-	} );
+  Object.keys( self.__attributes ).forEach( function ( _key ) {
+    if ( hasKey( self[ _key ], '__moldy', 'boolean' ) && self[ _key ].__moldy === true ) {
+      self[ _key ].$clear();
+    } else if ( self.__attributes[ _key ].arrayOfAType ) {
+      while ( self[ _key ].length > 0 ) {
+        self[ _key ].shift();
+      }
+    } else {
+      self[ _key ] = self.__data[ _key ] = void 0;
+    }
+  } );
   };
 
   Moldy.prototype.$clone = function ( _data ) {
@@ -174,8 +181,8 @@ Moldy.prototype.$clear = function () {
     } );
 
     if ( !isDirty ) {
-		request( self, data, method, url, function ( _error, _res ) {
-			self.emit( 'destroy', _error, _res );
+    request( self, data, method, url, function ( _error, _res ) {
+      self.emit( 'destroy', _error, _res );
         self.__destroyed = true;
         self[ self.__key ] = undefined;
         callback.apply( self, arguments );
@@ -313,8 +320,8 @@ Moldy.prototype.$clear = function () {
         data[ _key ].forEach( function ( _moldy ) {
           json[ _key ].push( _moldy.$json() );
         } );
-		} else {
-			json[ _key ] = data[ _key ] instanceof Moldy ? data[ _key ].$json() : data[ _key ];
+    } else {
+      json[ _key ] = data[ _key ] instanceof Moldy ? data[ _key ].$json() : data[ _key ];
       }
     } );
 
@@ -458,6 +465,8 @@ Moldy.prototype.$clear = function () {
 
   emitter( Moldy.prototype );
   useify( Moldy );
+
+  Moldy.extend = extend;
 
   return Moldy;
 };

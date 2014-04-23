@@ -4,9 +4,9 @@ var Moldy = require( '../src' ),
 describe( 'A model\'s url aka endpoint', function () {
 
   it( 'A url (endpoint) is automatically generated based on the `Moldy` name, key, `$url()` and `$baseUrl()`', function () {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       baseUrl: '/api'
-    } );
+    } ).create();
 
     personMoldy.$url().should.eql( '/api/person' );
 
