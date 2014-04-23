@@ -70,7 +70,7 @@ exports = module.exports = function ( defaultConfiguration, defaultMiddleware ) 
 
     for( var i in initial ) {
       if( initial.hasOwnProperty( i ) ) {
-        this[ i ] = initial;
+        this[ i ] = initial[ i ];
       }
     }
 

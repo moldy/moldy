@@ -9,10 +9,12 @@ module.exports = function ( Moldy ) {
 
   ModelFactory.prototype.schema = function ( schema ) {
     this.schema = schema;
+    return this;
   };
 
   ModelFactory.prototype.proto = function ( proto ) {
     this.proto = proto;
+    return this;
   };
 
   ModelFactory.prototype.create = function ( _initial ) {
@@ -20,6 +22,7 @@ module.exports = function ( Moldy ) {
         Klass = Moldy;
 
     if( this.proto ) {
+      properties.proto = properties.proto || {};
       helpers.extend( properties.proto, this.proto );
     }
 
