@@ -4,7 +4,7 @@ var Moldy = require( '../src' ),
 describe( 'properties with sub models', function () {
 
   it( 'sub model', function () {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       properties: {
         'name': 'string',
         'car': {
@@ -19,7 +19,7 @@ describe( 'properties with sub models', function () {
           }
         }
       }
-    } );
+    } ).create();
 
     personMoldy.car.should.be.a.Moldy;
     personMoldy.car.make = 'honda';
@@ -30,7 +30,7 @@ describe( 'properties with sub models', function () {
   } );
 
   it( 'sub sub model', function () {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       properties: {
         'name': 'string',
         'car': {
@@ -65,7 +65,7 @@ describe( 'properties with sub models', function () {
           }
         }
       }
-    } );
+    } ).create();
 
 
     personMoldy.$data( {

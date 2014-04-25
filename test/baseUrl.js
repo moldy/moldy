@@ -4,7 +4,7 @@ var Moldy = require( '../src' ),
 describe( 'baseUrl', function () {
 
   it( 'should set the baseUrl', function () {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       baseUrl: '/api'
     } );
 

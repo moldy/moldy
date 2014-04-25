@@ -3,15 +3,17 @@ var Moldy = require( '../src' ),
 
 describe( 'collection', function () {
 
+  //before( require( './setup' )( Moldy ) );
+
   it( 'To get a collection', function ( _done ) {
-    var personMoldy = Moldy.create( 'person', {
+    var Person = Moldy.extend( 'person', {
       key: 'guid',
       properties: {
         name: 'string'
       }
     } );
 
-    personMoldy.$collection( function ( _error, _people ) {
+    Person.$collection( function ( _error, _people ) {
 
       if ( _error ) {
         return _done( _error );
