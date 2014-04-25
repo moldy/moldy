@@ -4,7 +4,7 @@ var config = require( './config.json' ),
 
 useify( moldyApi );
 
-var ModelFactory = require( './factory' )( require( './moldy' ), config.defaults, moldyApi.middleware );
+var ModelFactory = require( './moldy' )( require( './model' ), config.defaults, moldyApi.middleware );
 
 moldyApi.extend = function ( _name, _properties ) {
   return new ModelFactory( _name, _properties );
