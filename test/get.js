@@ -6,17 +6,18 @@ describe( 'get', function () {
   //before( require( './setup' )( Moldy ) );
 
   it( 'get', function ( _done ) {
-    var personMoldy = Moldy.extend( 'person', {
+    var Person = Moldy.extend( 'person', {
       key: 'guid',
       properties: {
         name: ''
       }
-    } ).create();
+    } );
 
-    personMoldy.$get( function ( _error, _res ) {
-      _res.should.not.be.an.Array.and.be.a.Moldy;
-      _res.should.equal( personMoldy );
-      _res.$json().should.eql( {
+    Person.$get( function ( _error, _res ) {
+      var res = _res[0];
+
+      res.should.not.be.an.Array.and.be.a.Moldy;
+      res.$json().should.eql( {
         guid: '5a55a128-0ad7-49a5-801a-04a7030385ff',
         name: 'Goodman Delgado'
       } );
@@ -25,14 +26,14 @@ describe( 'get', function () {
   } );
 
   it( 'get by id', function ( _done ) {
-    var personMoldy = Moldy.extend( 'person', {
+    var Person = Moldy.extend( 'person', {
       key: 'guid',
       properties: {
         name: ''
       }
-    } ).create();
+    } );
 
-    personMoldy.$get( {
+    Person.$get( {
       guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
     }, function ( _error, bennett ) {
 
@@ -52,7 +53,7 @@ describe( 'get', function () {
   } );
 
   it( 'get with an array of a type', function ( _done ) {
-    var personMoldy = Moldy.extend( 'person', {
+    var Person = Moldy.extend( 'person', {
       key: 'guid',
       properties: {
         name: 'string',
@@ -68,11 +69,14 @@ describe( 'get', function () {
           }
         } ]
       }
-    } ).create();
+    } );
 
-    personMoldy.$get( function ( _error, _res ) {
+    Person.$get( function ( _error, res ) {
+      var _res = res[0];
+
       _res.should.not.be.an.Array.and.be.a.Moldy;
-      _res.should.equal( personMoldy );
+      
+      //_res.should.equal( personMoldy );
       _res.friends.should.be.an.Array;
       _res.friends[ 0 ].id.should.be.a.String.and.equal( '0' );
       _res.friends[ 0 ].name.should.be.a.String.and.equal( 'Blake Oneill' );

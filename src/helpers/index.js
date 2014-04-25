@@ -9,7 +9,7 @@ exports.attributes = function ( _key, _value ) {
     value = {
       type: _value
     };
-  } else if ( is.an.object( _value ) && _value[ '__moldy' ] === true ) {
+  } else if ( is.an.object( _value ) && _value[ '__isMoldy' ] === true ) {
     value = {
       type: 'moldy',
       default: _value

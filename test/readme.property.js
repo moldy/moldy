@@ -58,7 +58,7 @@ describe( 'Property Attributes', function () {
   describe( 'Optional', function () {
 
     it( 'Properties can be optional. By making a property optional, `isValid()` and `toJson()` will ignore it if is has not been set', function () {
-      var personMoldy = Moldy.extend( 'person' ).create()
+      var personMoldy = Moldy.extend( 'person' )
         .$property( 'id' )
         .$property( 'name' )
         .$property( 'age', {
@@ -72,7 +72,8 @@ describe( 'Property Attributes', function () {
         .$property( 'tags', {
           type: 'array',
           optional: true
-        } );
+        } )
+        .create();
 
       /**
        * To ensure this `person` is valid we only need to set the `id` and `name` because
@@ -90,11 +91,12 @@ describe( 'Property Attributes', function () {
   describe( 'Arrays of a type', function () {
 
     it( 'A property can be defined as `array` of a type like an `array` of `strings`, or an `array` of `numbers`', function () {
-      var personMoldy = Moldy.extend( 'person' ).create()
+      var personMoldy = Moldy.extend( 'person' )
         .$property( 'id' )
         .$property( 'tags', {
           type: [ 'string' ]
-        } );
+        } )
+        .create();
 
       /**
        * When defining an array of a type, the arrays are normal arrays however they have been
@@ -144,7 +146,7 @@ describe( 'Property Attributes', function () {
     } );
 
     it( 'Array types can also be model schemas', function () {
-      var personMoldy = Moldy.extend( 'person' ).create()
+      var personMoldy = Moldy.extend( 'person' )
         .$property( 'cars', {
           type: [ {
             name: 'car',
@@ -157,7 +159,8 @@ describe( 'Property Attributes', function () {
               year: 'number'
             }
           } ]
-        } );
+        } )
+        .create();
 
       /**
        * Note, we are missing the `model` key and the `year` is a string

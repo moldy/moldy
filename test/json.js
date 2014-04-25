@@ -25,9 +25,10 @@ describe( 'json', function () {
   } );
 
   it( 'should return all properties even when they have not been set', function () {
-    var personMoldy = Moldy.extend( 'person' ).create()
+    var personMoldy = Moldy.extend( 'person' )
       .$property( 'name' )
-      .$property( 'age' );
+      .$property( 'age' )
+      .create();
 
     var data = personMoldy.$json();
 
@@ -40,11 +41,12 @@ describe( 'json', function () {
   } );
 
   it( 'should handle optional properties', function () {
-    var personMoldy = Moldy.extend( 'person' ).create()
+    var personMoldy = Moldy.extend( 'person' )
       .$property( 'name' )
       .$property( 'age', {
         optional: true
-      } );
+      } )
+      .create();
 
     var data = personMoldy.$json();
 
@@ -67,12 +69,13 @@ describe( 'json', function () {
   } );
 
   it( 'should handle optional properties with defaults', function () {
-    var personMoldy = Moldy.extend( 'person' ).create()
+    var personMoldy = Moldy.extend( 'person' )
       .$property( 'name' )
       .$property( 'age', {
         optional: true,
         default: 0
-      } );
+      } )
+      .create();
 
     var data = personMoldy.$json();
 
@@ -85,11 +88,12 @@ describe( 'json', function () {
   } );
 
   it( 'should handle properties with defaults', function () {
-    var personMoldy = Moldy.extend( 'person' ).create()
+    var personMoldy = Moldy.extend( 'person' )
       .$property( 'name' )
       .$property( 'age', {
         default: 0
-      } );
+      } )
+      .create();
 
     var data = personMoldy.$json();
 
@@ -102,12 +106,13 @@ describe( 'json', function () {
   } );
 
   it( 'should handle properties with object types', function () {
-    var personMoldy = Moldy.extend( 'person', {} ).create()
+    var personMoldy = Moldy.extend( 'person', {} )
       .$property( 'name' )
       .$property( 'age' )
       .$property( 'address', {
         type: 'object'
-      } );
+      } )
+      .create();
 
     personMoldy.address = {
       suburb: 'warner',

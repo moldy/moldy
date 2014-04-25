@@ -1,12 +1,21 @@
 var is = require( 'sc-is' ),
   cast = require( 'sc-cast' ),
   hasKey = require( 'sc-haskey' );
-
-module.exports = function ( _moldy, _data, _method, _url, _callback ) {
+/**
+ * Fetching the data
+ * @param  {[type]} _moldy    [description]
+ * @param  {[type]} _data     [description]
+ * @param  {[type]} _method   [description]
+ * @param  {[type]} _url      [description]
+ * @param  {[type]} _callback [description]
+ * @return {[type]}           [description]
+ */
+module.exports = function ( _moldy, instance, _data, _method, _url, _callback ) {
   var moldy = _moldy,
-    items = [],
+    result = [],
     responseShouldContainAnId = hasKey( _data, moldy.__key ) && is.not.empty( _data[ moldy.__key ] ) && /get/.test( _method ),
-    isDirty = moldy.$isDirty();
+    isInstance = instance ? true : false,
+    isDirty = isInstance ? instance.$isDirty() : false;
 
   moldy.__defaultMiddleware( function ( _error, _response ) {
     var args = Array.prototype.slice.call( arguments ),
@@ -17,26 +26,32 @@ module.exports = function ( _moldy, _data, _method, _url, _callback ) {
       error = new Error( 'An unknown error occurred' );
     }
 
-    if ( !error && isDirty && is.object( response ) && ( responseShouldContainAnId && !hasKey( response, moldy.__key ) ) ) {
+    if ( !error && isInstance && isDirty && is.object( response ) && ( responseShouldContainAnId && !hasKey( response, moldy.__key ) ) ) {
       error = new Error( 'The response from the server did not contain a valid `' + moldy.__key + '`' );
     }
 
-    if ( !error && isDirty && is.object( response ) ) {
+    if ( !error && isDirty && isInstance && is.object( response ) ) {
       moldy[ moldy.__key ] = response[ moldy.__key ];
     }
 
     if ( !error ) {
-      if ( is.array( response ) ) {
-        response.forEach( function ( _data ) {
-          items.push( moldy.$clone( _data ) );
-        } );
-        moldy = items;
+      if( !isInstance ) {
+        if ( is.array( response ) ) {
+
+          response.forEach( function ( _data ) {
+
+            result.push( moldy.create( _data ) );
+          } );
+        } else {
+          result = moldy.create( response );
+        }
       } else {
-        moldy.$data( response );
+        instance.$data( response );
+        result = instance;
       }
     }
 
-    _callback && _callback( error, moldy );
+    _callback && _callback( error, result );
 
   }, _moldy, _data, _method, _url );
 

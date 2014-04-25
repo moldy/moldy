@@ -6,9 +6,11 @@ require( './setup' )( Moldy )();
 describe( 'save', function () {
 
   //before( require( './setup' )( Moldy ) );
-  
+
   it( 'instantiate using', function ( _done ) {
-    var personMoldy = Moldy.extend( 'person' ).create( );
+    var Person = Moldy.extend( 'person' );
+    var personMoldy  = Person.create( );
+
 
     personMoldy.$save( function ( _error, _res ) {
       _done( _error );

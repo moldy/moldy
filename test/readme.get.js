@@ -9,7 +9,7 @@ describe( 'get', function () {
       properties: {
         name: ''
       }
-    } ).create();
+    } );
 
     personMoldy.$get( {
       guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
@@ -25,26 +25,27 @@ describe( 'get', function () {
 
   } );
 
-  it( '$get will only return a single entity. If an adapter responds with an array the first item will be returned', function ( _done ) {
-    var personMoldy = Moldy.extend( 'person', {
+  /*. If an adapter responds with an array the first item will be returned*/
+  it( '$get will return an array of entities', function ( _done ) {
+    var Person = Moldy.extend( 'person', {
       key: 'guid',
       properties: {
         name: ''
       }
-    } ).create();
+    } );
 
     /**
      * In this example the end point GET `http://localhost:3000/api` returns an array of items.
      * Moldy will return the first item out of the array. If you need to return an array you can
      * use the $collection method.
      */
-    personMoldy.$get( function ( _error, _res ) {
+    Person.$get( function ( _error, _res ) {
 
       if ( _error ) {
         return _done( _error );
       }
 
-      _res.should.not.be.an.Array;
+      _res.should.be.an.Array;
 
       _done();
 

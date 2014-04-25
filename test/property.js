@@ -4,7 +4,7 @@ var Moldy = require( '../src' ),
 describe( 'property', function () {
 
   it( 'set properties using $property', function () {
-    var personMoldy = Moldy.extend( 'person' ).create()
+    var personMoldy = Moldy.extend( 'person' )
       .$property( 'name', {
         type: 'string',
         default: 'David'
@@ -13,7 +13,8 @@ describe( 'property', function () {
         type: 'number',
         default: 30
       } )
-      .$property( 'active', 'boolean' );
+      .$property( 'active', 'boolean' )
+      .create();
 
     Object.keys( personMoldy.$json() ).should.have.a.lengthOf( 4 );
     personMoldy.should.have.a.property( 'age' ).and.be.a.Number;
@@ -67,11 +68,12 @@ describe( 'property', function () {
     personMoldy.should.have.a.property( 'name' ).and.be.a.String;
     personMoldy.should.have.a.property( 'age' ).and.be.a.Number;
 
-    personMoldy.$property( 'active', {
+    //THIS IS NOT MORE POSSIBLE
+    /*personMoldy.$property( 'active', {
       type: 'boolean'
     } );
 
-    personMoldy.active.should.be.true;
+    personMoldy.active.should.be.true;*/
   } );
 
   it( 'should not set a key if keyless', function () {

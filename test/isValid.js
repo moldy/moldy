@@ -18,8 +18,7 @@ describe( 'isValid', function () {
     personMoldy.$isValid().should.be.ok;
 
   } );
-
-  it( 'should be able to handle it when the model contains an array of a primitive type', function () {
+ it( 'should be able to handle it when the model contains an array of a primitive type', function () {
     var personMoldy = Moldy.extend( 'person', {
       properties: {
         name: 'string',
@@ -34,11 +33,10 @@ describe( 'isValid', function () {
     personMoldy.$isValid().should.be.ok;
 
   } );
-
   it( 'should be able to handle it when the model contains an array of a model type', function () {
     var personMoldy = Moldy.extend( 'person', {
       properties: {
-        name: 'string',
+        //name: 'string',
         tags: [ {
           keyless: true,
           properties: {

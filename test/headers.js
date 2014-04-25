@@ -11,7 +11,7 @@ describe( 'headers', function () {
       properties: {
         name: ''
       }
-    } ).create();
+    } );
 
     personMoldy.$headers().should.eql( {
       'X-API-KEY': 'ec5c6970-a8e3-4294-ef78-48043e88d05b'
@@ -29,7 +29,7 @@ describe( 'headers', function () {
       headers: {
         'chicken': 'tasty'
       }
-    } ).create( );
+    } );
 
     personMoldy.$headers().should.eql( {
       'chicken': 'tasty',

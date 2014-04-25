@@ -24,7 +24,7 @@ describe( 'data', function () {
     personMoldy.should.have.a.property( 'age' ).and.be.a.Number.and.eql( 31 );
     personMoldy.should.have.a.property( 'name' ).and.be.a.String.and.eql( 'David' );
     personMoldy.fullName.should.exist;
-    personMoldy.fullName().should.equal( "David31" );
+    personMoldy.fullName().should.equal( 'David31' );
 
     personMoldy.$data( {
       name: 'Max',

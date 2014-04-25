@@ -5,10 +5,11 @@ var Moldy = require( '../src' ),
 describe( 'moldy', function () {
 
   it( 'Create a Moldy', function () {
-    var personMoldy = Moldy.extend( 'person' ).create()
+    var personMoldy = Moldy.extend( 'person' )
       .$property( 'id' )
       .$property( 'name' )
-      .$property( 'age' );
+      .$property( 'age' )
+      .create();
 
     personMoldy.should.have.a.property( 'id', null );
     personMoldy.should.have.a.property( 'name', null );
