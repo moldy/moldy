@@ -1,6 +1,6 @@
 var config = require( './config.json' ),
   moldyApi = {},
-  useify = require( 'sc-useify' );
+  useify = require( 'useify' );
 
 useify( moldyApi );
 

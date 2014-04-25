@@ -45,7 +45,7 @@
     "sc-haskey": "0.0.2",
     "sc-merge": "0.0.3",
     "sc-guid": "0.0.4",
-    "sc-useify": "0.0.13",
+    "useify": "0.0.13",
     "sg-observable-array": "0.0.2"
   }
 }

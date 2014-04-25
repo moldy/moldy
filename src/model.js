@@ -6,7 +6,7 @@ var cast = require( 'sc-cast' ),
   merge = require( 'sc-merge' ),
   request = require( './request' ),
   extend = helpers.extendObject,
-  useify = require( 'sc-useify' );
+  useify = require( 'useify' );
 
 var Model = function ( initial, __moldy ) {
   var self = this;

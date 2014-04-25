@@ -6,7 +6,7 @@ var helpers = require("./helpers/index"),
     merge = require( 'sc-merge' ),
     cast = require( 'sc-cast' ),
     request = require( './request' ),
-    useify = require( 'sc-useify' );
+    useify = require( 'useify' );
 
 module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware ) {
 
