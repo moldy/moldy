@@ -4,11 +4,11 @@ var Moldy = require( '../src' ),
 describe( 'save', function () {
 
   it( 'To save the model, call `save()`. If the model is `dirty` (has not been saved to the server and therefore does not have a valid `key`) then the http method will be POST. If the model has been saved, then the http method will be PUT', function ( _done ) {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       properties: {
         name: 'string'
       }
-    } );
+    } ).create();
 
     personMoldy.name = 'David';
 

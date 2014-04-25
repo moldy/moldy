@@ -1,13 +1,13 @@
 var config = require( './config.json' ),
-	moldyApi = {},
-	useify = require( 'sc-useify' );
+  moldyApi = {},
+  useify = require( 'useify' );
 
 useify( moldyApi );
 
-var Moldy = require( './moldy' )( config.defaults, moldyApi.middleware );
+var ModelFactory = require( './moldy' )( require( './model' ), config.defaults, moldyApi.middleware );
 
-moldyApi.create = function ( _name, _properties ) {
-	return new Moldy( _name, _properties );
+moldyApi.extend = function ( _name, _properties ) {
+  return new ModelFactory( _name, _properties );
 };
 
 exports = module.exports = moldyApi;

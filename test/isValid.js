@@ -4,12 +4,12 @@ var Moldy = require( '../src' ),
 describe( 'isValid', function () {
 
   it( 'should be invalid with no type and no value', function () {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       properties: {
         name: 'string',
         age: 'number'
       }
-    } );
+    } ).create();
 
     personMoldy.$isValid().should.not.be.ok;
     personMoldy.name = 'David';
@@ -18,14 +18,13 @@ describe( 'isValid', function () {
     personMoldy.$isValid().should.be.ok;
 
   } );
-
-  it( 'should be able to handle it when the model contains an array of a primitive type', function () {
-    var personMoldy = Moldy.create( 'person', {
+ it( 'should be able to handle it when the model contains an array of a primitive type', function () {
+    var personMoldy = Moldy.extend( 'person', {
       properties: {
         name: 'string',
         tags: [ 'string' ]
       }
-    } );
+    } ).create();
 
     personMoldy.$isValid().should.not.be.ok;
     personMoldy.name = 'David';
@@ -34,11 +33,10 @@ describe( 'isValid', function () {
     personMoldy.$isValid().should.be.ok;
 
   } );
-
   it( 'should be able to handle it when the model contains an array of a model type', function () {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       properties: {
-        name: 'string',
+        //name: 'string',
         tags: [ {
           keyless: true,
           properties: {
@@ -46,7 +44,7 @@ describe( 'isValid', function () {
           }
         } ]
       }
-    } );
+    } ).create();
 
     personMoldy.$isValid().should.not.be.ok;
     personMoldy.name = 'David';
@@ -59,7 +57,7 @@ describe( 'isValid', function () {
   } );
 
   it( 'should be able to handle it when the model contains an array of a model type with an optional variation', function () {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       properties: {
         name: 'string',
         tags: {
@@ -74,7 +72,7 @@ describe( 'isValid', function () {
           } ]
         }
       }
-    } );
+    } ).create();
 
     personMoldy.$isValid().should.not.be.ok;
     personMoldy.name = 'David';

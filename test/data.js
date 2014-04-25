@@ -4,7 +4,7 @@ var Moldy = require( '../src' ),
 describe( 'data', function () {
 
   it( 'should set the data', function () {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       properties: {
         name: {
           type: 'string',
@@ -15,10 +15,16 @@ describe( 'data', function () {
           default: 30
         }
       }
-    } );
+    } ).proto({
+      fullName: function () {
+        return this.name + this.age;
+      }
+    }).create( { age: 31 } );
 
-    personMoldy.should.have.a.property( 'age' ).and.be.a.Number.and.eql( 30 );
+    personMoldy.should.have.a.property( 'age' ).and.be.a.Number.and.eql( 31 );
     personMoldy.should.have.a.property( 'name' ).and.be.a.String.and.eql( 'David' );
+    personMoldy.fullName.should.exist;
+    personMoldy.fullName().should.equal( 'David31' );
 
     personMoldy.$data( {
       name: 'Max',

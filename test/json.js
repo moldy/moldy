@@ -1,131 +1,136 @@
 var Moldy = require( '../src' ),
-	should = require( 'should' );
+  should = require( 'should' );
 
 describe( 'json', function () {
 
-	it( 'should return the raw JSON representaiton of the model', function () {
-		var personMoldy = Moldy.create( 'person', {
-			properties: {
-				name: 'string',
-				age: 'number'
-			}
-		} );
+  it( 'should return the raw JSON representaiton of the model', function () {
+    var personMoldy = Moldy.extend( 'person', {
+      properties: {
+        name: 'string',
+        age: 'number'
+      }
+    } ).create();
 
-		personMoldy.name = 'David';
-		personMoldy.age = '34';
+    personMoldy.name = 'David';
+    personMoldy.age = '34';
 
-		var data = personMoldy.$json();
+    var data = personMoldy.$json();
 
-		data.should.eql( {
-			id: undefined,
-			name: 'David',
-			age: 34
-		} );
+    data.should.eql( {
+      id: undefined,
+      name: 'David',
+      age: 34
+    } );
 
-	} );
+  } );
 
-	it( 'should return all properties even when they have not been set', function () {
-		var personMoldy = Moldy.create( 'person' )
-			.$property( 'name' )
-			.$property( 'age' );
+  it( 'should return all properties even when they have not been set', function () {
+    var personMoldy = Moldy.extend( 'person' )
+      .$property( 'name' )
+      .$property( 'age' )
+      .create();
 
-		var data = personMoldy.$json();
+    var data = personMoldy.$json();
 
-		Object.keys( data ).should.have.a.lengthOf( 3 );
+    Object.keys( data ).should.have.a.lengthOf( 3 );
 
-		data.should.have.a.property( 'id', undefined );
-		data.should.have.a.property( 'name', undefined );
-		data.should.have.a.property( 'age', undefined );
+    data.should.have.a.property( 'id', undefined );
+    data.should.have.a.property( 'name', undefined );
+    data.should.have.a.property( 'age', undefined );
 
-	} );
+  } );
 
-	it( 'should handle optional properties', function () {
-		var personMoldy = Moldy.create( 'person' )
-			.$property( 'name' )
-			.$property( 'age', {
-				optional: true
-			} );
+  it( 'should handle optional properties', function () {
+    var personMoldy = Moldy.extend( 'person' )
+      .$property( 'name' )
+      .$property( 'age', {
+        optional: true
+      } )
+      .create();
 
-		var data = personMoldy.$json();
+    var data = personMoldy.$json();
 
-		Object.keys( data ).should.have.a.lengthOf( 2 );
+    Object.keys( data ).should.have.a.lengthOf( 2 );
 
-		data.should.have.a.property( 'id' );
-		data.should.have.a.property( 'name' );
-		data.should.not.have.a.property( 'age' );
+    data.should.have.a.property( 'id' );
+    data.should.have.a.property( 'name' );
+    data.should.not.have.a.property( 'age' );
 
-		personMoldy.age = 34;
+    personMoldy.age = 34;
 
-		data = personMoldy.$json();
+    data = personMoldy.$json();
 
-		Object.keys( data ).should.have.a.lengthOf( 3 );
+    Object.keys( data ).should.have.a.lengthOf( 3 );
 
-		data.should.have.a.property( 'id' );
-		data.should.have.a.property( 'name' );
-		data.should.have.a.property( 'age', 34 );
+    data.should.have.a.property( 'id' );
+    data.should.have.a.property( 'name' );
+    data.should.have.a.property( 'age', 34 );
 
-	} );
+  } );
 
-	it( 'should handle optional properties with defaults', function () {
-		var personMoldy = Moldy.create( 'person' )
-			.$property( 'name' )
-			.$property( 'age', {
-				optional: true,
-				default: 0
-			} );
+  it( 'should handle optional properties with defaults', function () {
+    var personMoldy = Moldy.extend( 'person' )
+      .$property( 'name' )
+      .$property( 'age', {
+        optional: true,
+        default: 0
+      } )
+      .create();
 
-		var data = personMoldy.$json();
+    var data = personMoldy.$json();
 
-		Object.keys( data ).should.have.a.lengthOf( 2 );
+    Object.keys( data ).should.have.a.lengthOf( 2 );
 
-		data.should.have.a.property( 'id' );
-		data.should.have.a.property( 'name' );
-		data.should.not.have.a.property( 'age' );
+    data.should.have.a.property( 'id' );
+    data.should.have.a.property( 'name' );
+    data.should.not.have.a.property( 'age' );
 
-	} );
+  } );
 
-	it( 'should handle properties with defaults', function () {
-		var personMoldy = Moldy.create( 'person' )
-			.$property( 'name' )
-			.$property( 'age', {
-				default: 0
-			} );
+  it( 'should handle properties with defaults', function () {
+    var personMoldy = Moldy.extend( 'person' )
+      .$property( 'name' )
+      .$property( 'age', {
+        default: 0
+      } )
+      .create();
 
-		var data = personMoldy.$json();
+    var data = personMoldy.$json();
 
-		Object.keys( data ).should.have.a.lengthOf( 3 );
+    Object.keys( data ).should.have.a.lengthOf( 3 );
 
-		data.should.have.a.property( 'id' );
-		data.should.have.a.property( 'name' );
-		data.should.have.a.property( 'age', 0 );
+    data.should.have.a.property( 'id' );
+    data.should.have.a.property( 'name' );
+    data.should.have.a.property( 'age', 0 );
 
-	} );
+  } );
 
-	it( 'should handle properties with object types', function () {
-		var personMoldy = Moldy.create( 'person', {} )
-			.$property( 'name' )
-			.$property( 'age' )
-			.$property( 'address', {
-				type: 'object'
-			} );
+  it( 'should handle properties with object types', function () {
+    var personMoldy = Moldy.extend( 'person', {} )
+      .$property( 'name' )
+      .$property( 'age' )
+      .$property( 'address', {
+        type: 'object'
+      } )
+      .create();
 
-		personMoldy.address = {
-			suburb: 'warner',
-			country: 'australia'
-		};
+    personMoldy.address = {
+      suburb: 'warner',
+      country: 'australia'
+    };
 
-		var data = personMoldy.$json();
+    var data = personMoldy.$json();
 
-		data.should.eql( {
-			id: undefined,
-			name: null,
-			age: null,
-			address: {
-				suburb: 'warner',
-				country: 'australia'
-			}
-		} );
+    data.should.eql( {
+      id: undefined,
+      name: null,
+      age: null,
+      address: {
+        suburb: 'warner',
+        country: 'australia'
+      }
+    } );
 
-	} );
+  } );
 
 } );

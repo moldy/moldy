@@ -4,12 +4,12 @@ var Moldy = require( '../src' ),
 describe( 'keyless', function () {
 
   it( 'keyless model', function () {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       keyless: true,
       properties: {
         name: 'string'
       }
-    } );
+    } ).create();
 
     personMoldy.name = 6;
 
@@ -20,12 +20,12 @@ describe( 'keyless', function () {
   } );
 
   it( 'keyless model is always $isDirty', function () {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       keyless: true,
       properties: {
         name: 'string'
       }
-    } );
+    } ).create();
 
     personMoldy.$isDirty().should.be.true;
     personMoldy.name = 'David';
@@ -34,12 +34,12 @@ describe( 'keyless', function () {
   } );
 
   it( 'keyless model $isValid', function () {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       keyless: true,
       properties: {
         name: 'string'
       }
-    } );
+    } ).create();
 
     personMoldy.$isValid().should.be.false;
     personMoldy.name = 'David';

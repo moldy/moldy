@@ -4,7 +4,7 @@ var Moldy = require( '../src' ),
 describe( 'property', function () {
 
   it( 'set properties using $property', function () {
-    var personMoldy = Moldy.create( 'person' )
+    var personMoldy = Moldy.extend( 'person' )
       .$property( 'name', {
         type: 'string',
         default: 'David'
@@ -13,7 +13,8 @@ describe( 'property', function () {
         type: 'number',
         default: 30
       } )
-      .$property( 'active', 'boolean' );
+      .$property( 'active', 'boolean' )
+      .create();
 
     Object.keys( personMoldy.$json() ).should.have.a.lengthOf( 4 );
     personMoldy.should.have.a.property( 'age' ).and.be.a.Number;
@@ -24,7 +25,7 @@ describe( 'property', function () {
   } );
 
   it( 'set properties using the arguments when instantiating', function () {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       properties: {
         'name': {
           type: 'string',
@@ -36,7 +37,7 @@ describe( 'property', function () {
         },
         'active': 'boolean'
       }
-    } );
+    } ).create();
 
 
     Object.keys( personMoldy.$json() ).should.have.a.lengthOf( 4 );
@@ -48,7 +49,7 @@ describe( 'property', function () {
   } );
 
   it( 'set a property on a manually added key', function () {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       properties: {
         'name': {
           type: 'string',
@@ -59,7 +60,7 @@ describe( 'property', function () {
           default: 30
         }
       }
-    } );
+    } ).create();
 
     personMoldy.active = 'true';
 
@@ -67,20 +68,21 @@ describe( 'property', function () {
     personMoldy.should.have.a.property( 'name' ).and.be.a.String;
     personMoldy.should.have.a.property( 'age' ).and.be.a.Number;
 
-    personMoldy.$property( 'active', {
+    //THIS IS NOT MORE POSSIBLE
+    /*personMoldy.$property( 'active', {
       type: 'boolean'
     } );
 
-    personMoldy.active.should.be.true;
+    personMoldy.active.should.be.true;*/
   } );
 
   it( 'should not set a key if keyless', function () {
-    var personMoldy = Moldy.create( 'person', {
+    var personMoldy = Moldy.extend( 'person', {
       keyless: true,
       properties: {
         name: ''
       }
-    } );
+    } ).create();
 
     personMoldy.should.not.have.a.property( 'id' );
 
@@ -89,7 +91,7 @@ describe( 'property', function () {
   describe( 'child models', function () {
 
     it( 'should be able to define a moldy for a property i.e. child moldy', function () {
-      var addressMoldy = Moldy.create( 'address', {
+      var addressMoldy = Moldy.extend( 'address', {
         keyless: true,
         properties: {
           'street': {
@@ -102,9 +104,9 @@ describe( 'property', function () {
             optional: true
           }
         }
-      } );
+      } ).create();
 
-      var personMoldy = Moldy.create( 'person', {
+      var personMoldy = Moldy.extend( 'person', {
         properties: {
           'name': {
             type: 'string',
@@ -119,7 +121,7 @@ describe( 'property', function () {
             default: addressMoldy
           }
         }
-      } );
+      } ).create();
 
       personMoldy.address.number = '17';
 
@@ -147,7 +149,7 @@ describe( 'property', function () {
     } );
 
     it( 'define a child moldy directly', function () {
-      var addressMoldy = Moldy.create( 'address', {
+      var addressMoldy = Moldy.extend( 'address', {
         keyless: true,
         properties: {
           'street': {
@@ -159,9 +161,9 @@ describe( 'property', function () {
             optional: true
           }
         }
-      } );
+      } ).create();
 
-      var personMoldy = Moldy.create( 'person', {
+      var personMoldy = Moldy.extend( 'person', {
         properties: {
           'name': {
             type: 'string',
@@ -173,7 +175,7 @@ describe( 'property', function () {
           },
           'address': addressMoldy
         }
-      } );
+      } ).create();
 
       Object.keys( personMoldy.$json() ).should.have.a.lengthOf( 4 );
       personMoldy.should.have.a.property( 'name' ).and.be.a.String;
