@@ -1,325 +1,329 @@
-var helpers = require("./helpers/index"),
-    emitter = require( 'emitter-component' ),
-    observableArray = require( 'sg-observable-array' ),
-    hasKey = require( 'sc-haskey' ),
-    is = require( 'sc-is' ),
-    merge = require( 'sc-merge' ),
-    cast = require( 'sc-cast' ),
-    request = require( './request' ),
-    useify = require( 'useify' );
+var helpers = require( "./helpers/index" ),
+	emitter = require( 'emitter-component' ),
+	observableArray = require( 'sg-observable-array' ),
+	hasKey = require( 'sc-haskey' ),
+	is = require( 'sc-is' ),
+	merge = require( 'sc-merge' ),
+	cast = require( 'sc-cast' ),
+	request = require( './request' ),
+	useify = require( 'useify' );
 
 module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware ) {
 
-  var Moldy = function ( _name, _properties ) {
-    var self = this,
-    properties = is.an.object( _properties ) ? _properties : {},
+	var Moldy = function ( _name, _properties ) {
+		var self = this,
+			properties = is.an.object( _properties ) ? _properties : {},
 
-    initial = properties.initial || {};
+			initial = properties.initial || {};
 
-    Object.defineProperties( self, {
-      __moldy: {
-        value: true
-      },
-      __properties: {
-        value: properties[ 'properties' ] || {}
-      },
-      __metadata: {
-        value: {}
-      },
-      /*__attributes: {
+		Object.defineProperties( self, {
+			__moldy: {
+				value: true
+			},
+			__properties: {
+				value: properties[ 'properties' ] || {}
+			},
+			__metadata: {
+				value: {}
+			},
+			/*__attributes: {
         value: {},
         writable: true
       },*/
-      __baseUrl: {
-        value: cast( properties[ 'baseUrl' ], 'string', '' ),
-        writable: true
-      },
-      __data: {
-        value: {},
-        writable: true
-      },
-      __destroyed: {
-        value: false,
-        writable: true
-      },
-      __headers: {
-        value: merge( {}, cast( properties[ 'headers' ], 'object', {} ), cast( defaultConfiguration.headers, 'object', {} ) ),
-        writable: true
-      },
-      __key: {
-        value: cast( properties[ 'key' ], 'string', 'id' ) || 'id',
-        writable: true
-      },
-      __keyless: {
-        value: properties[ 'keyless' ] === true
-      },
-      __name: {
-        value: _name || properties[ 'name' ] || ''
-      },
-      __url: {
-        value: cast( properties[ 'url' ], 'string', '' ),
-        writable: true
-      },
-      busy: {
-        value: false,
-        writable: true
-      }
-    } );
+			__baseUrl: {
+				value: cast( properties[ 'baseUrl' ], 'string', '' ),
+				writable: true
+			},
+			__data: {
+				value: {},
+				writable: true
+			},
+			__destroyed: {
+				value: false,
+				writable: true
+			},
+			__headers: {
+				value: merge( {}, cast( properties[ 'headers' ], 'object', {} ), cast( defaultConfiguration.headers, 'object', {} ) ),
+				writable: true
+			},
+			__key: {
+				value: cast( properties[ 'key' ], 'string', 'id' ) || 'id',
+				writable: true
+			},
+			__keyless: {
+				value: properties[ 'keyless' ] === true
+			},
+			__name: {
+				value: _name || properties[ 'name' ] || ''
+			},
+			__url: {
+				value: cast( properties[ 'url' ], 'string', '' ),
+				writable: true
+			},
+			busy: {
+				value: false,
+				writable: true
+			}
+		} );
 
-    if ( ! self.__keyless ) {
-      this.$property( this.__key );
-    }
+		if ( !self.__keyless ) {
+			this.$property( this.__key );
+		}
 
-    Object.keys( cast( self.__properties, 'object', {} ) ).forEach( function ( _key ) {
-      self.$property( _key, self.__properties[ _key ] );
-    } );
+		Object.keys( cast( self.__properties, 'object', {} ) ).forEach( function ( _key ) {
+			self.$property( _key, self.__properties[ _key ] );
+		} );
 
-    self.on( 'preget', helpers.setBusy( self ) );
-    self.on( 'get', helpers.unsetBusy( self ) );
-  };
+		self.on( 'preget', helpers.setBusy( self ) );
+		self.on( 'get', helpers.unsetBusy( self ) );
+	};
 
-  Moldy.prototype.schema = function ( schema ) {
+	Moldy.prototype.schema = function ( schema ) {
 
-    Object.keys( cast( schema, 'object', {} ) ).forEach( function ( _key ) {
-      self.$property( _key, schema[ _key ] );
-    } );
+		Object.keys( cast( schema, 'object', {} ) ).forEach( function ( _key ) {
+			self.$property( _key, schema[ _key ] );
+		} );
 
-    return this;
-  };
+		return this;
+	};
 
-  Moldy.prototype.proto = function ( proto ) {
+	Moldy.prototype.proto = function ( proto ) {
 
-    this.__properties.proto = this.__properties.proto || {};
-    helpers.extend( this.__properties.proto, proto );
+		this.__properties.proto = this.__properties.proto || {};
+		helpers.extend( this.__properties.proto, proto );
 
-    return this;
-  };
+		return this;
+	};
 
-  Moldy.prototype.create = function ( _initial ) {
+	Moldy.prototype.create = function ( _initial ) {
+		var self = this,
+			Klass = BaseModel.extend( this.__properties.proto || {} ),
+			klass = new Klass( _initial, this );
 
-    var Klass = BaseModel.extend( this.__properties.proto || {} );
+		klass.on( 'save', self.emit.bind( self, 'save' ) );
+		klass.on( 'destroy', self.emit.bind( self, 'destroy' ) );
 
-    return new Klass( _initial, this );
-  };
+		return klass;
+	};
 
-  Moldy.prototype.$headers = function ( _headers ) {
-    var self = this;
+	Moldy.prototype.$headers = function ( _headers ) {
+		var self = this;
 
-    if ( self.__destroyed ) {
-      return helpers.destroyedError( self );
-    }
+		if ( self.__destroyed ) {
+			return helpers.destroyedError( self );
+		}
 
-    self.__headers = is.an.object( _headers ) ? _headers : self.__headers;
-    return is.not.an.object( _headers ) ? self.__headers : self;
-  };
+		self.__headers = is.an.object( _headers ) ? _headers : self.__headers;
+		return is.not.an.object( _headers ) ? self.__headers : self;
+	};
 
-  Moldy.prototype.$get = function ( _query, _callback ) {
-    var self = this,
-      url = self.$url(),
-      method = 'get',
-      query = is.an.object( _query ) ? _query : {},
-      callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop
-      wasDestroyed = self.__destroyed;
+	Moldy.prototype.$get = function ( _query, _callback ) {
+		var self = this,
+			url = self.$url(),
+			method = 'get',
+			query = is.an.object( _query ) ? _query : {},
+			callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop
+			wasDestroyed = self.__destroyed;
 
-    self.emit( 'preget', {
-      moldy: self,
-      method: method,
-      query: query,
-      url: url,
-      callback: callback
-    } );
+		self.emit( 'preget', {
+			moldy: self,
+			method: method,
+			query: query,
+			url: url,
+			callback: callback
+		} );
 
-    self.__destroyed = false;
+		self.__destroyed = false;
 
 
-    request( self, null, query, method, url, function ( _error, _res ) {
-      //var res = _res instanceof BaseModel ? _res : null;
+		request( self, null, query, method, url, function ( _error, _res ) {
+			//var res = _res instanceof BaseModel ? _res : null;
 
-      /*if ( is.an.array( _res ) && _res[ 0 ] instanceof BaseModel ) {
-        self.$data( _res[ 0 ].$json() );
-        res = self;
-      }*/
-      /*
+			// if ( is.an.array( _res ) && _res[ 0 ] instanceof BaseModel ) {
+			//   self.$data( _res[ 0 ].$json() );
+			//   res = self;
+			// }
+			/*
       if ( _error && wasDestroyed ) {
         self.__destroyed = true;
       }*/
 
-      self.emit( 'get', _error, _res );
+			self.emit( 'get', _error, _res );
 
-      callback.apply( self, [ _error, _res ] );
-    } );
-  };
+			callback.apply( self, [ _error, _res ] );
+		} );
+	};
 
-  Moldy.prototype.$url = function ( _url ) {
-    var self = this,
-      base = is.empty( self.$baseUrl() ) ? '' : self.$baseUrl(),
-      name = is.empty( self.__name ) ? '' : '/' + self.__name.trim().replace( /^\//, '' ),
-      url = _url || self.__url || '',
-      endpoint = base + name + ( is.empty( url ) ? '' : '/' + url.trim().replace( /^\//, '' ) );
+	Moldy.prototype.$url = function ( _url ) {
+		var self = this,
+			base = is.empty( self.$baseUrl() ) ? '' : self.$baseUrl(),
+			name = is.empty( self.__name ) ? '' : '/' + self.__name.trim().replace( /^\//, '' ),
+			url = _url || self.__url || '',
+			endpoint = base + name + ( is.empty( url ) ? '' : '/' + url.trim().replace( /^\//, '' ) );
 
-    self.__url = url.trim().replace( /^\//, '' );
+		self.__url = url.trim().replace( /^\//, '' );
 
-    return is.not.a.string( _url ) ? endpoint : self;
-  };
+		return is.not.a.string( _url ) ? endpoint : self;
+	};
 
-  Moldy.prototype.__defaultMiddleware = defaultMiddleware;
+	Moldy.prototype.__defaultMiddleware = defaultMiddleware;
 
-  Moldy.prototype.$baseUrl = function ( _base ) {
-    var self = this,
-      url = cast( _base, 'string', self.__baseUrl || '' );
+	Moldy.prototype.$baseUrl = function ( _base ) {
+		var self = this,
+			url = cast( _base, 'string', self.__baseUrl || '' );
 
-    self.__baseUrl = url.trim().replace( /(\/|\s)+$/g, '' ) || defaultConfiguration.baseUrl || '';
+		self.__baseUrl = url.trim().replace( /(\/|\s)+$/g, '' ) || defaultConfiguration.baseUrl || '';
 
-    return is.not.a.string( _base ) ? self.__baseUrl : self;
-  };
-  
-  Moldy.prototype.$collection = function ( _query, _callback ) {
-    var self = this,
-      url = self.$url(),
-      method = 'get',
-      query = is.an.object( _query ) ? _query : {},
-      callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop;
+		return is.not.a.string( _base ) ? self.__baseUrl : self;
+	};
 
-    self.emit( 'precollection', {
-      moldy: self,
-      method: method,
-      query: query,
-      url: url,
-      callback: callback
-    } );
+	Moldy.prototype.$collection = function ( _query, _callback ) {
+		var self = this,
+			url = self.$url(),
+			method = 'get',
+			query = is.an.object( _query ) ? _query : {},
+			callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop;
 
-    request( self, null, query, method, url, function ( _error, _res ) {
-      var res = cast( _res instanceof BaseModel || is.an.array( _res ) ? _res : null, 'array', [] );
-      self.emit( 'collection', _error, res );
-      callback.apply( self, [ _error, res ] );
-    } );
+		self.emit( 'precollection', {
+			moldy: self,
+			method: method,
+			query: query,
+			url: url,
+			callback: callback
+		} );
 
-  };
+		request( self, null, query, method, url, function ( _error, _res ) {
+			var res = cast( _res instanceof BaseModel || is.an.array( _res ) ? _res : null, 'array', [] );
+			self.emit( 'collection', _error, res );
+			callback.apply( self, [ _error, res ] );
+		} );
 
-  Moldy.prototype.$defineProperty = function ( obj, key, value ) {
+	};
 
-    var self = this,
-        existingValue = obj[ key ] || value,
-        metadata = this.__metadata[ key ];
+	Moldy.prototype.$defineProperty = function ( obj, key, value ) {
 
-    if ( !obj.hasOwnProperty( key ) || !obj.__attributes.hasOwnProperty( key ) ) {
-      if ( metadata.valueIsAnArrayMoldy || metadata.valueIsAnArrayString ) {
-        metadata.attributes.type = metadata.value;
-        metadata.attributeArrayTypeIsAMoldy = metadata.valueIsAnArrayMoldy;
-        metadata.attributeArrayTypeIsAString = metadata.valueIsAnArrayString;
-        metadata.attributeTypeIsAnArray = true;
-      }
+		var self = this,
+			existingValue = obj[ key ] || value,
+			metadata = this.__metadata[ key ];
 
-      if ( metadata.attributeTypeIsAnInstantiatedMoldy ) {
+		if ( !obj.hasOwnProperty( key ) || !obj.__attributes.hasOwnProperty( key ) ) {
+			if ( metadata.valueIsAnArrayMoldy || metadata.valueIsAnArrayString ) {
+				metadata.attributes.type = metadata.value;
+				metadata.attributeArrayTypeIsAMoldy = metadata.valueIsAnArrayMoldy;
+				metadata.attributeArrayTypeIsAString = metadata.valueIsAnArrayString;
+				metadata.attributeTypeIsAnArray = true;
+			}
 
-        Object.defineProperty( obj, key, {
-          value: metadata.attributes[ 'default' ],
-          enumerable: true,
-        } );
+			if ( metadata.attributeTypeIsAnInstantiatedMoldy ) {
 
-        obj.__data[ key ] = obj[ key ];
+				Object.defineProperty( obj, key, {
+					value: metadata.attributes[ 'default' ],
+					enumerable: true,
+				} );
 
-      } else if ( metadata.valueIsAStaticMoldy ) {
+				obj.__data[ key ] = obj[ key ];
 
-        Object.defineProperty( obj, key, {
-          value: new Moldy( metadata.value.name, metadata.value ).create(),
-          enumerable: true,
-        } );
+			} else if ( metadata.valueIsAStaticMoldy ) {
 
-        obj.__data[ key ] = obj[ key ];
+				Object.defineProperty( obj, key, {
+					value: new Moldy( metadata.value.name, metadata.value ).create(),
+					enumerable: true,
+				} );
 
-      } else if ( metadata.attributeTypeIsAnArray ) {
+				obj.__data[ key ] = obj[ key ];
 
-        var array = observableArray( [] ),
-          attributeType = metadata.attributeArrayTypeIsAString || metadata.attributeArrayTypeIsAMoldy ? metadata.attributes.type[ 0 ] : '*';
+			} else if ( metadata.attributeTypeIsAnArray ) {
 
-        metadata.attributes.arrayOfAType = true;
+				var array = observableArray( [] ),
+					attributeType = metadata.attributeArrayTypeIsAString || metadata.attributeArrayTypeIsAMoldy ? metadata.attributes.type[ 0 ] : '*';
 
-        Object.defineProperty( obj, key, {
-          value: array,
-          enumerable: true
-        } );
+				metadata.attributes.arrayOfAType = true;
 
-        obj.__data[ key ] = obj[ key ];
+				Object.defineProperty( obj, key, {
+					value: array,
+					enumerable: true
+				} );
 
-        [ 'push', 'unshift' ].forEach( function ( _method ) {
-          array.on( _method, function () {
-            var args = Array.prototype.slice.call( arguments ),
-              values = [];
-            args.forEach( function ( _item ) {
-              if ( metadata.attributeArrayTypeIsAMoldy ) {
-                var moldy = new Moldy( attributeType[ 'name' ], attributeType ),
-                  data = is.an.object( _item ) ? _item : metadata.attributes[ 'default' ];
+				obj.__data[ key ] = obj[ key ];
 
-                values.push( moldy.create( data ) );
-              } else {
-                values.push( cast( _item, attributeType, metadata.attributes[ 'default' ] ) );
-              }
-            } );
-            return array[ '__' + _method ].apply( array, values );
-          } );
-        } );
+				[ 'push', 'unshift' ].forEach( function ( _method ) {
+					array.on( _method, function () {
+						var args = Array.prototype.slice.call( arguments ),
+							values = [];
+						args.forEach( function ( _item ) {
+							if ( metadata.attributeArrayTypeIsAMoldy ) {
+								var moldy = new Moldy( attributeType[ 'name' ], attributeType ),
+									data = is.an.object( _item ) ? _item : metadata.attributes[ 'default' ];
 
-        if( existingValue && existingValue.length > 0 ) {
-          existingValue.forEach( function ( o ) {
-            obj[ key ].push( o );
-          } );
-        }
+								values.push( moldy.create( data ) );
+							} else {
+								values.push( cast( _item, attributeType, metadata.attributes[ 'default' ] ) );
+							}
+						} );
+						return array[ '__' + _method ].apply( array, values );
+					} );
+				} );
 
-      } else {
-        Object.defineProperty( obj, key, {
-          get: helpers.getProperty( key ),
-          set: helpers.setProperty( key ),
-          enumerable: true
-        } );
-      }
+				if ( existingValue && existingValue.length > 0 ) {
+					existingValue.forEach( function ( o ) {
+						obj[ key ].push( o );
+					} );
+				}
 
-      obj.__attributes[ key ] = metadata.attributes;
-    }
+			} else {
+				Object.defineProperty( obj, key, {
+					get: helpers.getProperty( key ),
+					set: helpers.setProperty( key ),
+					enumerable: true
+				} );
+			}
 
-    if ( existingValue !== void 0 ) { //if existing value
-      obj[ key ] = existingValue;
-    } else if ( is.empty( obj[ key ] ) && metadata.attributes.optional === false && is.not.nullOrUndefined( metadata.attributes[ 'default' ] ) ) {
-      obj[ key ] = metadata.attributes[ 'default' ];
-    } else if ( is.empty( obj[ key ] ) && metadata.attributes.optional === false ) {
-      if ( metadata.attributeTypeIsAnArray || metadata.attributeTypeIsAnInstantiatedMoldy ) {
-        obj.__data[ key ] = obj[ key ];
-      } else {
-        obj.__data[ key ] = is.empty( metadata.attributes.type ) ? undefined : cast( undefined, metadata.attributes.type );
-      }
-    }
-  };
+			obj.__attributes[ key ] = metadata.attributes;
+		}
 
-  Moldy.prototype.$property = function ( _key, _value ) {
-    var self = this,
-      attributes = new helpers.attributes( _key, _value ),
-      //existingValue = self[ _key ],
-      attributeTypeIsAnInstantiatedMoldy = is.a.string( attributes.type ) && /moldy/.test( attributes.type ),
-      attributeTypeIsAnArray = is.an.array( attributes.type ),
-      valueIsAnArrayMoldy = is.an.array( _value ) && hasKey( _value[ 0 ], 'properties', 'object' ),
-      valueIsAnArrayString = is.an.array( _value ) && is.a.string( _value[ 0 ] ),
-      attributeArrayTypeIsAMoldy = attributeTypeIsAnArray && hasKey( attributes.type[ 0 ], 'properties', 'object' ),
-      attributeArrayTypeIsAString = attributeTypeIsAnArray && is.a.string( attributes.type[ 0 ] ) && is.not.empty( attributes.type[ 0 ] ),
-      valueIsAStaticMoldy = hasKey( _value, 'properties', 'object' );
+		if ( existingValue !== void 0 ) { //if existing value
+			obj[ key ] = existingValue;
+		} else if ( is.empty( obj[ key ] ) && metadata.attributes.optional === false && is.not.nullOrUndefined( metadata.attributes[ 'default' ] ) ) {
+			obj[ key ] = metadata.attributes[ 'default' ];
+		} else if ( is.empty( obj[ key ] ) && metadata.attributes.optional === false ) {
+			if ( metadata.attributeTypeIsAnArray || metadata.attributeTypeIsAnInstantiatedMoldy ) {
+				obj.__data[ key ] = obj[ key ];
+			} else {
+				obj.__data[ key ] = is.empty( metadata.attributes.type ) ? undefined : cast( undefined, metadata.attributes.type );
+			}
+		}
+	};
 
-    self.__metadata[ _key ] = {
-      attributes: attributes,
-      value: _value,
-      attributeTypeIsAnInstantiatedMoldy: attributeTypeIsAnInstantiatedMoldy,
-      attributeTypeIsAnArray: attributeTypeIsAnArray,
-      valueIsAnArrayMoldy: valueIsAnArrayMoldy,
-      valueIsAnArrayString: valueIsAnArrayString,
-      attributeArrayTypeIsAMoldy: attributeArrayTypeIsAMoldy,
-      attributeArrayTypeIsAString: attributeArrayTypeIsAString,
-      valueIsAStaticMoldy: valueIsAStaticMoldy
-    };
+	Moldy.prototype.$property = function ( _key, _value ) {
+		var self = this,
+			attributes = new helpers.attributes( _key, _value ),
+			//existingValue = self[ _key ],
+			attributeTypeIsAnInstantiatedMoldy = is.a.string( attributes.type ) && /moldy/.test( attributes.type ),
+			attributeTypeIsAnArray = is.an.array( attributes.type ),
+			valueIsAnArrayMoldy = is.an.array( _value ) && hasKey( _value[ 0 ], 'properties', 'object' ),
+			valueIsAnArrayString = is.an.array( _value ) && is.a.string( _value[ 0 ] ),
+			attributeArrayTypeIsAMoldy = attributeTypeIsAnArray && hasKey( attributes.type[ 0 ], 'properties', 'object' ),
+			attributeArrayTypeIsAString = attributeTypeIsAnArray && is.a.string( attributes.type[ 0 ] ) && is.not.empty( attributes.type[ 0 ] ),
+			valueIsAStaticMoldy = hasKey( _value, 'properties', 'object' );
 
-    return self;
-  };
+		self.__metadata[ _key ] = {
+			attributes: attributes,
+			value: _value,
+			attributeTypeIsAnInstantiatedMoldy: attributeTypeIsAnInstantiatedMoldy,
+			attributeTypeIsAnArray: attributeTypeIsAnArray,
+			valueIsAnArrayMoldy: valueIsAnArrayMoldy,
+			valueIsAnArrayString: valueIsAnArrayString,
+			attributeArrayTypeIsAMoldy: attributeArrayTypeIsAMoldy,
+			attributeArrayTypeIsAString: attributeArrayTypeIsAString,
+			valueIsAStaticMoldy: valueIsAStaticMoldy
+		};
 
-  emitter( Moldy.prototype );
-  useify( Moldy );
-  
-  return Moldy;
+		return self;
+	};
+
+	emitter( Moldy.prototype );
+	useify( Moldy );
+
+	return Moldy;
 
 };
