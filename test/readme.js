@@ -19,8 +19,8 @@ describe( 'moldy', function () {
 
 	require( './readme.property' );
 	require( './readme.url.base' );
-	require( './readme.get' );
-	require( './readme.collection' );
+	require( './readme.findOne' );
+	require( './readme.find' );
 	require( './readme.save' );
 	require( './readme.destroy' );
 

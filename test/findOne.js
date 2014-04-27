@@ -3,8 +3,6 @@ var Moldy = require( '../src' ),
 
 describe( 'findOne', function () {
 
-	//before( require( './setup' )( Moldy ) );
-
 	it( 'findOne', function ( _done ) {
 		var Person = Moldy.extend( 'person', {
 			key: 'guid',
@@ -41,8 +39,6 @@ describe( 'findOne', function () {
 				return _done( _error );
 			}
 
-			//TODO: instanceOf ? Is it really needed ?
-			//bennett.should.be.an.instanceOf( personMoldy );
 			bennett.name.should.eql( 'Bennett Sanchez' );
 			bennett.name = 'Mr Bennett Sanchez';
 
@@ -76,7 +72,6 @@ describe( 'findOne', function () {
 
 			_res.should.not.be.an.Array.and.be.a.Moldy;
 
-			//_res.should.equal( personMoldy );
 			_res.friends.should.be.an.Array;
 			_res.friends[ 0 ].id.should.be.a.String.and.equal( '0' );
 			_res.friends[ 0 ].name.should.be.a.String.and.equal( 'Blake Oneill' );
