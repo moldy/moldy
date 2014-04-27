@@ -1,9 +1,9 @@
 var Moldy = require( '../src' ),
   should = require( 'should' );
 
-describe( 'get', function () {
+describe( 'find', function () {
 
-  it( 'To get by `id` or `key`, give an object with appropriate conditions', function ( _done ) {
+  it( 'To find by `id` or `key`, give an object with appropriate conditions', function ( _done ) {
     var personMoldy = Moldy.extend( 'person', {
       key: 'guid',
       properties: {
@@ -11,7 +11,7 @@ describe( 'get', function () {
       }
     } );
 
-    personMoldy.$get( {
+    personMoldy.findOne( {
       guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
     }, function ( _error, _res ) {
 
@@ -25,8 +25,7 @@ describe( 'get', function () {
 
   } );
 
-  /*. If an adapter responds with an array the first item will be returned*/
-  it( '$get will return an array of entities', function ( _done ) {
+  it( 'If an adapter responds with an array the first item will be returned', function ( _done ) {
     var Person = Moldy.extend( 'person', {
       key: 'guid',
       properties: {
@@ -39,13 +38,13 @@ describe( 'get', function () {
      * Moldy will return the first item out of the array. If you need to return an array you can
      * use the $collection method.
      */
-    Person.$get( function ( _error, _res ) {
+    Person.findOne( function ( _error, _res ) {
 
       if ( _error ) {
         return _done( _error );
       }
 
-      _res.should.be.an.Array;
+      _res.should.not.be.an.Array;
 
       _done();
 

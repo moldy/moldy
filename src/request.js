@@ -13,7 +13,8 @@ var is = require( 'sc-is' ),
 module.exports = function ( _moldy, instance, _data, _method, _url, _callback ) {
   var moldy = _moldy,
     result = [],
-    responseShouldContainAnId = hasKey( _data, moldy.__key ) && is.not.empty( _data[ moldy.__key ] ) && /get/.test( _method ),
+    method = ( _method === 'find' || _method === 'findOne' ) ? 'get' : _method,
+    responseShouldContainAnId = hasKey( _data, moldy.__key ) && is.not.empty( _data[ moldy.__key ] ) && /get/.test( method ),
     isInstance = instance ? true : false,
     isDirty = isInstance ? instance.$isDirty() : false;
 
@@ -35,13 +36,15 @@ module.exports = function ( _moldy, instance, _data, _method, _url, _callback ) 
     }
 
     if ( !error ) {
-      if( !isInstance ) {
-        if ( is.array( response ) ) {
+      if ( !isInstance ) {
+        if ( _method !== 'findOne' && is.array( response ) ) {
 
           response.forEach( function ( _data ) {
 
             result.push( moldy.create( _data ) );
           } );
+        } else if ( _method === 'findOne' && is.array( response ) ) {
+          result = moldy.create( response[ 0 ] );
         } else {
           result = moldy.create( response );
         }
@@ -53,6 +56,6 @@ module.exports = function ( _moldy, instance, _data, _method, _url, _callback ) 
 
     _callback && _callback( error, result );
 
-  }, _moldy, _data, _method, _url );
+  }, _moldy, _data, method, _url );
 
 };

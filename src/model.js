@@ -3,7 +3,6 @@ var cast = require( 'sc-cast' ),
   hasKey = require( 'sc-haskey' ),
   helpers = require( './helpers' ),
   is = require( 'sc-is' ),
-  merge = require( 'sc-merge' ),
   request = require( './request' ),
   extend = helpers.extendObject,
   useify = require( 'useify' );
@@ -18,8 +17,8 @@ var Model = function ( initial, __moldy ) {
   this.__attributes = {};
   this.__data = {};
   this.__destroyed = false;
-  
-  if ( ! self.__moldy.__keyless ) {
+
+  if ( !self.__moldy.__keyless ) {
     self.__moldy.$defineProperty( self, self.__moldy.__key );
   }
 
@@ -27,8 +26,8 @@ var Model = function ( initial, __moldy ) {
     self.__moldy.$defineProperty( self, _key, initial[ _key ] );
   } );
 
-  for( var i in initial ) {
-    if( initial.hasOwnProperty( i ) && self.__moldy.__metadata[ i ] ) {
+  for ( var i in initial ) {
+    if ( initial.hasOwnProperty( i ) && self.__moldy.__metadata[ i ] ) {
       this[ i ] = initial[ i ];
     }
   }
@@ -64,13 +63,13 @@ Model.prototype.$clear = function () {
  */
 Model.prototype.$clone = function ( _data ) {
   var self = this,
-      initialValues = this.$json();
+    initialValues = this.$json();
 
   //  data = is.an.object( _data ) ? _data : self.__data;
-  helpers.extend( initialValues, _data || {}  );
+  helpers.extend( initialValues, _data || {} );
 
   var newMoldy = this.__moldy.create( initialValues );
-    /* this.__moldynew ModelFactory( self.__name, {
+  /* this.__moldynew ModelFactory( self.__name, {
       baseUrl: self.__moldy.$baseUrl(),
       headers: self.__headers,
       key: self.__key,
@@ -93,31 +92,31 @@ Model.prototype.$clone = function ( _data ) {
   return newMoldy;
 };
 
-  Model.prototype.$data = function ( _data ) {
-    var self = this,
-      data = is.object( _data ) ? _data : {};
+Model.prototype.$data = function ( _data ) {
+  var self = this,
+    data = is.object( _data ) ? _data : {};
 
-    if ( self.__destroyed ) {
-      return helpers.destroyedError( self );
-    }
+  if ( self.__destroyed ) {
+    return helpers.destroyedError( self );
+  }
 
-    Object.keys( data ).forEach( function ( _key ) {
-      if ( self.__attributes.hasOwnProperty( _key ) ) {
-        if ( is.an.array( data[ _key ] ) && hasKey( self.__attributes[ _key ], 'arrayOfAType', 'boolean' ) && self.__attributes[ _key ].arrayOfAType === true ) {
-          data[ _key ].forEach( function ( _moldy ) {
-            self[ _key ].push( _moldy );
-          } );
-        } else if ( is.a.object( data[ _key ] ) && self[ _key ] instanceof Model ) {
-          self[ _key ].$data( data[ _key ] );
-        } else {
-          self[ _key ] = data[ _key ];
-        }
+  Object.keys( data ).forEach( function ( _key ) {
+    if ( self.__attributes.hasOwnProperty( _key ) ) {
+      if ( is.an.array( data[ _key ] ) && hasKey( self.__attributes[ _key ], 'arrayOfAType', 'boolean' ) && self.__attributes[ _key ].arrayOfAType === true ) {
+        data[ _key ].forEach( function ( _moldy ) {
+          self[ _key ].push( _moldy );
+        } );
+      } else if ( is.a.object( data[ _key ] ) && self[ _key ] instanceof Model ) {
+        self[ _key ].$data( data[ _key ] );
+      } else {
+        self[ _key ] = data[ _key ];
       }
-    } );
+    }
+  } );
 
-    return self;
-  };
-  
+  return self;
+};
+
 
 Model.prototype.$destroy = function ( _callback ) {
   var self = this,
@@ -140,8 +139,8 @@ Model.prototype.$destroy = function ( _callback ) {
   } );
 
   if ( !isDirty ) {
-  request( self.__moldy, self, data, method, url, function ( _error, _res ) {
-    self.emit( 'destroy', _error, _res );
+    request( self.__moldy, self, data, method, url, function ( _error, _res ) {
+      self.emit( 'destroy', _error, _res );
       self.__destroyed = true;
       self[ self.__moldy.__key ] = undefined;
       callback.apply( self, arguments );
@@ -206,8 +205,8 @@ Model.prototype.$json = function () {
       data[ _key ].forEach( function ( _moldy ) {
         json[ _key ].push( _moldy.$json() );
       } );
-  } else {
-    json[ _key ] = data[ _key ] instanceof Model ? data[ _key ].$json() : data[ _key ];
+    } else {
+      json[ _key ] = data[ _key ] instanceof Model ? data[ _key ].$json() : data[ _key ];
     }
   } );
 

@@ -1,7 +1,7 @@
 var Moldy = require( '../src' ),
   should = require( 'should' );
 
-describe( 'collection', function () {
+describe( 'find', function () {
 
   //before( require( './setup' )( Moldy ) );
 
@@ -13,7 +13,7 @@ describe( 'collection', function () {
       }
     } );
 
-    Person.$collection( function ( _error, _people ) {
+    Person.find( function ( _error, _people ) {
 
       if ( _error ) {
         return _done( _error );

@@ -1,11 +1,11 @@
 var Moldy = require( '../src' ),
   should = require( 'should' );
 
-describe( 'get', function () {
+describe( 'findOne', function () {
 
   //before( require( './setup' )( Moldy ) );
 
-  it( 'get', function ( _done ) {
+  it( 'findOne', function ( _done ) {
     var Person = Moldy.extend( 'person', {
       key: 'guid',
       properties: {
@@ -13,8 +13,8 @@ describe( 'get', function () {
       }
     } );
 
-    Person.$get( function ( _error, _res ) {
-      var res = _res[0];
+    Person.findOne( function ( _error, _res ) {
+      var res = _res;
 
       res.should.not.be.an.Array.and.be.a.Moldy;
       res.$json().should.eql( {
@@ -25,7 +25,7 @@ describe( 'get', function () {
     } );
   } );
 
-  it( 'get by id', function ( _done ) {
+  it( 'findOne by id', function ( _done ) {
     var Person = Moldy.extend( 'person', {
       key: 'guid',
       properties: {
@@ -33,7 +33,7 @@ describe( 'get', function () {
       }
     } );
 
-    Person.$get( {
+    Person.findOne( {
       guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
     }, function ( _error, bennett ) {
 
@@ -71,11 +71,11 @@ describe( 'get', function () {
       }
     } );
 
-    Person.$get( function ( _error, res ) {
-      var _res = res[0];
+    Person.findOne( function ( _error, res ) {
+      var _res = res;
 
       _res.should.not.be.an.Array.and.be.a.Moldy;
-      
+
       //_res.should.equal( personMoldy );
       _res.friends.should.be.an.Array;
       _res.friends[ 0 ].id.should.be.a.String.and.equal( '0' );
