@@ -1,21 +1,21 @@
 var Moldy = require( '../src' ),
-  should = require( 'should' );
+	should = require( 'should' );
 
 require( './setup' )( Moldy )();
 
 describe( 'save', function () {
 
-  //before( require( './setup' )( Moldy ) );
+	//before( require( './setup' )( Moldy ) );
 
-  it( 'instantiate using', function ( _done ) {
-    var Person = Moldy.extend( 'person' );
-    var personMoldy  = Person.create( );
+	it( 'instantiate using', function ( _done ) {
+		var Person = Moldy.extend( 'person' );
+		var personMoldy = Person.create();
 
 
-    personMoldy.$save( function ( _error, _res ) {
-      _done( _error );
-    } );
+		personMoldy.$save( function ( _error, _res ) {
+			_done( _error );
+		} );
 
-  } );
+	} );
 
 } );

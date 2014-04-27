@@ -26,10 +26,6 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 			__metadata: {
 				value: {}
 			},
-			/*__attributes: {
-        value: {},
-        writable: true
-      },*/
 			__baseUrl: {
 				value: cast( properties[ 'baseUrl' ], 'string', '' ),
 				writable: true
@@ -74,8 +70,8 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 			self.$property( _key, self.__properties[ _key ] );
 		} );
 
-		self.on( 'preget', helpers.setBusy( self ) );
-		self.on( 'get', helpers.unsetBusy( self ) );
+		self.on( 'prefindOne', helpers.setBusy( self ) );
+		self.on( 'findOne', helpers.unsetBusy( self ) );
 	};
 
 	Moldy.prototype.schema = function ( schema ) {
@@ -117,15 +113,15 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 		return is.not.an.object( _headers ) ? self.__headers : self;
 	};
 
-	Moldy.prototype.$get = function ( _query, _callback ) {
+	Moldy.prototype.$findOne = function ( _query, _callback ) {
 		var self = this,
 			url = self.$url(),
-			method = 'get',
+			method = 'findOne',
 			query = is.an.object( _query ) ? _query : {},
 			callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop
 			wasDestroyed = self.__destroyed;
 
-		self.emit( 'preget', {
+		self.emit( 'prefindOne', {
 			moldy: self,
 			method: method,
 			query: query,
@@ -148,7 +144,7 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
         self.__destroyed = true;
       }*/
 
-			self.emit( 'get', _error, _res );
+			self.emit( 'findOne', _error, _res );
 
 			callback.apply( self, [ _error, _res ] );
 		} );
@@ -177,14 +173,14 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 		return is.not.a.string( _base ) ? self.__baseUrl : self;
 	};
 
-	Moldy.prototype.$collection = function ( _query, _callback ) {
+	Moldy.prototype.$find = function ( _query, _callback ) {
 		var self = this,
 			url = self.$url(),
-			method = 'get',
+			method = 'find',
 			query = is.an.object( _query ) ? _query : {},
 			callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop;
 
-		self.emit( 'precollection', {
+		self.emit( 'prefind', {
 			moldy: self,
 			method: method,
 			query: query,
@@ -194,7 +190,7 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 
 		request( self, null, query, method, url, function ( _error, _res ) {
 			var res = cast( _res instanceof BaseModel || is.an.array( _res ) ? _res : null, 'array', [] );
-			self.emit( 'collection', _error, res );
+			self.emit( 'find', _error, res );
 			callback.apply( self, [ _error, res ] );
 		} );
 
@@ -297,7 +293,6 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 	Moldy.prototype.$property = function ( _key, _value ) {
 		var self = this,
 			attributes = new helpers.attributes( _key, _value ),
-			//existingValue = self[ _key ],
 			attributeTypeIsAnInstantiatedMoldy = is.a.string( attributes.type ) && /moldy/.test( attributes.type ),
 			attributeTypeIsAnArray = is.an.array( attributes.type ),
 			valueIsAnArrayMoldy = is.an.array( _value ) && hasKey( _value[ 0 ], 'properties', 'object' ),
