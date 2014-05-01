@@ -18,7 +18,7 @@ describe( 'save', function () {
         return _done( _error );
       }
 
-      personMoldy.should.eql( _res );
+      personMoldy.$json().should.eql( _res.$json() );
       personMoldy.should.have.a.property( 'id' );
       personMoldy.name = 'Mr David';
 

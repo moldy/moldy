@@ -5,7 +5,6 @@ var helpers = require( "./helpers/index" ),
   is = require( 'sc-is' ),
   merge = require( 'sc-merge' ),
   cast = require( 'sc-cast' ),
-  request = require( './request' ),
   useify = require( 'useify' );
 
 module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware ) {
@@ -111,6 +110,7 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 
   Moldy.prototype.findOne = function ( _query, _callback ) {
     var self = this,
+      result,
       url = self.$url(),
       method = 'findOne',
       query = is.an.object( _query ) ? _query : {},
@@ -127,23 +127,39 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 
     self.__destroyed = false;
 
+    this.__defaultMiddleware.__default.findOne.call( this, _query, function ( _error, _response ) {
+      if ( _error && !( _error instanceof Error ) ) {
+        _error = new Error( 'An unknown error occurred' );
+      }
 
-    request( self, null, query, method, url, function ( _error, _res ) {
-      //var res = _res instanceof BaseModel ? _res : null;
+      if ( !_error ) {
+        if ( is.array( _response ) ) {
+          result = self.create( _response[ 0 ] );
+        } else {
+          result = self.create( _response );
+        }
+      }
 
-      /*if ( is.an.array( _res ) && _res[ 0 ] instanceof BaseModel ) {
+      self.emit( 'findOne', _error, _response );
+
+      callback && callback( _error, result );
+    } );
+    //request( self, null, query, method, url, function ( _error, _res ) {
+    //var res = _res instanceof BaseModel ? _res : null;
+
+    /*if ( is.an.array( _res ) && _res[ 0 ] instanceof BaseModel ) {
         self.$data( _res[ 0 ].$json() );
         res = self;
       }*/
-      /*
+    /*
       if ( _error && wasDestroyed ) {
         self.__destroyed = true;
       }*/
 
-      self.emit( 'findOne', _error, _res );
+    //self.emit( 'findOne', _error, _res );
 
-      callback.apply( self, [ _error, _res ] );
-    } );
+    //callback.apply( self, [ _error, _res ] );
+    //} );
   };
 
   Moldy.prototype.$url = function ( _url ) {
@@ -173,6 +189,7 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
     var self = this,
       url = self.$url(),
       method = 'find',
+      result = [],
       query = is.an.object( _query ) ? _query : {},
       callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop;
 
@@ -184,11 +201,32 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
       callback: callback
     } );
 
-    request( self, null, query, method, url, function ( _error, _res ) {
+    this.__defaultMiddleware.__default.find.call( this, _query, function ( _error, res ) {
+
+      if ( _error && !( _error instanceof _error ) ) {
+        _error = new Error( 'An unknown error occurred' );
+      }
+
+      if ( is.array( res ) ) {
+        res.forEach( function ( _data ) {
+          result.push( self.create( _data ) );
+        } );
+      } else {
+        result.push( self.create( _data ) );
+      }
+
+      var res = cast( result instanceof BaseModel || is.an.array( result ) ? result : null, 'array', [] );
+
+      self.emit( 'find', _error, res );
+
+      callback && callback( _error, res );
+
+    } );
+    /*request( self, null, query, method, url, function ( _error, _res ) {
       var res = cast( _res instanceof BaseModel || is.an.array( _res ) ? _res : null, 'array', [] );
       self.emit( 'find', _error, res );
       callback.apply( self, [ _error, res ] );
-    } );
+    } );*/
 
   };
 
@@ -210,7 +248,7 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 
         Object.defineProperty( obj, key, {
           value: metadata.attributes[ 'default' ],
-          enumerable: true,
+          enumerable: true
         } );
 
         obj.__data[ key ] = obj[ key ];

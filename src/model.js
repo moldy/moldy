@@ -122,7 +122,6 @@ Model.prototype.$destroy = function ( _callback ) {
   var self = this,
     isDirty = self.$isDirty(),
     data = self.$json(),
-    url = self.__moldy.$url() + ( self.__moldy.__keyless ? '' : '/' + self[ self.__moldy.__key ] ),
     method = 'delete',
     callback = is.a.func( _callback ) ? _callback : helpers.noop;
 
@@ -134,24 +133,41 @@ Model.prototype.$destroy = function ( _callback ) {
     moldy: self,
     data: data,
     method: method,
-    url: url,
     callback: callback
   } );
 
+  console.log( "I am in destroy" );
+
   if ( !isDirty ) {
-    request( self.__moldy, self, data, method, url, function ( _error, _res ) {
+    console.log( "isDirty" )
+    this.__moldy.__defaultMiddleware.__default.destroy.call( this.__moldy, this.$json(), function ( _error, _res ) {
+
+      if ( _error && !( _error instanceof Error ) ) {
+        _error = new Error( 'An unknown error occurred' );
+      }
+
+      self.emit( 'destroy', _error, _res );
+      self.__destroyed = true;
+      self[ self.__moldy.__key ] = undefined;
+
+      callback && callback( _error, _res );
+    } );
+
+
+    /*request( self.__moldy, self, data, method, url, function ( _error, _res ) {
       self.emit( 'destroy', _error, _res );
       self.__destroyed = true;
       self[ self.__moldy.__key ] = undefined;
       callback.apply( self, arguments );
-    } );
+    } );*/
   } else {
-    callback.apply( self, [ new Error( 'This moldy cannot be destroyed because it has not been saved to the server yet.' ) ] );
+    callback && callback( new Error( 'This moldy cannot be destroyed because it has not been saved to the server yet.' ) );
   }
 
 };
 
 Model.prototype.$isDirty = function () {
+
   return this.__destroyed ? true : is.empty( this[ this.__moldy.__key ] );
 };
 
@@ -218,8 +234,7 @@ Model.prototype.$save = function ( _callback ) {
     error = null,
     isDirty = self.$isDirty(),
     data = self.$json(),
-    url = self.__moldy.$url() + ( !isDirty && !self.__moldy.__keyless ? '/' + self[ self.__moldy.__key ] : '' ),
-    method = isDirty ? 'post' : 'put',
+    method = isDirty ? 'create' : 'save',
     callback = is.a.func( _callback ) ? _callback : helpers.noop;
 
   self.__destroyed = false;
@@ -228,14 +243,41 @@ Model.prototype.$save = function ( _callback ) {
     moldy: self,
     data: data,
     method: method,
-    url: url,
     callback: callback
   } );
 
-  request( self.__moldy, self, data, method, url, function ( _error, _res ) {
+  var responseShouldContainAnId = hasKey( data, self.__key ) && is.not.empty( data[ self.__key ] );
+
+  this.__moldy.__defaultMiddleware.__default[ method ].call( this.__moldy, data, function ( _error, _res ) {
+
+    if ( _error && !( _error instanceof Error ) ) {
+      _error = new Error( 'An unknown error occurred' );
+    }
+
+    if ( !_error && isDirty && is.object( _res ) && ( responseShouldContainAnId && !hasKey( _res, self.__moldy.__key ) ) ) {
+      _error = new Error( 'The response from the server did not contain a valid `' + self.__moldy.__key + '`' );
+    }
+
+    if ( !_error && isDirty && is.object( _res ) ) {
+      self.__moldy[ self.__moldy.__key ] = _res[ self.__moldy.__key ];
+    }
+
+    if ( !error ) {
+      console.log( "from save" );
+      console.log( _res );
+
+      self.$data( _res );
+    }
+
+    self.emit( 'save', _error, self );
+
+    callback && callback( _error, self ); //not sure about that ! why passing the context ?
+  } );
+
+  /*request( self.__moldy, self, data, method, url, function ( _error, _res ) {
     self.emit( 'save', _error, _res );
     callback.apply( self, arguments ); //not sure about that ! why passing the context ?
-  } );
+  } );*/
 
 };
 

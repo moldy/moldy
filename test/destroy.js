@@ -15,6 +15,7 @@ describe( 'destroy', function () {
     } );
 
     Person.findOne( function ( _error, _res ) {
+      console.log( "found" )
       var res = _res;
       res.__destroyed.should.be.false;
       res.$destroy( function ( _error ) {
@@ -61,7 +62,6 @@ describe( 'destroy', function () {
     } );
 
   } );
-
   describe( 'ensuring all methods handle gracefully after being destroyed', function () {
 
     var schema = {
@@ -281,5 +281,4 @@ describe( 'destroy', function () {
       } );
     } );
   } );
-
 } );

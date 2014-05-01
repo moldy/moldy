@@ -6,7 +6,10 @@
   "scripts": {
     "pretest": "./node_modules/.bin/forever start server.js",
     "test": "mocha test/*.js",
-    "posttest": [ "mocha test/readme.js -R markdown > README.md", "./node_modules/.bin/forever stop server.js" ]
+    "posttest": [
+      "mocha test/readme.js -R markdown > README.md",
+      "./node_modules/.bin/forever stop server.js"
+    ]
   },
   "repository": {
     "type": "git",
@@ -36,7 +39,9 @@
     "gulp-markdown": "^0.1.2",
     "moldy-ajax-adapter": "0.0.5",
     "jshint-stylish": "^0.1.5",
-    "gulp-jshint": "^1.5.3"
+    "gulp-jshint": "^1.5.3",
+    "superagent": "~0.18.0",
+    "moldy-base-adapter": "0.0.2"
   },
   "dependencies": {
     "emitter-component": "^1.1.1",
