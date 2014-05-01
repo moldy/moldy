@@ -1,5 +1,6 @@
 var helpers = require( "./helpers/index" ),
 	emitter = require( 'emitter-component' ),
+	guid = require( 'sc-guid' ),
 	observableArray = require( 'sg-observable-array' ),
 	hasKey = require( 'sc-haskey' ),
 	is = require( 'sc-is' ),
@@ -70,8 +71,6 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 			self.$property( _key, self.__properties[ _key ] );
 		} );
 
-		self.on( 'prefindOne', helpers.setBusy( self ) );
-		self.on( 'findOne', helpers.unsetBusy( self ) );
 	};
 
 	Moldy.prototype.schema = function ( schema ) {
@@ -96,9 +95,6 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 			Klass = BaseModel.extend( this.__properties.proto || {} ),
 			klass = new Klass( _initial, this );
 
-		klass.on( 'save', self.emit.bind( self, 'save' ) );
-		klass.on( 'destroy', self.emit.bind( self, 'destroy' ) );
-
 		return klass;
 	};
 
@@ -115,12 +111,14 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 
 	Moldy.prototype.$findOne = function ( _query, _callback ) {
 		var self = this,
+			eguid = guid.generate(),
 			url = self.$url(),
 			method = 'findOne',
 			query = is.an.object( _query ) ? _query : {},
 			callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop
 			wasDestroyed = self.__destroyed;
 
+		self.emit( 'busy', eguid )
 		self.emit( 'prefindOne', {
 			moldy: self,
 			method: method,
@@ -144,6 +142,7 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
         self.__destroyed = true;
       }*/
 
+			self.emit( 'busy:done', eguid );
 			self.emit( 'findOne', _error, _res );
 
 			callback.apply( self, [ _error, _res ] );
@@ -175,11 +174,13 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 
 	Moldy.prototype.$find = function ( _query, _callback ) {
 		var self = this,
+			eguid = guid.generate(),
 			url = self.$url(),
 			method = 'find',
 			query = is.an.object( _query ) ? _query : {},
 			callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop;
 
+		self.emit( 'busy', eguid );
 		self.emit( 'prefind', {
 			moldy: self,
 			method: method,
@@ -190,6 +191,7 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 
 		request( self, null, query, method, url, function ( _error, _res ) {
 			var res = cast( _res instanceof BaseModel || is.an.array( _res ) ? _res : null, 'array', [] );
+			self.emit( 'busy:done', eguid );
 			self.emit( 'find', _error, res );
 			callback.apply( self, [ _error, res ] );
 		} );

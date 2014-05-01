@@ -1,5 +1,6 @@
 var cast = require( 'sc-cast' ),
 	emitter = require( 'emitter-component' ),
+	guid = require( 'sc-guid' ),
 	hasKey = require( 'sc-haskey' ),
 	helpers = require( './helpers' ),
 	is = require( 'sc-is' ),
@@ -31,12 +32,6 @@ var Model = function ( initial, __moldy ) {
 			this[ i ] = initial[ i ];
 		}
 	}
-
-	self.on( 'presave', helpers.setBusy( self ) );
-	self.on( 'save', helpers.unsetBusy( self ) );
-
-	self.on( 'predestroy', helpers.setBusy( self ) );
-	self.on( 'destroy', helpers.unsetBusy( self ) );
 
 };
 
@@ -120,6 +115,7 @@ Model.prototype.$data = function ( _data ) {
 
 Model.prototype.$destroy = function ( _callback ) {
 	var self = this,
+		eguid = guid.generate(),
 		isDirty = self.$isDirty(),
 		data = self.$json(),
 		url = self.__moldy.$url() + ( self.__moldy.__keyless ? '' : '/' + self[ self.__moldy.__key ] ),
@@ -130,7 +126,8 @@ Model.prototype.$destroy = function ( _callback ) {
 		return callback.apply( self, [ helpers.destroyedError( self ) ] );
 	}
 
-	self.emit( 'predestroy', {
+	self.__moldy.emit( 'busy', eguid );
+	self.__moldy.emit( 'predestroy', {
 		moldy: self,
 		data: data,
 		method: method,
@@ -140,7 +137,8 @@ Model.prototype.$destroy = function ( _callback ) {
 
 	if ( !isDirty ) {
 		request( self.__moldy, self, data, method, url, function ( _error, _res ) {
-			self.emit( 'destroy', _error, _res );
+			self.__moldy.emit( 'busy:done', eguid );
+			self.__moldy.emit( 'destroy', _error, _res );
 			self.__destroyed = true;
 			self[ self.__moldy.__key ] = undefined;
 			callback.apply( self, arguments );
@@ -216,6 +214,7 @@ Model.prototype.$json = function () {
 Model.prototype.$save = function ( _callback ) {
 	var self = this,
 		error = null,
+		guid = guid.generate(),
 		isDirty = self.$isDirty(),
 		data = self.$json(),
 		url = self.__moldy.$url() + ( !isDirty && !self.__moldy.__keyless ? '/' + self[ self.__moldy.__key ] : '' ),
@@ -224,7 +223,8 @@ Model.prototype.$save = function ( _callback ) {
 
 	self.__destroyed = false;
 
-	self.emit( 'presave', {
+	self.__moldy.emit( 'busy', eguid );
+	self.__moldy.emit( 'presave', {
 		moldy: self,
 		data: data,
 		method: method,
@@ -233,7 +233,8 @@ Model.prototype.$save = function ( _callback ) {
 	} );
 
 	request( self.__moldy, self, data, method, url, function ( _error, _res ) {
-		self.emit( 'save', _error, _res );
+		self.__moldy.emit( 'busy:done', eguid );
+		self.__moldy.emit( 'save', _error, _res );
 		callback.apply( self, arguments ); //not sure about that ! why passing the context ?
 	} );
 
