@@ -108,7 +108,7 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
     return is.not.an.object( _headers ) ? self.__headers : self;
   };
 
-  Moldy.prototype.findOne = function ( _query, _callback ) {
+  Moldy.prototype.$findOne = function ( _query, _callback ) {
     var self = this,
       result,
       url = self.$url(),
@@ -144,22 +144,6 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 
       callback && callback( _error, result );
     } );
-    //request( self, null, query, method, url, function ( _error, _res ) {
-    //var res = _res instanceof BaseModel ? _res : null;
-
-    /*if ( is.an.array( _res ) && _res[ 0 ] instanceof BaseModel ) {
-        self.$data( _res[ 0 ].$json() );
-        res = self;
-      }*/
-    /*
-      if ( _error && wasDestroyed ) {
-        self.__destroyed = true;
-      }*/
-
-    //self.emit( 'findOne', _error, _res );
-
-    //callback.apply( self, [ _error, _res ] );
-    //} );
   };
 
   Moldy.prototype.$url = function ( _url ) {
@@ -185,7 +169,7 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
     return is.not.a.string( _base ) ? self.__baseUrl : self;
   };
 
-  Moldy.prototype.find = function ( _query, _callback ) {
+  Moldy.prototype.$find = function ( _query, _callback ) {
     var self = this,
       url = self.$url(),
       method = 'find',
@@ -222,12 +206,6 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
       callback && callback( _error, res );
 
     } );
-    /*request( self, null, query, method, url, function ( _error, _res ) {
-      var res = cast( _res instanceof BaseModel || is.an.array( _res ) ? _res : null, 'array', [] );
-      self.emit( 'find', _error, res );
-      callback.apply( self, [ _error, res ] );
-    } );*/
-
   };
 
   Moldy.prototype.$defineProperty = function ( obj, key, value ) {

@@ -14,8 +14,7 @@ describe( 'destroy', function () {
       }
     } );
 
-    Person.findOne( function ( _error, _res ) {
-      console.log( "found" )
+    Person.$findOne( function ( _error, _res ) {
       var res = _res;
       res.__destroyed.should.be.false;
       res.$destroy( function ( _error ) {
@@ -53,7 +52,7 @@ describe( 'destroy', function () {
       }
     } );
 
-    Person.findOne( function ( err, _res ) {
+    Person.$findOne( function ( err, _res ) {
       var res = _res;
       res.$destroy( function () {
         should( res.guid ).be.empty;
@@ -76,7 +75,7 @@ describe( 'destroy', function () {
       var Person = Moldy.extend( 'person', schema );
       var personMoldy = Person.create();
 
-      Person.findOne( function () {
+      Person.$findOne( function () {
         personMoldy.$destroy( function () {
           Person.$baseUrl().should.equal( Moldy.defaults.baseUrl );
           _done();
@@ -89,7 +88,7 @@ describe( 'destroy', function () {
       var Person = Moldy.extend( 'person', schema ),
         originalPersonJson;
 
-      Person.findOne( function ( error, _res ) {
+      Person.$findOne( function ( error, _res ) {
         var personMoldy = _res;
         originalPersonJson = personMoldy.$json();
         personMoldy.$destroy( function () {
@@ -110,11 +109,11 @@ describe( 'destroy', function () {
     it( '$collection still works', function ( _done ) {
       var Person = Moldy.extend( 'person', schema );
 
-      Person.findOne( function ( err, res ) {
+      Person.$findOne( function ( err, res ) {
         var personMoldy = res;
 
         personMoldy.$destroy( function () {
-          Person.find( function ( _error, _res ) {
+          Person.$find( function ( _error, _res ) {
             _res.should.be.an.Array;
             _done( _error );
           } );
@@ -126,7 +125,7 @@ describe( 'destroy', function () {
     it( '$destroy should fail', function ( _done ) {
       var Person = Moldy.extend( 'person', schema );
 
-      Person.findOne( function ( err, res ) {
+      Person.$findOne( function ( err, res ) {
         var personMoldy = res;
 
         personMoldy.$destroy( function () {
@@ -142,7 +141,7 @@ describe( 'destroy', function () {
     it( '$data should return an Error', function ( _done ) {
       var Person = Moldy.extend( 'person', schema );
 
-      Person.findOne( function ( err, res ) {
+      Person.$findOne( function ( err, res ) {
         var personMoldy = res;
         personMoldy.$destroy( function ( _error ) {
           var data = personMoldy.$data( {
@@ -156,14 +155,14 @@ describe( 'destroy', function () {
 
     } );
 
-    it( 'findOne should remove the __destroyed flag and populate the object with the new data', function ( _done ) {
+    it( '$findOne should remove the __destroyed flag and populate the object with the new data', function ( _done ) {
       var Person = Moldy.extend( 'person', schema );
 
-      Person.findOne( function ( err, res ) {
+      Person.$findOne( function ( err, res ) {
         var personMoldy = res;
 
         personMoldy.$destroy( function ( _error ) {
-          Person.findOne( {
+          Person.$findOne( {
             guid: '2bc0282f-d441-430f-8aa5-64f268cec762'
           }, function ( _error, _res ) {
             _res.name.should.equal( 'Ericka Murray' );
@@ -177,7 +176,7 @@ describe( 'destroy', function () {
     it( '$headers still works', function ( _done ) {
       var Person = Moldy.extend( 'person', schema );
 
-      Person.findOne( function ( err, res ) {
+      Person.$findOne( function ( err, res ) {
         var personMoldy = res;
 
         personMoldy.$destroy( function ( _error ) {
@@ -190,7 +189,7 @@ describe( 'destroy', function () {
     it( '$isDirty returns true', function ( _done ) {
       var Person = Moldy.extend( 'person', schema );
 
-      Person.findOne( function ( err, res ) {
+      Person.$findOne( function ( err, res ) {
         var personMoldy = res;
         personMoldy.$destroy( function ( _error ) {
           personMoldy.$isDirty().should.be.true;
@@ -202,7 +201,7 @@ describe( 'destroy', function () {
     it( '$isValid returns false', function ( _done ) {
       var Person = Moldy.extend( 'person', schema );
 
-      Person.findOne( function ( err, res ) {
+      Person.$findOne( function ( err, res ) {
         var personMoldy = res;
 
         personMoldy.$destroy( function ( _error ) {
@@ -215,7 +214,7 @@ describe( 'destroy', function () {
     it( '$json returns the data however the `key` should be `undefined`', function ( _done ) {
       var Person = Moldy.extend( 'person', schema );
 
-      Person.findOne( function ( err, res ) {
+      Person.$findOne( function ( err, res ) {
         var personMoldy = res;
 
         var json = personMoldy.$json();
@@ -233,14 +232,14 @@ describe( 'destroy', function () {
     it( '$property still works', function ( _done ) {
       var Person = Moldy.extend( 'person', schema );
 
-      Person.findOne( function ( err, res ) {
+      Person.$findOne( function ( err, res ) {
         var personMoldy = res;
         personMoldy.should.not.have.a.property( 'gender' );
 
         personMoldy.$destroy( function () {
           Person.$property( 'gender', 'string' );
 
-          Person.findOne( function ( _error, r ) {
+          Person.$findOne( function ( _error, r ) {
             var p = r;
             p.should.have.a.property( 'gender' );
             p.gender.should.equal( 'male' );
@@ -253,7 +252,7 @@ describe( 'destroy', function () {
     it( '$save still works - should create a new record and therefore have a new `key`', function ( _done ) {
       var Person = Moldy.extend( 'person', schema );
 
-      Person.findOne( function ( err, res ) {
+      Person.$findOne( function ( err, res ) {
         var personMoldy = res;
 
         var oldGuid = personMoldy.guid;
@@ -271,7 +270,7 @@ describe( 'destroy', function () {
     it( '$url still works', function ( _done ) {
       var Person = Moldy.extend( 'person', schema );
 
-      Person.findOne( function ( err, res ) {
+      Person.$findOne( function ( err, res ) {
         var personMoldy = res;
 
         personMoldy.$destroy( function ( _error ) {

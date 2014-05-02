@@ -4,14 +4,14 @@ var config = require( './config.json' ),
       __default: {}
     },
     use: function ( adapter ) {
+
+      if( !adapter || !adapter.create || !adapter.find || !adapter.findOne || !adapter.save || !adapter.destroy ) {
+        throw new Error( "Invalid Adapter" );
+      }
+
       this.adapters.__default = adapter;
-      console.log( this.adapters.__default )
-      console.log( "====" )
     }
   };
-//useify = require( 'useify' );
-
-//useify( moldyApi );
 
 var ModelFactory = require( './moldy' )( require( './model' ), config.defaults, moldyApi.adapters );
 

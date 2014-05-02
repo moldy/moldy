@@ -32,7 +32,6 @@ var req = function ( _moldy, _data, _method, _url, _callback ) {
       }
 
       if ( _callback ) {
-        console.log( body )
         _callback( error, body );
       }
 

@@ -68,12 +68,6 @@ describe( 'property', function () {
     personMoldy.should.have.a.property( 'name' ).and.be.a.String;
     personMoldy.should.have.a.property( 'age' ).and.be.a.Number;
 
-    //THIS IS NOT MORE POSSIBLE
-    /*personMoldy.$property( 'active', {
-      type: 'boolean'
-    } );
-
-    personMoldy.active.should.be.true;*/
   } );
 
   it( 'should not set a key if keyless', function () {

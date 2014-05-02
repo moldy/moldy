@@ -5,7 +5,7 @@ describe( 'findOne', function () {
 
   //before( require( './setup' )( Moldy ) );
 
-  it( 'findOne', function ( _done ) {
+  it( '$findOne', function ( _done ) {
     var Person = Moldy.extend( 'person', {
       key: 'guid',
       properties: {
@@ -13,7 +13,7 @@ describe( 'findOne', function () {
       }
     } );
 
-    Person.findOne( function ( _error, _res ) {
+    Person.$findOne( function ( _error, _res ) {
       var res = _res;
 
       res.should.not.be.an.Array.and.be.a.Moldy;
@@ -25,7 +25,7 @@ describe( 'findOne', function () {
     } );
   } );
 
-  it( 'findOne by id', function ( _done ) {
+  it( '$findOne by id', function ( _done ) {
     var Person = Moldy.extend( 'person', {
       key: 'guid',
       properties: {
@@ -33,7 +33,7 @@ describe( 'findOne', function () {
       }
     } );
 
-    Person.findOne( {
+    Person.$findOne( {
       guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
     }, function ( _error, bennett ) {
 
@@ -52,7 +52,7 @@ describe( 'findOne', function () {
 
   } );
 
-  it( 'get with an array of a type', function ( _done ) {
+  it( '$findOne with an array of a type', function ( _done ) {
     var Person = Moldy.extend( 'person', {
       key: 'guid',
       properties: {
@@ -71,7 +71,7 @@ describe( 'findOne', function () {
       }
     } );
 
-    Person.findOne( function ( _error, res ) {
+    Person.$findOne( function ( _error, res ) {
       var _res = res;
 
       _res.should.not.be.an.Array.and.be.a.Moldy;

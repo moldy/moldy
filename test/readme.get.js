@@ -11,7 +11,7 @@ describe( 'find', function () {
       }
     } );
 
-    personMoldy.findOne( {
+    personMoldy.$findOne( {
       guid: '5f55821f-3a28-45c3-b91d-7df927a863d8'
     }, function ( _error, _res ) {
 
@@ -38,7 +38,7 @@ describe( 'find', function () {
      * Moldy will return the first item out of the array. If you need to return an array you can
      * use the $collection method.
      */
-    Person.findOne( function ( _error, _res ) {
+    Person.$findOne( function ( _error, _res ) {
 
       if ( _error ) {
         return _done( _error );

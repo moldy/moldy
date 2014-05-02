@@ -3,7 +3,6 @@ var cast = require( 'sc-cast' ),
   hasKey = require( 'sc-haskey' ),
   helpers = require( './helpers' ),
   is = require( 'sc-is' ),
-  request = require( './request' ),
   extend = helpers.extendObject,
   useify = require( 'useify' );
 
@@ -65,29 +64,9 @@ Model.prototype.$clone = function ( _data ) {
   var self = this,
     initialValues = this.$json();
 
-  //  data = is.an.object( _data ) ? _data : self.__data;
   helpers.extend( initialValues, _data || {} );
 
   var newMoldy = this.__moldy.create( initialValues );
-  /* this.__moldynew ModelFactory( self.__name, {
-      baseUrl: self.__moldy.$baseUrl(),
-      headers: self.__headers,
-      key: self.__key,
-      keyless: self.__keyless,
-      url: self.__url
-    } );*/
-
-  /*
-  Object.keys( self.__attributes ).forEach( function ( _propertyKey ) {
-    newMoldy.$property( _propertyKey, merge( self.__attributes[ _propertyKey ] ) );
-    if ( is.an.array( newMoldy[ _propertyKey ] ) && is.an.array( data[ _propertyKey ] ) ) {
-      data[ _propertyKey ].forEach( function ( _dataItem ) {
-        newMoldy[ _propertyKey ].push( _dataItem );
-      } );
-    } else {
-      newMoldy[ _propertyKey ] = data[ _propertyKey ]
-    }
-  } );*/
 
   return newMoldy;
 };
@@ -136,10 +115,7 @@ Model.prototype.$destroy = function ( _callback ) {
     callback: callback
   } );
 
-  console.log( "I am in destroy" );
-
   if ( !isDirty ) {
-    console.log( "isDirty" )
     this.__moldy.__defaultMiddleware.__default.destroy.call( this.__moldy, this.$json(), function ( _error, _res ) {
 
       if ( _error && !( _error instanceof Error ) ) {
@@ -152,14 +128,6 @@ Model.prototype.$destroy = function ( _callback ) {
 
       callback && callback( _error, _res );
     } );
-
-
-    /*request( self.__moldy, self, data, method, url, function ( _error, _res ) {
-      self.emit( 'destroy', _error, _res );
-      self.__destroyed = true;
-      self[ self.__moldy.__key ] = undefined;
-      callback.apply( self, arguments );
-    } );*/
   } else {
     callback && callback( new Error( 'This moldy cannot be destroyed because it has not been saved to the server yet.' ) );
   }
@@ -263,22 +231,13 @@ Model.prototype.$save = function ( _callback ) {
     }
 
     if ( !error ) {
-      console.log( "from save" );
-      console.log( _res );
-
       self.$data( _res );
     }
 
     self.emit( 'save', _error, self );
 
-    callback && callback( _error, self ); //not sure about that ! why passing the context ?
+    callback && callback( _error, self );
   } );
-
-  /*request( self.__moldy, self, data, method, url, function ( _error, _res ) {
-    self.emit( 'save', _error, _res );
-    callback.apply( self, arguments ); //not sure about that ! why passing the context ?
-  } );*/
-
 };
 
 emitter( Model.prototype );
