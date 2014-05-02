@@ -3,8 +3,7 @@ var cast = require( 'sc-cast' ),
   hasKey = require( 'sc-haskey' ),
   helpers = require( './helpers' ),
   is = require( 'sc-is' ),
-  extend = helpers.extendObject,
-  useify = require( 'useify' );
+  extend = helpers.extendObject;
 
 var Model = function ( initial, __moldy ) {
   var self = this;
@@ -116,7 +115,7 @@ Model.prototype.$destroy = function ( _callback ) {
   } );
 
   if ( !isDirty ) {
-    this.__moldy.__defaultMiddleware.__default.destroy.call( this.__moldy, this.$json(), function ( _error, _res ) {
+    this.__moldy.__adapter[ this.__moldy.__adapterName ].destroy.call( this.__moldy, this.$json(), function ( _error, _res ) {
 
       if ( _error && !( _error instanceof Error ) ) {
         _error = new Error( 'An unknown error occurred' );
@@ -216,7 +215,7 @@ Model.prototype.$save = function ( _callback ) {
 
   var responseShouldContainAnId = hasKey( data, self.__key ) && is.not.empty( data[ self.__key ] );
 
-  this.__moldy.__defaultMiddleware.__default[ method ].call( this.__moldy, data, function ( _error, _res ) {
+  this.__moldy.__adapter[ this.__moldy.__adapterName ][ method ].call( this.__moldy, data, function ( _error, _res ) {
 
     if ( _error && !( _error instanceof Error ) ) {
       _error = new Error( 'An unknown error occurred' );
@@ -241,7 +240,6 @@ Model.prototype.$save = function ( _callback ) {
 };
 
 emitter( Model.prototype );
-useify( Model );
 
 Model.extend = extend;
 

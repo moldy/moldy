@@ -4,10 +4,9 @@ var helpers = require( "./helpers/index" ),
   hasKey = require( 'sc-haskey' ),
   is = require( 'sc-is' ),
   merge = require( 'sc-merge' ),
-  cast = require( 'sc-cast' ),
-  useify = require( 'useify' );
+  cast = require( 'sc-cast' );
 
-module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware ) {
+module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 
   var Moldy = function ( _name, _properties ) {
     var self = this,
@@ -21,6 +20,9 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
       },
       __properties: {
         value: properties[ 'properties' ] || {}
+      },
+      __adapterName: {
+        value: properties[ 'adapter' ] || '__default'
       },
       __metadata: {
         value: {}
@@ -82,6 +84,17 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
     return this;
   };
 
+  Moldy.prototype.adapter = function ( adapter ) {
+
+    if( !adapter || !this.__adapter[ adapter ] ) {
+      throw new Error("Provide a valid adpater ");
+    }
+
+    this.__adapterName = adapter;
+
+    return this;
+  };
+
   Moldy.prototype.proto = function ( proto ) {
 
     this.__properties.proto = this.__properties.proto || {};
@@ -127,7 +140,7 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 
     self.__destroyed = false;
 
-    this.__defaultMiddleware.__default.findOne.call( this, _query, function ( _error, _response ) {
+    this.__adapter[ this.__adapterName ].findOne.call( this, _query, function ( _error, _response ) {
       if ( _error && !( _error instanceof Error ) ) {
         _error = new Error( 'An unknown error occurred' );
       }
@@ -158,7 +171,7 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
     return is.not.a.string( _url ) ? endpoint : self;
   };
 
-  Moldy.prototype.__defaultMiddleware = defaultMiddleware;
+  Moldy.prototype.__adapter = adapter;
 
   Moldy.prototype.$baseUrl = function ( _base ) {
     var self = this,
@@ -185,7 +198,7 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
       callback: callback
     } );
 
-    this.__defaultMiddleware.__default.find.call( this, _query, function ( _error, res ) {
+    this.__adapter[ this.__adapterName ].find.call( this, _query, function ( _error, res ) {
 
       if ( _error && !( _error instanceof _error ) ) {
         _error = new Error( 'An unknown error occurred' );
@@ -329,7 +342,6 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
   };
 
   emitter( Moldy.prototype );
-  useify( Moldy );
 
   return Moldy;
 

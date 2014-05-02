@@ -1,15 +1,19 @@
 var config = require( './config.json' ),
   moldyApi = {
     adapters: {
-      __default: {}
+      __default: void 0
     },
     use: function ( adapter ) {
 
-      if( !adapter || !adapter.create || !adapter.find || !adapter.findOne || !adapter.save || !adapter.destroy ) {
-        throw new Error( "Invalid Adapter" );
+      if( !adapter || !adapter.name || !adapter.create || !adapter.find || !adapter.findOne || !adapter.save || !adapter.destroy ) {
+        throw new Error( 'Invalid Adapter' );
       }
 
-      this.adapters.__default = adapter;
+      if( !this.adapters.__default ) {
+        this.adapters.__default = adapter;
+      }
+
+      this.adapters[ adapter.name ] = adapter;
     }
   };
 

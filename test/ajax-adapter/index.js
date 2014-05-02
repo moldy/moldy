@@ -40,6 +40,7 @@ var req = function ( _moldy, _data, _method, _url, _callback ) {
 };
 
 module.exports = {
+  name: "ajax",
   create: function ( data, done ) {
     req( this, data, 'post', this.$url(), done );
   },
