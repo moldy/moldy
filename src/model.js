@@ -4,9 +4,7 @@ var cast = require( 'sc-cast' ),
 	hasKey = require( 'sc-haskey' ),
 	helpers = require( './helpers' ),
 	is = require( 'sc-is' ),
-	request = require( './request' ),
-	extend = helpers.extendObject,
-	useify = require( 'useify' );
+	extend = helpers.extendObject;
 
 var Model = function ( initial, __moldy ) {
 	var self = this;
@@ -60,29 +58,9 @@ Model.prototype.$clone = function ( _data ) {
 	var self = this,
 		initialValues = this.$json();
 
-	//  data = is.an.object( _data ) ? _data : self.__data;
 	helpers.extend( initialValues, _data || {} );
 
 	var newMoldy = this.__moldy.create( initialValues );
-	/* this.__moldynew ModelFactory( self.__name, {
-      baseUrl: self.__moldy.$baseUrl(),
-      headers: self.__headers,
-      key: self.__key,
-      keyless: self.__keyless,
-      url: self.__url
-    } );*/
-
-	/*
-  Object.keys( self.__attributes ).forEach( function ( _propertyKey ) {
-    newMoldy.$property( _propertyKey, merge( self.__attributes[ _propertyKey ] ) );
-    if ( is.an.array( newMoldy[ _propertyKey ] ) && is.an.array( data[ _propertyKey ] ) ) {
-      data[ _propertyKey ].forEach( function ( _dataItem ) {
-        newMoldy[ _propertyKey ].push( _dataItem );
-      } );
-    } else {
-      newMoldy[ _propertyKey ] = data[ _propertyKey ]
-    }
-  } );*/
 
 	return newMoldy;
 };
@@ -118,7 +96,6 @@ Model.prototype.$destroy = function ( _callback ) {
 		eguid = guid.generate(),
 		isDirty = self.$isDirty(),
 		data = self.$json(),
-		url = self.__moldy.$url() + ( self.__moldy.__keyless ? '' : '/' + self[ self.__moldy.__key ] ),
 		method = 'delete',
 		callback = is.a.func( _callback ) ? _callback : helpers.noop;
 
@@ -127,24 +104,29 @@ Model.prototype.$destroy = function ( _callback ) {
 	}
 
 	self.__moldy.emit( 'busy', eguid );
-	self.__moldy.emit( 'predestroy', {
+	self.emit( 'predestroy', {
 		moldy: self,
 		data: data,
 		method: method,
-		url: url,
 		callback: callback
 	} );
 
 	if ( !isDirty ) {
-		request( self.__moldy, self, data, method, url, function ( _error, _res ) {
+		this.__moldy.__adapter[ this.__moldy.__adapterName ].destroy.call( this.__moldy, this.$json(), function ( _error, _res ) {
+
+			if ( _error && !( _error instanceof Error ) ) {
+				_error = new Error( 'An unknown error occurred' );
+			}
+
 			self.__moldy.emit( 'busy:done', eguid );
-			self.__moldy.emit( 'destroy', _error, _res );
+			self.emit( 'destroy', _error, _res );
 			self.__destroyed = true;
 			self[ self.__moldy.__key ] = undefined;
-			callback.apply( self, arguments );
+
+			callback && callback( _error, _res );
 		} );
 	} else {
-		callback.apply( self, [ new Error( 'This moldy cannot be destroyed because it has not been saved to the server yet.' ) ] );
+		callback && callback( new Error( 'This moldy cannot be destroyed because it has not been saved to the server yet.' ) );
 	}
 
 };
@@ -217,31 +199,47 @@ Model.prototype.$save = function ( _callback ) {
 		eguid = guid.generate(),
 		isDirty = self.$isDirty(),
 		data = self.$json(),
-		url = self.__moldy.$url() + ( !isDirty && !self.__moldy.__keyless ? '/' + self[ self.__moldy.__key ] : '' ),
-		method = isDirty ? 'post' : 'put',
+		method = isDirty ? 'create' : 'save',
 		callback = is.a.func( _callback ) ? _callback : helpers.noop;
 
 	self.__destroyed = false;
 
 	self.__moldy.emit( 'busy', eguid );
-	self.__moldy.emit( 'presave', {
+	self.emit( 'presave', {
 		moldy: self,
 		data: data,
 		method: method,
-		url: url,
 		callback: callback
 	} );
 
-	request( self.__moldy, self, data, method, url, function ( _error, _res ) {
-		self.__moldy.emit( 'busy:done', eguid );
-		self.__moldy.emit( 'save', _error, _res );
-		callback.apply( self, arguments ); //not sure about that ! why passing the context ?
-	} );
+	var responseShouldContainAnId = hasKey( data, self.__key ) && is.not.empty( data[ self.__key ] );
 
+	self.__moldy.__adapter[ self.__moldy.__adapterName ][ method ].call( self.__moldy, data, function ( _error, _res ) {
+
+		if ( _error && !( _error instanceof Error ) ) {
+			_error = new Error( 'An unknown error occurred' );
+		}
+
+		if ( !_error && isDirty && is.object( _res ) && ( responseShouldContainAnId && !hasKey( _res, self.__moldy.__key ) ) ) {
+			_error = new Error( 'The response from the server did not contain a valid `' + self.__moldy.__key + '`' );
+		}
+
+		if ( !_error && isDirty && is.object( _res ) ) {
+			self.__moldy[ self.__moldy.__key ] = _res[ self.__moldy.__key ];
+		}
+
+		if ( !error ) {
+			self.$data( _res );
+		}
+
+		self.emit( 'save', _error, self );
+		self.__moldy.emit( 'busy:done', eguid );
+
+		callback && callback( _error, self );
+	} );
 };
 
 emitter( Model.prototype );
-useify( Model );
 
 Model.extend = extend;
 

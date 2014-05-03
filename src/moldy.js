@@ -5,11 +5,9 @@ var helpers = require( "./helpers/index" ),
 	hasKey = require( 'sc-haskey' ),
 	is = require( 'sc-is' ),
 	merge = require( 'sc-merge' ),
-	cast = require( 'sc-cast' ),
-	request = require( './request' ),
-	useify = require( 'useify' );
+	cast = require( 'sc-cast' );
 
-module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware ) {
+module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 
 	var Moldy = function ( _name, _properties ) {
 		var self = this,
@@ -23,6 +21,9 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 			},
 			__properties: {
 				value: properties[ 'properties' ] || {}
+			},
+			__adapterName: {
+				value: properties[ 'adapter' ] || '__default'
 			},
 			__metadata: {
 				value: {}
@@ -82,6 +83,17 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 		return this;
 	};
 
+	Moldy.prototype.adapter = function ( adapter ) {
+
+		if ( !adapter || !this.__adapter[ adapter ] ) {
+			throw new Error( "Provide a valid adpater " );
+		}
+
+		this.__adapterName = adapter;
+
+		return this;
+	};
+
 	Moldy.prototype.proto = function ( proto ) {
 
 		this.__properties.proto = this.__properties.proto || {};
@@ -91,11 +103,9 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 	};
 
 	Moldy.prototype.create = function ( _initial ) {
-		var self = this,
-			Klass = BaseModel.extend( this.__properties.proto || {} ),
-			klass = new Klass( _initial, this );
+		var Klass = BaseModel.extend( this.__properties.proto || {} );
 
-		return klass;
+		return new Klass( _initial, this );
 	};
 
 	Moldy.prototype.$headers = function ( _headers ) {
@@ -112,6 +122,7 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 	Moldy.prototype.$findOne = function ( _query, _callback ) {
 		var self = this,
 			eguid = guid.generate(),
+			result,
 			url = self.$url(),
 			method = 'findOne',
 			query = is.an.object( _query ) ? _query : {},
@@ -129,23 +140,24 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 
 		self.__destroyed = false;
 
+		self.__adapter[ self.__adapterName ].findOne.call( self, _query, function ( _error, _response ) {
+			if ( _error && !( _error instanceof Error ) ) {
+				_error = new Error( 'An unknown error occurred' );
+			}
 
-		request( self, null, query, method, url, function ( _error, _res ) {
-			//var res = _res instanceof BaseModel ? _res : null;
+			if ( !_error ) {
+				if ( is.array( _response ) ) {
+					result = self.create( _response[ 0 ] );
+				} else {
+					result = self.create( _response );
+				}
+			}
 
-			// if ( is.an.array( _res ) && _res[ 0 ] instanceof BaseModel ) {
-			//   self.$data( _res[ 0 ].$json() );
-			//   res = self;
-			// }
-			/*
-      if ( _error && wasDestroyed ) {
-        self.__destroyed = true;
-      }*/
 
 			self.emit( 'busy:done', eguid );
 			self.emit( 'findOne', _error, _res );
 
-			callback.apply( self, [ _error, _res ] );
+			callback && callback( _error, result );
 		} );
 	};
 
@@ -161,7 +173,7 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 		return is.not.a.string( _url ) ? endpoint : self;
 	};
 
-	Moldy.prototype.__defaultMiddleware = defaultMiddleware;
+	Moldy.prototype.__adapter = adapter;
 
 	Moldy.prototype.$baseUrl = function ( _base ) {
 		var self = this,
@@ -177,6 +189,7 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 			eguid = guid.generate(),
 			url = self.$url(),
 			method = 'find',
+			result = [],
 			query = is.an.object( _query ) ? _query : {},
 			callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop;
 
@@ -189,13 +202,27 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 			callback: callback
 		} );
 
-		request( self, null, query, method, url, function ( _error, _res ) {
+		this.__adapter[ this.__adapterName ].find.call( this, _query, function ( _error, res ) {
+
+			if ( _error && !( _error instanceof _error ) ) {
+				_error = new Error( 'An unknown error occurred' );
+			}
+
+			if ( is.array( res ) ) {
+				res.forEach( function ( _data ) {
+					result.push( self.create( _data ) );
+				} );
+			} else {
+				result.push( self.create( _data ) );
+			}
+
 			var res = cast( _res instanceof BaseModel || is.an.array( _res ) ? _res : null, 'array', [] );
 			self.emit( 'busy:done', eguid );
 			self.emit( 'find', _error, res );
-			callback.apply( self, [ _error, res ] );
-		} );
 
+			callback && callback( _error, res );
+
+		} );
 	};
 
 	Moldy.prototype.$defineProperty = function ( obj, key, value ) {
@@ -216,7 +243,7 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 
 				Object.defineProperty( obj, key, {
 					value: metadata.attributes[ 'default' ],
-					enumerable: true,
+					enumerable: true
 				} );
 
 				obj.__data[ key ] = obj[ key ];
@@ -319,7 +346,6 @@ module.exports = function ( BaseModel, defaultConfiguration, defaultMiddleware )
 	};
 
 	emitter( Moldy.prototype );
-	useify( Moldy );
 
 	return Moldy;
 
