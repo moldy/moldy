@@ -214,7 +214,7 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 				result.push( self.create( _data ) );
 			}
 
-			var res = cast( _res instanceof BaseModel || is.an.array( _res ) ? _res : null, 'array', [] );
+			var res = cast( result instanceof BaseModel || is.an.array( result ) ? result : null, 'array', [] );
 			self.emit( 'busy:done', eguid );
 			self.emit( 'find', _error, res );
 
