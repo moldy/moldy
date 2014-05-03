@@ -140,23 +140,21 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 
 		self.__destroyed = false;
 
-		self.__adapter[ self.__adapterName ].findOne.call( self, _query, function ( _error, _response ) {
+		self.__adapter[ self.__adapterName ].findOne.call( self, _query, function ( _error, _res ) {
 			if ( _error && !( _error instanceof Error ) ) {
 				_error = new Error( 'An unknown error occurred' );
 			}
 
 			if ( !_error ) {
-				if ( is.array( _response ) ) {
-					result = self.create( _response[ 0 ] );
+				if ( is.array( _res ) ) {
+					result = self.create( _res[ 0 ] );
 				} else {
-					result = self.create( _response );
+					result = self.create( _res );
 				}
 			}
 
-
 			self.emit( 'busy:done', eguid );
-			self.emit( 'findOne', _error, _res );
-
+			self.emit( 'findOne', _error, result );
 			callback && callback( _error, result );
 		} );
 	};
@@ -202,14 +200,14 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 			callback: callback
 		} );
 
-		this.__adapter[ this.__adapterName ].find.call( this, _query, function ( _error, res ) {
+		self.__adapter[ self.__adapterName ].find.call( self, _query, function ( _error, _res ) {
 
 			if ( _error && !( _error instanceof _error ) ) {
 				_error = new Error( 'An unknown error occurred' );
 			}
 
-			if ( is.array( res ) ) {
-				res.forEach( function ( _data ) {
+			if ( is.array( _res ) ) {
+				_res.forEach( function ( _data ) {
 					result.push( self.create( _data ) );
 				} );
 			} else {
@@ -229,7 +227,7 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 
 		var self = this,
 			existingValue = obj[ key ] || value,
-			metadata = this.__metadata[ key ];
+			metadata = self.__metadata[ key ];
 
 		if ( !obj.hasOwnProperty( key ) || !obj.__attributes.hasOwnProperty( key ) ) {
 			if ( metadata.valueIsAnArrayMoldy || metadata.valueIsAnArrayString ) {

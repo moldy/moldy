@@ -6,12 +6,11 @@ var cast = require( 'sc-cast' ),
 	is = require( 'sc-is' ),
 	extend = helpers.extendObject;
 
-var Model = function ( initial, __moldy ) {
-	var self = this;
+var Model = function ( _initial, _moldy ) {
+	var self = this,
+		initial = _initial || {};
 
-	initial = initial || {};
-
-	this.__moldy = __moldy;
+	this.__moldy = _moldy;
 	this.__isMoldy = true;
 	this.__attributes = {};
 	this.__data = {};
@@ -30,7 +29,6 @@ var Model = function ( initial, __moldy ) {
 			this[ i ] = initial[ i ];
 		}
 	}
-
 };
 
 Model.prototype.$clear = function () {
@@ -112,7 +110,7 @@ Model.prototype.$destroy = function ( _callback ) {
 	} );
 
 	if ( !isDirty ) {
-		this.__moldy.__adapter[ this.__moldy.__adapterName ].destroy.call( this.__moldy, this.$json(), function ( _error, _res ) {
+		self.__moldy.__adapter[ self.__moldy.__adapterName ].destroy.call( self.__moldy, self.$json(), function ( _error, _res ) {
 
 			if ( _error && !( _error instanceof Error ) ) {
 				_error = new Error( 'An unknown error occurred' );
