@@ -140,7 +140,7 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 
 		self.__destroyed = false;
 
-		self.__adapter[ self.__adapterName ].findOne.call( self, _query, function ( _error, _res ) {
+		self.__adapter[ self.__adapterName ].findOne.call( self, query, function ( _error, _res ) {
 			if ( _error && !( _error instanceof Error ) ) {
 				_error = new Error( 'An unknown error occurred' );
 			}
@@ -200,7 +200,7 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 			callback: callback
 		} );
 
-		self.__adapter[ self.__adapterName ].find.call( self, _query, function ( _error, _res ) {
+		self.__adapter[ self.__adapterName ].find.call( self, query, function ( _error, _res ) {
 
 			if ( _error && !( _error instanceof _error ) ) {
 				_error = new Error( 'An unknown error occurred' );
