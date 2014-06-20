@@ -24,11 +24,7 @@ var Model = function ( _initial, _moldy ) {
 		self.__moldy.$defineProperty( self, _key, initial[ _key ] );
 	} );
 
-	for ( var i in initial ) {
-		if ( initial.hasOwnProperty( i ) && self.__moldy.__metadata[ i ] ) {
-			this[ i ] = initial[ i ];
-		}
-	}
+	self.$data( initial );
 };
 
 Model.prototype.$clear = function () {

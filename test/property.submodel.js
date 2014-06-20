@@ -115,4 +115,33 @@ describe( 'properties with sub models', function () {
 
 	} );
 
+	it( 'applies the schema based on initial data passed in with `create`', function () {
+		var personMoldy = Moldy.extend( 'person', {
+			properties: {
+				value: {
+					keyless: true,
+					properties: {
+						username: 'string',
+						passsword: 'string'
+					}
+				}
+			}
+		} ).create( {
+			id: '123',
+			value: {
+				username: 'david',
+				passsword: 'chicken'
+			}
+		} );
+
+		personMoldy.$json().should.eql( {
+			id: '123',
+			value: {
+				username: 'david',
+				passsword: 'chicken'
+			}
+		} );
+
+	} );
+
 } );
