@@ -249,7 +249,7 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 			} else if ( metadata.valueIsAStaticMoldy ) {
 
 				Object.defineProperty( obj, key, {
-					value: new Moldy( metadata.value.name, metadata.value ).create(),
+					value: new Moldy( metadata.value.name, metadata.value ).create( existingValue ),
 					enumerable: true,
 				} );
 

@@ -24,7 +24,6 @@ var Model = function ( _initial, _moldy ) {
 		self.__moldy.$defineProperty( self, _key, initial[ _key ] );
 	} );
 
-	self.$data( initial );
 };
 
 Model.prototype.$clear = function () {

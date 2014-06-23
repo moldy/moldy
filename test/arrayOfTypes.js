@@ -309,4 +309,31 @@ describe( 'array of a type', function () {
 
 	} );
 
+	it( 'should handle an array being passed in through the `create` property', function () {
+		var PersonMoldy = Moldy.extend( 'person', {
+			keyless: true,
+			properties: {
+				placeholders: [ {
+					keyless: true,
+					properties: {
+						name: {
+							type: 'string',
+							default: ''
+						}
+					}
+				} ]
+			}
+		} );
+
+		var personMoldy = PersonMoldy.create( {
+			'placeholders': [ {
+				'name': 'body'
+			}, {
+				'name': 'title'
+			} ]
+		} );
+
+		personMoldy.placeholders.should.have.a.lengthOf( 2 );
+	} );
+
 } );
