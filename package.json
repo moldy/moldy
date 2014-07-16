@@ -1,53 +1,53 @@
 {
-  "name": "moldy",
-  "version": "1.2.0",
-  "description": "A javascript model API for the browser + server that is actually worth using.",
-  "main": "src/index.js",
-  "scripts": {
-    "pretest": "forever start server.js",
-    "test": "mocha test/*.js",
-    "posttest": [
-      "mocha test/readme.js -R markdown > README.md",
-      "./node_modules/.bin/forever stop server.js"
-    ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/moldy/moldy"
-  },
-  "author": "David Tsuji, Pierre Derval, Glen Arrowsmith",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/moldy/moldy/issues"
-  },
-  "homepage": "http://moldy.io",
-  "devDependencies": {
-    "mocha": "^1.18.2",
-    "should": "^3.1.4",
-    "express": "^3.5.0",
-    "browserify": "^3.33.0",
-    "uglify-js": "^2.4.13",
-    "gulp": "^3.6.1",
-    "gulp-shell": "^0.2.4",
-    "gulp-uglify": "^0.2.1",
-    "gulp-browserify": "^0.5.0",
-    "gulp-rename": "^1.2.0",
-    "gulp-livereload": "^1.2.0",
-    "underscore": "^1.6.0",
-    "forever": "^0.10.11",
-    "gulp-ejs": "^0.2.1",
-    "gulp-markdown": "^0.1.2",
-    "moldy-ajax-adapter": "^1.1.4",
-    "jshint-stylish": "^0.1.5",
-    "gulp-jshint": "^1.5.3"
-  },
-  "dependencies": {
-    "emitter-component": "^1.1.1",
-    "sc-is": "0.0.3",
-    "sc-cast": "0.0.3",
-    "sc-haskey": "0.0.2",
-    "sc-merge": "0.0.3",
-    "sc-guid": "0.0.4",
-    "sg-observable-array": "0.0.2"
-  }
+	"name": "moldy",
+	"version": "1.2.0",
+	"description": "A javascript model API for the browser + server that is actually worth using.",
+	"main": "src/index.js",
+	"scripts": {
+		"pretest": "forever start server.js",
+		"test": "mocha test/*.js",
+		"posttest": [
+			"mocha test/readme.js -R markdown > README.md",
+			"forever stop server.js"
+		]
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/moldy/moldy"
+	},
+	"author": "David Tsuji, Pierre Derval, Glen Arrowsmith",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/moldy/moldy/issues"
+	},
+	"homepage": "http://moldy.io",
+	"devDependencies": {
+		"mocha": "^1.18.2",
+		"should": "^3.1.4",
+		"express": "^3.5.0",
+		"browserify": "^3.33.0",
+		"uglify-js": "^2.4.13",
+		"gulp": "^3.6.1",
+		"gulp-shell": "^0.2.4",
+		"gulp-uglify": "^0.2.1",
+		"gulp-browserify": "^0.5.0",
+		"gulp-rename": "^1.2.0",
+		"gulp-livereload": "^1.2.0",
+		"underscore": "^1.6.0",
+		"forever": "^0.10.11",
+		"gulp-ejs": "^0.2.1",
+		"gulp-markdown": "^0.1.2",
+		"moldy-ajax-adapter": "^1.1.4",
+		"jshint-stylish": "^0.1.5",
+		"gulp-jshint": "^1.5.3"
+	},
+	"dependencies": {
+		"emitter-component": "^1.1.1",
+		"sc-is": "0.0.3",
+		"sc-cast": "0.0.3",
+		"sc-haskey": "0.0.2",
+		"sc-merge": "0.0.3",
+		"sc-guid": "0.0.4",
+		"sg-observable-array": "0.0.2"
+	}
 }
