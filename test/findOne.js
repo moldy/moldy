@@ -23,6 +23,26 @@ describe( 'findOne', function () {
 		} );
 	} );
 
+	it( 'findOne that does not exist', function ( _done ) {
+		var Person = Moldy.extend( 'person', {
+			key: 'guid',
+			properties: {
+				name: ''
+			}
+		} );
+
+		Person.$findOne( {
+			guid: 'wat'
+		}, function ( _error, _res ) {
+			var res = _res;
+
+			should( _error ).eql( undefined );
+			should( _res ).eql( undefined );
+
+			_done( _error );
+		} );
+	} );
+
 	it( 'findOne by id', function ( _done ) {
 		var Person = Moldy.extend( 'person', {
 			key: 'guid',

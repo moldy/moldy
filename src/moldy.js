@@ -145,7 +145,9 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 				_error = new Error( 'An unknown error occurred' );
 			}
 
-			if ( !_error ) {
+			if ( is.empty( _res ) ) {
+				result = undefined;
+			} else {
 				if ( is.array( _res ) ) {
 					result = self.create( _res[ 0 ] );
 				} else {
@@ -155,6 +157,7 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 
 			self.emit( 'busy:done', eguid );
 			self.emit( 'findOne', _error, result );
+
 			callback && callback( _error, result );
 		} );
 	};
