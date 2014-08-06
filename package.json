@@ -4,12 +4,8 @@
 	"description": "A javascript model API for the browser + server that is actually worth using.",
 	"main": "src/index.js",
 	"scripts": {
-		"pretest": "forever start server.js",
 		"test": "mocha test/*.js",
-		"posttest": [
-			"mocha test/readme.js -R markdown > README.md",
-			"forever stop server.js"
-		]
+		"posttest": "mocha test/readme.js -R markdown > README.md"
 	},
 	"repository": {
 		"type": "git",
@@ -24,7 +20,7 @@
 	"devDependencies": {
 		"mocha": "^1.18.2",
 		"should": "^3.1.4",
-		"express": "^3.5.0",
+		"express": "^4.8.1",
 		"browserify": "^3.33.0",
 		"uglify-js": "^2.4.13",
 		"gulp": "^3.6.1",
@@ -39,7 +35,10 @@
 		"gulp-markdown": "^0.1.2",
 		"moldy-ajax-adapter": "*",
 		"jshint-stylish": "^0.1.5",
-		"gulp-jshint": "^1.5.3"
+		"gulp-jshint": "^1.5.3",
+		"debug": "^1.0.4",
+		"morgan": "^1.2.2",
+		"body-parser": "^1.6.1"
 	},
 	"dependencies": {
 		"emitter-component": "^1.1.1",

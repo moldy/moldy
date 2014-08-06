@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+process.env.APP_NAME = process.env.APP_NAME || require( '../package' ).name;
+
+var cwd = process.cwd(),
+	Server;
+
+Server = function () {
+	this.cluster = require( 'cluster' );
+	this.cluster.setupMaster( {
+		exec: cwd + '/server.js'
+	} );
+};
+
+Server.prototype.restart = function () {
+	this.stop();
+	this.worker = this.cluster.fork( {
+		DEBUG: process.env.APP_NAME,
+		NODE_ENV: process.env.NODE_ENV
+	} );
+};
+
+Server.prototype.stop = function () {
+	if ( this.worker ) this.worker.kill();
+};
+
+exports = module.exports = new Server();
+
+process.nextTick( function () {
+	exports.restart();
+} );
