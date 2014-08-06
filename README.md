@@ -1,3 +1,7 @@
+Wed, 06 Aug 2014 23:21:37 GMT moldy Express server listening on port 3000
+Wed, 06 Aug 2014 23:21:37 GMT moldy Express server listening on port 3000
+Wed, 06 Aug 2014 23:21:38 GMT moldy Express server listening on port 3000
+Wed, 06 Aug 2014 23:21:38 GMT moldy Express server listening on port 3000
 # TOC
    - [moldy](#moldy)
      - [Property Attributes](#moldy-property-attributes)
@@ -247,6 +251,27 @@ Person.$findOne( function ( _error, _res ) {
 
 <a name="moldy-find"></a>
 ## find
+To find an array of models.
+
+```js
+var Person = Moldy.extend( 'person', {
+	key: 'guid',
+	properties: {
+		name: 'string'
+	}
+} );
+Person.$find( function ( _error, _people ) {
+	if ( _error ) {
+		return _done( _error );
+	}
+	_people.should.be.an.Array.with.a.lengthOf( 3 );
+	_people.forEach( function ( _person ) {
+		_person.should.be.a.Moldy;
+	} );
+	_done();
+} );
+```
+
 <a name="moldy-save"></a>
 ## save
 To save the model, call `save()`. If the model is `dirty` (has not been saved to the server and therefore does not have a valid `key`) then the http method will be POST. If the model has been saved, then the http method will be PUT.
@@ -262,7 +287,7 @@ personMoldy.$save( function ( _error, _res ) {
 	if ( _error ) {
 		return _done( _error );
 	}
-	personMoldy.should.eql( _res );
+	personMoldy.$json().should.eql( _res.$json() );
 	personMoldy.should.have.a.property( 'id' );
 	personMoldy.name = 'Mr David';
 	personMoldy.$save( function ( _error, _res ) {
@@ -274,3 +299,26 @@ personMoldy.$save( function ( _error, _res ) {
 
 <a name="moldy-destroy"></a>
 ## destroy
+To destroy a model, call `destroy()`.
+
+```js
+var personMoldy = Moldy.extend( 'person', {
+	key: 'guid',
+	properties: {
+		name: 'string'
+	}
+} ).create();
+personMoldy.name = 'David';
+personMoldy.$save( function ( _error, _res ) {
+	if ( _error ) {
+		return _done( _error );
+	}
+	personMoldy.$destroy( function ( _error, _res ) {
+		personMoldy.$isDirty().should.be.true;
+		//personMoldy.$isValid().should.be.false; -- DO NOT GET WHY SHOULD BE FALSE
+		//personMoldy.__destroyed.should.be.true;
+		_done( _error );
+	} );
+} );
+```
+
