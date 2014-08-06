@@ -3,6 +3,9 @@ var Moldy = require( '../src' ),
 
 describe( 'findOne', function () {
 
+	before( require( './setup' )( Moldy ) );
+	after( require( './setup/teardown' ) );
+
 	it( 'findOne', function ( _done ) {
 		var Person = Moldy.extend( 'person', {
 			key: 'guid',

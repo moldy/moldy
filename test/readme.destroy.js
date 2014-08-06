@@ -3,7 +3,8 @@ var Moldy = require( '../src' ),
 
 describe( 'destroy', function () {
 
-	//before( require( './setup' )( Moldy ) );
+	before( require( './setup' )( Moldy ) );
+	after( require( './setup/teardown' ) );
 
 	it( 'To destroy a model, call `destroy()`', function ( _done ) {
 		var personMoldy = Moldy.extend( 'person', {

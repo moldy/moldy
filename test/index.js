@@ -5,7 +5,8 @@ require( './setup' )( Moldy )();
 
 describe( 'save', function () {
 
-	//before( require( './setup' )( Moldy ) );
+	before( require( './setup' )( Moldy ) );
+	after( require( './setup/teardown' ) );
 
 	it( 'instantiate using', function ( _done ) {
 		var Person = Moldy.extend( 'person' );

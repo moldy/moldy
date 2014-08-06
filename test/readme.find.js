@@ -3,6 +3,9 @@ var Moldy = require( '../src' ),
 
 describe( 'find', function () {
 
+	before( require( './setup' )( Moldy ) );
+	after( require( './setup/teardown' ) );
+
 	it( 'To find an array of models', function ( _done ) {
 		var Person = Moldy.extend( 'person', {
 			key: 'guid',

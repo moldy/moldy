@@ -3,7 +3,8 @@ var Moldy = require( '../src' ),
 
 describe( 'save', function () {
 
-	//before( require( './setup' )( Moldy ) );
+	before( require( './setup' )( Moldy ) );
+	after( require( './setup/teardown' ) );
 
 	it( 'should handle an empty body', function ( _done ) {
 		var personMoldy = Moldy.extend( 'person', {

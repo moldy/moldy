@@ -1,36 +1,39 @@
 var Moldy = require( '../src' ),
-  should = require( 'should' );
+	should = require( 'should' );
 
 describe( 'save', function () {
 
-  it( 'To save the model, call `save()`. If the model is `dirty` (has not been saved to the server and therefore does not have a valid `key`) then the http method will be POST. If the model has been saved, then the http method will be PUT', function ( _done ) {
-    var personMoldy = Moldy.extend( 'person', {
-      properties: {
-        name: 'string'
-      }
-    } ).create();
+	before( require( './setup' )( Moldy ) );
+	after( require( './setup/teardown' ) );
 
-    personMoldy.name = 'David';
+	it( 'To save the model, call `save()`. If the model is `dirty` (has not been saved to the server and therefore does not have a valid `key`) then the http method will be POST. If the model has been saved, then the http method will be PUT', function ( _done ) {
+		var personMoldy = Moldy.extend( 'person', {
+			properties: {
+				name: 'string'
+			}
+		} ).create();
 
-    personMoldy.$save( function ( _error, _res ) {
+		personMoldy.name = 'David';
 
-      if ( _error ) {
-        return _done( _error );
-      }
+		personMoldy.$save( function ( _error, _res ) {
 
-      personMoldy.$json().should.eql( _res.$json() );
-      personMoldy.should.have.a.property( 'id' );
-      personMoldy.name = 'Mr David';
+			if ( _error ) {
+				return _done( _error );
+			}
 
-      personMoldy.$save( function ( _error, _res ) {
+			personMoldy.$json().should.eql( _res.$json() );
+			personMoldy.should.have.a.property( 'id' );
+			personMoldy.name = 'Mr David';
 
-        personMoldy.should.eql( _res );
-        _done( _error );
+			personMoldy.$save( function ( _error, _res ) {
 
-      } );
+				personMoldy.should.eql( _res );
+				_done( _error );
 
-    } );
+			} );
 
-  } );
+		} );
+
+	} );
 
 } );

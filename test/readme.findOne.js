@@ -3,6 +3,9 @@ var Moldy = require( '../src' ),
 
 describe( 'find', function () {
 
+	before( require( './setup' )( Moldy ) );
+	after( require( './setup/teardown' ) );
+
 	it( 'To find by `id` or `key`, give an object with appropriate conditions', function ( _done ) {
 		var personMoldy = Moldy.extend( 'person', {
 			key: 'guid',
