@@ -21,4 +21,10 @@ describe( 'url', function () {
 		personMoldy.$url().should.eql( 'http://domain.com/api/person' );
 	} );
 
+	it( 'should be able to override the url', function () {
+		var personMoldy = Moldy.extend( 'person' ).$url( 'bam' ).$baseUrl( '/chicken' );
+		personMoldy.__name = 'company';
+		personMoldy.$url().should.eql( '/chicken/company/bam' );
+	} );
+
 } );
