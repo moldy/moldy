@@ -52,7 +52,8 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 				value: properties[ 'keyless' ] === true
 			},
 			__name: {
-				value: _name || properties[ 'name' ] || ''
+				value: _name || properties[ 'name' ] || '',
+				writable: true
 			},
 			__url: {
 				value: cast( properties[ 'url' ], 'string', '' ),
