@@ -44,19 +44,19 @@ app.delete( '/api/person/:id', function ( _req, _res ) {
 } );
 
 app.post( '/empty-body/*', function ( _req, _res ) {
-	_res.send( 200 ).end();
+	_res.status( 200 ).end();
 } );
 
 app.post( '/400/*', function ( _req, _res ) {
-	_res.send( 400 ).end();
+	_res.status( 400 ).end();
 } );
 
 app.post( '/404/*', function ( _req, _res ) {
-	_res.send( 404 ).end();
+	_res.status( 404 ).end();
 } );
 
 app.post( '/500/*', function ( _req, _res ) {
-	_res.send( 500 ).end();
+	_res.status( 500 ).end();
 } );
 
 app.set( 'port', process.env.PORT || 3000 );
