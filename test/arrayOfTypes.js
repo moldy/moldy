@@ -318,6 +318,7 @@ describe( 'array of a type', function () {
 					properties: {
 						name: {
 							type: 'string',
+							values: [ 'body', 'title' ],
 							default: ''
 						}
 					}
@@ -334,6 +335,46 @@ describe( 'array of a type', function () {
 		} );
 
 		personMoldy.placeholders.should.have.a.lengthOf( 2 );
+	} );
+
+	it( 'should handle an array being passed in through the `create` property deconstructed and reconstructed', function () {
+		var PersonMoldy = Moldy.extend( 'person', {
+			keyless: true,
+			properties: {
+				placeholders: {
+					default: [],
+					type: [ {
+						keyless: true,
+						properties: {
+							name: {
+								type: 'string',
+								values: [ 'body', 'title' ],
+								default: ''
+							}
+						}
+					} ]
+				}
+			}
+		} );
+
+		var personMoldy = PersonMoldy.create( {
+			'placeholders': [ {
+				'name': 'body1'
+			}, {
+				'name': 'body2'
+			}, {
+				'name': 'body3'
+			} ]
+		} );
+
+		var personMoldyJson = personMoldy.$json();
+
+		var personMoldyReconstructed = PersonMoldy.create( personMoldyJson );
+
+		personMoldyReconstructed.placeholders.should.have.a.lengthOf( 3 );
+		personMoldyReconstructed.placeholders[ 0 ].name.should.eql( 'body1' );
+		personMoldyReconstructed.placeholders[ 1 ].name.should.eql( 'body2' );
+		personMoldyReconstructed.placeholders[ 2 ].name.should.eql( 'body3' );
 	} );
 
 } );
