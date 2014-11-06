@@ -58,9 +58,12 @@ Model.prototype.$clone = function ( _data ) {
 	return newMoldy;
 };
 
-Model.prototype.$data = function ( _data ) {
+Model.prototype.$data = function ( _data, _options ) {
 	var self = this,
-		data = is.object( _data ) ? _data : {};
+		data = is.object( _data ) ? _data : {},
+		options = helpers.extend( {
+			mergeArrayOfAType: true
+		}, _options );
 
 	if ( self.__destroyed ) {
 		return helpers.destroyedError( self );
@@ -69,6 +72,9 @@ Model.prototype.$data = function ( _data ) {
 	Object.keys( data ).forEach( function ( _key ) {
 		if ( self.__attributes.hasOwnProperty( _key ) ) {
 			if ( is.an.array( data[ _key ] ) && hasKey( self.__attributes[ _key ], 'arrayOfAType', 'boolean' ) && self.__attributes[ _key ].arrayOfAType === true ) {
+				if ( options.mergeArrayOfAType !== true ) {
+					while ( self[ _key ].length ) self[ _key ].shift();
+				}
 				data[ _key ].forEach( function ( _moldy ) {
 					self[ _key ].push( _moldy );
 				} );
@@ -224,7 +230,9 @@ Model.prototype.$save = function ( _callback ) {
 		}
 
 		if ( !error ) {
-			self.$data( _res );
+			self.$data( _res, {
+				mergeArrayOfAType: false
+			} );
 		}
 
 		self.emit( 'save', _error, self );

@@ -377,4 +377,89 @@ describe( 'array of a type', function () {
 		personMoldyReconstructed.placeholders[ 2 ].name.should.eql( 'body3' );
 	} );
 
+	it( 'should handle an array of a type using $data defaulting to merge the array', function () {
+		var PersonMoldy = Moldy.extend( 'person', {
+			keyless: true,
+			properties: {
+				placeholders: {
+					default: [],
+					type: [ {
+						keyless: true,
+						properties: {
+							name: {
+								type: 'string',
+								values: [ 'body', 'title' ],
+								default: ''
+							}
+						}
+					} ]
+				}
+			}
+		} );
+
+		var personMoldy = PersonMoldy.create( {
+			'placeholders': [ {
+				'name': 'body1'
+			}, {
+				'name': 'body2'
+			}, {
+				'name': 'body3'
+			} ]
+		} );
+
+		personMoldy.$data( {
+			'placeholders': [ {
+				'name': 'body4'
+			} ]
+		} );
+
+		personMoldy.placeholders.should.have.a.lengthOf( 4 );
+		personMoldy.placeholders[ 0 ].name.should.eql( 'body1' );
+		personMoldy.placeholders[ 1 ].name.should.eql( 'body2' );
+		personMoldy.placeholders[ 2 ].name.should.eql( 'body3' );
+		personMoldy.placeholders[ 3 ].name.should.eql( 'body4' );
+	} );
+
+	it( 'should handle an array of a type using $data defaulting to merge the array', function () {
+		var PersonMoldy = Moldy.extend( 'person', {
+			keyless: true,
+			properties: {
+				placeholders: {
+					default: [],
+					type: [ {
+						keyless: true,
+						properties: {
+							name: {
+								type: 'string',
+								values: [ 'body', 'title' ],
+								default: ''
+							}
+						}
+					} ]
+				}
+			}
+		} );
+
+		var personMoldy = PersonMoldy.create( {
+			'placeholders': [ {
+				'name': 'body1'
+			}, {
+				'name': 'body2'
+			}, {
+				'name': 'body3'
+			} ]
+		} );
+
+		personMoldy.$data( {
+			'placeholders': [ {
+				'name': 'body4'
+			} ]
+		}, {
+			mergeArrayOfAType: false
+		} );
+
+		personMoldy.placeholders.should.have.a.lengthOf( 1 );
+		personMoldy.placeholders[ 0 ].name.should.eql( 'body4' );
+	} );
+
 } );
