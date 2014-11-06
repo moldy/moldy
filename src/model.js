@@ -79,7 +79,7 @@ Model.prototype.$data = function ( _data, _options ) {
 					self[ _key ].push( _moldy );
 				} );
 			} else if ( is.a.object( data[ _key ] ) && self[ _key ] instanceof Model ) {
-				self[ _key ].$data( data[ _key ] );
+				self[ _key ].$data( data[ _key ], _options );
 			} else {
 				self[ _key ] = data[ _key ];
 			}
