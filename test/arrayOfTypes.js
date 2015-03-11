@@ -348,7 +348,6 @@ describe( 'array of a type', function () {
 						properties: {
 							name: {
 								type: 'string',
-								values: [ 'body', 'title' ],
 								default: ''
 							}
 						}
@@ -388,7 +387,6 @@ describe( 'array of a type', function () {
 						properties: {
 							name: {
 								type: 'string',
-								values: [ 'body', 'title' ],
 								default: ''
 							}
 						}
@@ -431,7 +429,6 @@ describe( 'array of a type', function () {
 						properties: {
 							name: {
 								type: 'string',
-								values: [ 'body', 'title' ],
 								default: ''
 							}
 						}

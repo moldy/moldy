@@ -47,7 +47,8 @@ exports.setProperty = function ( _key ) {
 	return function ( _value ) {
 		var self = this,
 			attributes = self.__attributes[ _key ],
-			value = attributes.type ? cast( _value, attributes.type, attributes[ 'default' ] ) : _value;
+			values = Array.isArray( attributes[ 'values' ] ) ? attributes[ 'values' ] : [],
+			value = attributes.type ? cast( _value, attributes.type, attributes[ 'default' ], values ) : _value;
 
 		if ( self.__data[ _key ] !== value ) {
 			self.emit( 'change', self.__data[ _key ], value );
