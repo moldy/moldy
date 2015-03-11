@@ -127,7 +127,7 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 			url = self.$url(),
 			method = 'findOne',
 			query = is.an.object( _query ) ? _query : {},
-			callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop
+			callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop,
 			wasDestroyed = self.__destroyed;
 
 		self.emit( 'busy', eguid )
@@ -254,7 +254,7 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 
 				Object.defineProperty( obj, key, {
 					value: new Moldy( metadata.value.name, metadata.value ).create( existingValue ),
-					enumerable: true,
+					enumerable: true
 				} );
 
 				obj.__data[ key ] = obj[ key ];
