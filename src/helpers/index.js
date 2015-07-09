@@ -43,6 +43,10 @@ exports.setBusy = function ( _self ) {
 	}
 };
 
+exports.last = function ( _array ) {
+	return _array && _array.hasOwnProperty( 'length' ) ? _array[ Math.max( _array.length - 1, 0 ) ] : null;
+};
+
 exports.setProperty = function ( _key ) {
 	return function ( _value ) {
 		var self = this,

@@ -194,14 +194,16 @@ Model.prototype.$json = function () {
 	return json;
 };
 
-Model.prototype.$save = function ( _callback ) {
+Model.prototype.$save = function ( _data, _callback ) {
 	var self = this,
 		error = null,
 		eguid = guid.generate(),
 		isDirty = self.$isDirty(),
-		data = self.$json(),
+		data = cast( _data, 'object', self.$json() ),
 		method = isDirty ? 'create' : 'save',
-		callback = is.a.func( _callback ) ? _callback : helpers.noop;
+		callback = helpers.last( arguments );
+
+	callback = is.a.func( callback ) ? callback : helpers.noop;
 
 	self.__destroyed = false;
 
