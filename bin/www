@@ -22,7 +22,7 @@ Server.prototype.restart = function () {
 };
 
 Server.prototype.stop = function () {
-	if ( this.worker ) this.worker.kill();
+	if ( this.worker && !this.worker.suicide ) this.worker.kill();
 };
 
 exports = module.exports = new Server();

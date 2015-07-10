@@ -1,7 +1,3 @@
-Thu, 07 Aug 2014 01:42:15 GMT moldy Express server listening on port 3000
-Thu, 07 Aug 2014 01:42:15 GMT moldy Express server listening on port 3000
-Thu, 07 Aug 2014 01:42:16 GMT moldy Express server listening on port 3000
-Thu, 07 Aug 2014 01:42:16 GMT moldy Express server listening on port 3000
 # TOC
    - [moldy](#moldy)
      - [Property Attributes](#moldy-property-attributes)
@@ -24,9 +20,9 @@ var personMoldy = Moldy.extend( 'person' )
 	.$property( 'name' )
 	.$property( 'age' )
 	.create();
-personMoldy.should.have.a.property( 'id', null );
-personMoldy.should.have.a.property( 'name', null );
-personMoldy.should.have.a.property( 'age', null );
+personMoldy.should.have.a.property( 'id', undefined );
+personMoldy.should.have.a.property( 'name', undefined );
+personMoldy.should.have.a.property( 'age', undefined );
 ```
 
 <a name="moldy-property-attributes"></a>
@@ -264,7 +260,7 @@ Person.$find( function ( _error, _people ) {
 	if ( _error ) {
 		return _done( _error );
 	}
-	_people.should.be.an.Array.with.a.lengthOf( 3 );
+	_people.should.be.an.Array().with.a.lengthOf( 3 );
 	_people.forEach( function ( _person ) {
 		_person.should.be.a.Moldy;
 	} );

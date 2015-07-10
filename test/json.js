@@ -123,8 +123,8 @@ describe( 'json', function () {
 
 		data.should.eql( {
 			id: undefined,
-			name: null,
-			age: null,
+			name: undefined,
+			age: undefined,
 			address: {
 				suburb: 'warner',
 				country: 'australia'

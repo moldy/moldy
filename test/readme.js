@@ -11,9 +11,9 @@ describe( 'moldy', function () {
 			.$property( 'age' )
 			.create();
 
-		personMoldy.should.have.a.property( 'id', null );
-		personMoldy.should.have.a.property( 'name', null );
-		personMoldy.should.have.a.property( 'age', null );
+		personMoldy.should.have.a.property( 'id', undefined );
+		personMoldy.should.have.a.property( 'name', undefined );
+		personMoldy.should.have.a.property( 'age', undefined );
 
 	} );
 

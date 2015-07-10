@@ -20,7 +20,7 @@ describe( 'find', function () {
 				return _done( _error );
 			}
 
-			_people.should.be.an.Array.with.a.lengthOf( 3 );
+			_people.should.be.an.Array().with.a.lengthOf( 3 );
 
 			_people.forEach( function ( _person ) {
 				_person.should.be.a.Moldy;
