@@ -6,7 +6,8 @@ module.exports = function ( Moldy ) {
 			GLOBAL.server.restart();
 		}
 		Moldy.use( require( 'moldy-ajax-adapter' ) );
-		Moldy.defaults.baseUrl = 'http://localhost:3000/api';
+		var port = process.env.PORT || 3000;
+		Moldy.defaults.baseUrl = 'http://localhost:' + port + '/api';
 		setTimeout( done, 500 );
 	};
 };

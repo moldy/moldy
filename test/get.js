@@ -17,7 +17,8 @@ describe( 'findOne', function () {
 		Person.$findOne( function ( _error, _res ) {
 			var res = _res;
 
-			res.should.not.be.an.Array.and.be.a.Moldy;
+			res.should.not.be.an.Array;
+			res.should.be.a.Moldy;
 			res.$json().should.eql( {
 				guid: '5a55a128-0ad7-49a5-801a-04a7030385ff',
 				name: 'Goodman Delgado'
@@ -75,19 +76,20 @@ describe( 'findOne', function () {
 		Person.$findOne( function ( _error, res ) {
 			var _res = res;
 
-			_res.should.not.be.an.Array.and.be.a.Moldy;
+			_res.should.not.be.an.Array;
+			_res.should.be.a.Moldy;
 
 			//_res.should.equal( personMoldy );
 			_res.friends.should.be.an.Array;
-			_res.friends[ 0 ].id.should.be.a.String.and.equal( '0' );
-			_res.friends[ 0 ].name.should.be.a.String.and.equal( 'Blake Oneill' );
-			_res.friends[ 0 ].age.should.be.a.Number.and.equal( 10 );
-			_res.friends[ 1 ].id.should.be.a.String.and.equal( '1' );
-			_res.friends[ 1 ].name.should.be.a.String.and.equal( 'Hardin Jenkins' );
-			_res.friends[ 1 ].age.should.be.a.Number.and.equal( 10 );
-			_res.friends[ 2 ].id.should.be.a.String.and.equal( '2' );
-			_res.friends[ 2 ].name.should.be.a.String.and.equal( 'Kasey Jacobson' );
-			_res.friends[ 2 ].age.should.be.a.Number.and.equal( 10 );
+			_res.friends[ 0 ].id.should.be.a.String().and.equal( '0' );
+			_res.friends[ 0 ].name.should.be.a.String().and.equal( 'Blake Oneill' );
+			_res.friends[ 0 ].age.should.be.a.Number().and.equal( 10 );
+			_res.friends[ 1 ].id.should.be.a.String().and.equal( '1' );
+			_res.friends[ 1 ].name.should.be.a.String().and.equal( 'Hardin Jenkins' );
+			_res.friends[ 1 ].age.should.be.a.Number().and.equal( 10 );
+			_res.friends[ 2 ].id.should.be.a.String().and.equal( '2' );
+			_res.friends[ 2 ].name.should.be.a.String().and.equal( 'Kasey Jacobson' );
+			_res.friends[ 2 ].age.should.be.a.Number().and.equal( 10 );
 			_done( _error );
 		} );
 

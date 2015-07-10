@@ -21,7 +21,7 @@ describe( 'property', function () {
     personMoldy.should.have.a.property( 'name' ).and.be.a.String;
 
     personMoldy.active = 'y';
-    personMoldy.should.have.a.property( 'active' ).and.be.a.Boolean.and.eql( true );
+    personMoldy.should.have.a.property( 'active' ).and.be.a.Boolean().and.eql( true );
   } );
 
   it( 'set properties using the arguments when instantiating', function () {
@@ -45,7 +45,7 @@ describe( 'property', function () {
     personMoldy.should.have.a.property( 'age' ).and.be.a.Number;
 
     personMoldy.active = 'y';
-    personMoldy.should.have.a.property( 'active' ).and.be.a.Boolean.and.eql( true );
+    personMoldy.should.have.a.property( 'active' ).and.be.a.Boolean().and.eql( true );
   } );
 
   it( 'set a property on a manually added key', function () {

@@ -23,8 +23,8 @@ describe( 'data', function () {
 			age: 31
 		} );
 
-		personMoldy.should.have.a.property( 'age' ).and.be.a.Number.and.eql( 31 );
-		personMoldy.should.have.a.property( 'name' ).and.be.a.String.and.eql( 'David' );
+		personMoldy.should.have.a.property( 'age' ).which.is.a.Number().and.eql( 31 );
+		personMoldy.should.have.a.property( 'name' ).which.is.a.String().and.eql( 'David' );
 		personMoldy.fullName.should.exist;
 		personMoldy.fullName().should.equal( 'David31' );
 
@@ -35,8 +35,8 @@ describe( 'data', function () {
 		} );
 
 		Object.keys( personMoldy.$json() ).should.have.a.lengthOf( 3 );
-		personMoldy.should.have.a.property( 'age' ).and.be.a.Number.and.eql( 1 );
-		personMoldy.should.have.a.property( 'name' ).and.be.a.String.and.eql( 'Max' );
+		personMoldy.should.have.a.property( 'age' ).which.is.a.Number().and.eql( 1 );
+		personMoldy.should.have.a.property( 'name' ).which.is.a.String().and.eql( 'Max' );
 		personMoldy.should.not.have.a.property( 'invalidKey' );
 
 	} );
