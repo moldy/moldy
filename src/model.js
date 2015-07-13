@@ -199,6 +199,7 @@ Model.prototype.$save = function ( _data, _callback ) {
 		error = null,
 		eguid = guid.generate(),
 		isDirty = self.$isDirty(),
+		isDirectOperation = is.a.object(_data) && is.not.a.func(_data),
 		data = cast( _data, 'object', self.$json() ),
 		method = isDirty ? 'create' : 'save',
 		callback = helpers.last( arguments );
@@ -217,7 +218,7 @@ Model.prototype.$save = function ( _data, _callback ) {
 
 	var responseShouldContainAnId = hasKey( data, self.__key ) && is.not.empty( data[ self.__key ] );
 
-	self.__moldy.__adapter[ self.__moldy.__adapterName ][ method ].call( self.__moldy, data, function ( _error, _res ) {
+	var saveDone = function ( _error, _res ) {
 
 		if ( _error && !( _error instanceof Error ) ) {
 			_error = new Error( 'An unknown error occurred' );
@@ -241,7 +242,13 @@ Model.prototype.$save = function ( _data, _callback ) {
 		self.__moldy.emit( 'busy:done', eguid );
 
 		callback && callback( _error, self );
-	} );
+	};
+
+	if ( !isDirectOperation ) {
+		self.__moldy.__adapter[ self.__moldy.__adapterName ][ method ].call( self.__moldy, data, saveDone );
+	} else {
+		self.__moldy.__adapter[ self.__moldy.__adapterName ][ method ].call( self.__moldy, data, isDirectOperation, saveDone );
+	}
 };
 
 emitter( Model.prototype );
