@@ -141,7 +141,11 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 
 		self.__destroyed = false;
 
-		self.__adapter[ self.__adapterName ].findOne.call( self, query, function ( _error, _res ) {
+		var adapter = self.__adapter[ self.__adapterName ];
+		if ( !adapter ) {
+			throw new Error( 'Can not find the ' + self.__adapterName + '. Please install it in your dependencies or devDependencies' );
+		}
+		adapter.findOne.call( self, query, function ( _error, _res ) {
 			if ( _error && !( _error instanceof Error ) ) {
 				_error = new Error( 'An unknown error occurred' );
 			}
@@ -204,7 +208,11 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 			callback: callback
 		} );
 
-		self.__adapter[ self.__adapterName ].find.call( self, query, function ( _error, _res ) {
+		var adapter = self.__adapter[ self.__adapterName ];
+		if ( !adapter ) {
+			throw new Error( 'Can not find the ' + self.__adapterName + '. Please install it in your dependencies or devDependencies' );
+		}
+		adapter.find.call( self, query, function ( _error, _res ) {
 
 			if ( _error && !( _error instanceof _error ) ) {
 				_error = new Error( 'An unknown error occurred' );
