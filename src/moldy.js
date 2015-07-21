@@ -210,7 +210,7 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 
 		var adapter = self.__adapter[ self.__adapterName ];
 		if ( !adapter ) {
-			throw new Error( 'Can not find the ' + self.__adapterName + '. Please install it in your dependencies or devDependencies' );
+			throw new Error( 'Can not find the ' + self.__adapterName + ' moldy adapter. Please install it in your dependencies or devDependencies' );
 		}
 		adapter.find.call( self, query, function ( _error, _res ) {
 
