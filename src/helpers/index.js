@@ -1,6 +1,7 @@
 var is = require( 'sc-is' ),
 	cast = require( 'sc-cast' ),
-	merge = require( 'sc-merge' );
+	merge = require( 'sc-merge' ),
+	clone = require( 'clone' );
 
 exports.attributes = function ( _key, _value ) {
 	var value;
@@ -13,7 +14,7 @@ exports.attributes = function ( _key, _value ) {
 		value = {
 			type: 'moldy',
 			default: _value
-		}
+		};
 	} else {
 		value = _value;
 	}
@@ -29,7 +30,7 @@ exports.attributes = function ( _key, _value ) {
 exports.getProperty = function ( _key ) {
 	return function () {
 		return this.__data[ _key ];
-	}
+	};
 };
 
 exports.destroyedError = function ( _moldy ) {
@@ -40,6 +41,15 @@ exports.destroyedError = function ( _moldy ) {
 exports.setBusy = function ( _self ) {
 	return function () {
 		_self.busy = true;
+	};
+};
+
+// Clone objects (except Moldy objects) before assining them as defaults.
+exports.clone = function ( type ) {
+	if ( type && !type.__moldy && ( typeof type === 'object' || type instanceof Array ) ) {
+		return clone( type );
+	} else {
+		return type;
 	}
 };
 
@@ -59,13 +69,13 @@ exports.setProperty = function ( _key ) {
 		}
 
 		self.__data[ _key ] = value;
-	}
+	};
 };
 
 exports.unsetBusy = function ( _self ) {
 	return function () {
 		_self.busy = false;
-	}
+	};
 };
 
 exports.noop = function () {};

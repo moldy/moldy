@@ -1,7 +1,7 @@
 var Moldy = require( '../src' ),
 	should = require( 'should' );
 
-describe( 'data', function () {
+describe( 'defaults', function () {
 	var Person = Moldy.extend( 'person', {
 		properties: {
 			name: {
