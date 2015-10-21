@@ -16,15 +16,16 @@ describe( 'date', function () {
 			dob: '13 Jun 2014'
 		} );
 
-		personMoldy.dob.should.eql( new Date( '2014-06-12T14:00:00.000Z' ) );
+		is.a.date( personMoldy.dob ).should.be.true;
+		personMoldy.dob.should.eql( new Date( '13 Jun 2014' ) );
 
 		personMoldy.dob = '10 June 2014';
 
 		is.a.date( personMoldy.dob ).should.be.true;
-		personMoldy.dob.should.eql( new Date( '2014-06-09T14:00:00.000Z' ) );
+		personMoldy.dob.should.eql( new Date( '10 June 2014' ) );
 
 		personMoldy.$json().should.eql( {
-			dob: '2014-06-09T14:00:00.000Z'
+			dob: (new Date('10 June 2014')).toISOString()
 		} );
 
 	} );
