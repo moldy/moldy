@@ -1,4 +1,4 @@
-var helpers = require( "./helpers/index" ),
+var helpers = require( "./helpers" ),
 	emitter = require( 'emitter-component' ),
 	guid = require( 'sc-guid' ),
 	observableArray = require( 'sg-observable-array' ),
@@ -252,7 +252,7 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 			if ( metadata.attributeTypeIsAnInstantiatedMoldy ) {
 
 				Object.defineProperty( obj, key, {
-					value: metadata.attributes[ 'default' ],
+					value: helpers.clone( metadata.attributes[ 'default' ] ),
 					enumerable: true
 				} );
 
@@ -288,11 +288,11 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 						args.forEach( function ( _item ) {
 							if ( metadata.attributeArrayTypeIsAMoldy ) {
 								var moldy = new Moldy( attributeType[ 'name' ], attributeType ),
-									data = is.an.object( _item ) ? _item : metadata.attributes[ 'default' ];
+									data = is.an.object( _item ) ? _item : helpers.clone( metadata.attributes[ 'default' ] );
 
 								values.push( moldy.create( data ) );
 							} else {
-								values.push( cast( _item, attributeType, metadata.attributes[ 'default' ] ) );
+								values.push( cast( _item, attributeType, helpers.clone( metadata.attributes[ 'default' ] ) ) );
 							}
 						} );
 						return array[ '__' + _method ].apply( array, values );
@@ -319,7 +319,7 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 		if ( existingValue !== void 0 ) { //if existing value
 			obj[ key ] = existingValue;
 		} else if ( is.empty( obj[ key ] ) && metadata.attributes.optional === false && is.not.nullOrUndefined( metadata.attributes[ 'default' ] ) ) {
-			obj[ key ] = metadata.attributes[ 'default' ];
+			obj[ key ] = helpers.clone( metadata.attributes[ 'default' ] );
 		} else if ( is.empty( obj[ key ] ) && metadata.attributes.optional === false ) {
 			if ( metadata.attributeTypeIsAnArray || metadata.attributeTypeIsAnInstantiatedMoldy ) {
 				obj.__data[ key ] = obj[ key ];
