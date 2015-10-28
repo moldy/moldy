@@ -1,4 +1,4 @@
-var helpers = require( "./helpers" ),
+var helpers = require( './helpers' ),
 	emitter = require( 'emitter-component' ),
 	guid = require( 'sc-guid' ),
 	observableArray = require( 'sg-observable-array' ),
@@ -87,7 +87,7 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 	Moldy.prototype.adapter = function ( adapter ) {
 
 		if ( !adapter || !this.__adapter[ adapter ] ) {
-			throw new Error( "Provide a valid adpater " );
+			throw new Error( 'Provide a valid adpater ' );
 		}
 
 		this.__adapterName = adapter;
@@ -130,7 +130,7 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 			callback = is.a.func( _query ) ? _query : is.a.func( _callback ) ? _callback : helpers.noop,
 			wasDestroyed = self.__destroyed;
 
-		self.emit( 'busy', eguid )
+		self.emit( 'busy', eguid );
 		self.emit( 'prefindOne', {
 			moldy: self,
 			method: method,
@@ -259,7 +259,6 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 				obj.__data[ key ] = obj[ key ];
 
 			} else if ( metadata.valueIsAStaticMoldy ) {
-
 				Object.defineProperty( obj, key, {
 					value: new Moldy( metadata.value.name, metadata.value ).create( existingValue ),
 					enumerable: true

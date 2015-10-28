@@ -14,6 +14,7 @@ var Model = function ( _initial, _moldy ) {
 	this.__isMoldy = true;
 	this.__attributes = {};
 	this.__data = {};
+	this.__diff = {};
 	this.__destroyed = false;
 
 	if ( !self.__moldy.__keyless ) {
@@ -23,6 +24,9 @@ var Model = function ( _initial, _moldy ) {
 	Object.keys( cast( self.__moldy.__metadata, 'object', {} ) ).forEach( function ( _key ) {
 		self.__moldy.$defineProperty( self, _key, initial[ _key ] );
 	} );
+
+	// Reset the diff after all the properties have been defined.
+	this.__diff = {};
 
 };
 
@@ -173,23 +177,29 @@ Model.prototype.$isValid = function () {
 	return isValid;
 };
 
-Model.prototype.$json = function () {
+Model.prototype.$json = function (shouldDiff) {
 	var self = this,
 		data = self.__data,
 		json = {};
 
-	Object.keys( data ).forEach( function ( _key ) {
-		if ( is.an.array( data[ _key ] ) && data[ _key ][ 0 ] instanceof Model ) {
-			json[ _key ] = [];
-			data[ _key ].forEach( function ( _moldy ) {
-				json[ _key ].push( _moldy.$json() );
-			} );
-		} else if ( is.a.date( data[ _key ] ) ) {
-			json[ _key ] = data[ _key ].toISOString();
-		} else {
-			json[ _key ] = data[ _key ] instanceof Model ? data[ _key ].$json() : data[ _key ];
-		}
-	} );
+	Object.keys( data )
+		.filter( function( _key) {
+			// If we've requested a diff, only return the items that have changed.
+			// Also return moldy items as they can keep their own diff state.
+			return !shouldDiff || (data[_key] && data[_key].__moldy) || self.__diff[_key];
+		} )
+		.forEach( function ( _key ) {
+			if ( is.an.array( data[ _key ] ) && data[ _key ][ 0 ] instanceof Model ) {
+				json[ _key ] = [];
+				data[ _key ].forEach( function ( _moldy ) {
+					json[ _key ].push( _moldy.$json(shouldDiff) );
+				} );
+			} else if ( is.a.date( data[ _key ] ) ) {
+				json[ _key ] = data[ _key ].toISOString();
+			} else {
+				json[ _key ] = data[ _key ] instanceof Model ? data[ _key ].$json(shouldDiff) : data[ _key ];
+			}
+		} );
 
 	return json;
 };

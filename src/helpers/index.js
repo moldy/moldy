@@ -44,7 +44,7 @@ exports.setBusy = function ( _self ) {
 	};
 };
 
-// Clone objects (except Moldy objects) before assining them as defaults.
+// Clone objects (except Moldy objects) before assigning them as defaults.
 exports.clone = function ( type ) {
 	if ( type && !type.__moldy && ( typeof type === 'object' || type instanceof Array ) ) {
 		return clone( type );
@@ -66,6 +66,8 @@ exports.setProperty = function ( _key ) {
 
 		if ( self.__data[ _key ] !== value ) {
 			self.emit( 'change', self.__data[ _key ], value );
+			// This property has changed. Record it in the diff.
+			self.__diff[ _key ] = true;
 		}
 
 		self.__data[ _key ] = value;
