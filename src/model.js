@@ -187,6 +187,7 @@ Model.prototype.$json = function ( shouldDiff ) {
 			// If we've requested a diff, only return the items that have changed.
 			// Also return moldy items as they can keep their own diff state.
 			return !shouldDiff ||
+				_key === 'id' ||
 				self.__data[ _key ] instanceof Array ||
 				( data[ _key ] && data[ _key ].__moldy ) ||
 				self.__diff[ _key ];
