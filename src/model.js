@@ -278,7 +278,7 @@ Model.prototype.$do = function ( _options, _callback ) {
 	if ( !_options.isDirectOperation ) {
 		self.__moldy.__adapter[ self.__moldy.__adapterName ][ _options.method ].call( self.__moldy, data, saveDone );
 	} else {
-		self.__moldy.__adapter[ self.__moldy.__adapterName ][ _options.method ].call( self.__moldy, data, isDirectOperation, saveDone );
+		self.__moldy.__adapter[ self.__moldy.__adapterName ][ _options.method ].call( self.__moldy, data, _options.isDirectOperation, saveDone );
 	}
 };
 
