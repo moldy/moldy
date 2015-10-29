@@ -14,6 +14,7 @@ var Model = function ( _initial, _moldy ) {
 	this.__isMoldy = true;
 	this.__attributes = {};
 	this.__data = {};
+	this.__diff = {};
 	this.__destroyed = false;
 
 	if ( !self.__moldy.__keyless ) {
@@ -23,6 +24,9 @@ var Model = function ( _initial, _moldy ) {
 	Object.keys( cast( self.__moldy.__metadata, 'object', {} ) ).forEach( function ( _key ) {
 		self.__moldy.$defineProperty( self, _key, initial[ _key ] );
 	} );
+
+	// Reset the diff after all the properties have been defined.
+	this.__diff = {};
 
 };
 
@@ -173,35 +177,63 @@ Model.prototype.$isValid = function () {
 	return isValid;
 };
 
-Model.prototype.$json = function () {
+Model.prototype.$json = function ( shouldDiff ) {
 	var self = this,
 		data = self.__data,
 		json = {};
 
-	Object.keys( data ).forEach( function ( _key ) {
-		if ( is.an.array( data[ _key ] ) && data[ _key ][ 0 ] instanceof Model ) {
-			json[ _key ] = [];
-			data[ _key ].forEach( function ( _moldy ) {
-				json[ _key ].push( _moldy.$json() );
-			} );
-		} else if ( is.a.date( data[ _key ] ) ) {
-			json[ _key ] = data[ _key ].toISOString();
-		} else {
-			json[ _key ] = data[ _key ] instanceof Model ? data[ _key ].$json() : data[ _key ];
-		}
-	} );
+	Object.keys( data )
+		.filter( function ( _key ) {
+			// If we've requested a diff, only return the items that have changed.
+			// Also return moldy items as they can keep their own diff state.
+			return !shouldDiff ||
+				_key === 'id' ||
+				self.__data[ _key ] instanceof Array ||
+				( data[ _key ] && data[ _key ].__moldy ) ||
+				self.__diff[ _key ];
+		} )
+		.forEach( function ( _key ) {
+			if ( is.an.array( data[ _key ] ) && data[ _key ][ 0 ] instanceof Model ) {
+				json[ _key ] = [];
+				data[ _key ].forEach( function ( _moldy ) {
+					json[ _key ].push( _moldy.$json( shouldDiff ) );
+				} );
+			} else if ( is.a.date( data[ _key ] ) ) {
+				json[ _key ] = data[ _key ].toISOString();
+			} else {
+				json[ _key ] = data[ _key ] instanceof Model ? data[ _key ].$json( shouldDiff ) : data[ _key ];
+			}
+		} );
 
 	return json;
 };
 
+Model.prototype.$update = function ( _callback ) {
+	this.$do( {
+		method: 'save',
+		isDirectOperation: false,
+		data: this.$json( true )
+	}, _callback );
+
+};
+
 Model.prototype.$save = function ( _data, _callback ) {
+	var data = arguments[ 0 ];
+	var callback = helpers.last( arguments );
+	var isDirectOperation = is.a.object( data ) && is.not.a.func( data );
+
+	this.$do( {
+		method: this.$isDirty() ? 'create' : 'save',
+		isDirectOperation: isDirectOperation,
+		data: cast( data, 'object', this.$json() )
+	}, callback );
+};
+
+Model.prototype.$do = function ( _options, _callback ) {
 	var self = this,
 		error = null,
 		eguid = guid.generate(),
-		isDirty = self.$isDirty(),
-		isDirectOperation = is.a.object(_data) && is.not.a.func(_data),
-		data = cast( _data, 'object', self.$json() ),
-		method = isDirty ? 'create' : 'save',
+		data = _options.data,
 		callback = helpers.last( arguments );
 
 	callback = is.a.func( callback ) ? callback : helpers.noop;
@@ -212,7 +244,7 @@ Model.prototype.$save = function ( _data, _callback ) {
 	self.emit( 'presave', {
 		moldy: self,
 		data: data,
-		method: method,
+		method: _options.method,
 		callback: callback
 	} );
 
@@ -224,11 +256,11 @@ Model.prototype.$save = function ( _data, _callback ) {
 			_error = new Error( 'An unknown error occurred' );
 		}
 
-		if ( !_error && isDirty && is.object( _res ) && ( responseShouldContainAnId && !hasKey( _res, self.__moldy.__key ) ) ) {
+		if ( !_error && _options.isDirty && is.object( _res ) && ( responseShouldContainAnId && !hasKey( _res, self.__moldy.__key ) ) ) {
 			_error = new Error( 'The response from the server did not contain a valid `' + self.__moldy.__key + '`' );
 		}
 
-		if ( !_error && isDirty && is.object( _res ) ) {
+		if ( !_error && _options.isDirty && is.object( _res ) ) {
 			self.__moldy[ self.__moldy.__key ] = _res[ self.__moldy.__key ];
 		}
 
@@ -241,13 +273,13 @@ Model.prototype.$save = function ( _data, _callback ) {
 		self.emit( 'save', _error, self );
 		self.__moldy.emit( 'busy:done', eguid );
 
-		callback && callback( _error, self );
+		callback && callback( _error, self, _res );
 	};
 
-	if ( !isDirectOperation ) {
-		self.__moldy.__adapter[ self.__moldy.__adapterName ][ method ].call( self.__moldy, data, saveDone );
+	if ( !_options.isDirectOperation ) {
+		self.__moldy.__adapter[ self.__moldy.__adapterName ][ _options.method ].call( self.__moldy, data, saveDone );
 	} else {
-		self.__moldy.__adapter[ self.__moldy.__adapterName ][ method ].call( self.__moldy, data, isDirectOperation, saveDone );
+		self.__moldy.__adapter[ self.__moldy.__adapterName ][ _options.method ].call( self.__moldy, data, _options.isDirectOperation, saveDone );
 	}
 };
 
