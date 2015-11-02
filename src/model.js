@@ -221,7 +221,9 @@ Model.prototype.$update = function ( _callback ) {
 	this.$do( {
 		method: 'save',
 		isDirectOperation: false,
-		data: this.$json( true )
+		data: this.$json( {
+			diff: true
+		} )
 	}, _callback );
 };
 
@@ -286,7 +288,6 @@ Model.prototype.$do = function ( _options, _callback ) {
 
 	// Reset our diff.
 	self.__diff = [];
-
 	if ( _options.isDirectOperation ) {
 		self.__moldy.__adapter[ self.__moldy.__adapterName ][ _options.method ].call( self.__moldy, data, _options.isDirectOperation, saveDone );
 	} else {
