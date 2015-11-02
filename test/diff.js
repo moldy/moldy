@@ -3,9 +3,13 @@ var Moldy = require( '../src' ),
 	async = require( 'async' ),
 	dummy = require( './adapter/dummy' )();
 
-Moldy.use( dummy.adapter );
+// Ensure the AJAX adapter is loaded first as the other tests depend on it.
+Moldy.use( require( 'moldy-ajax-adapter' ) );
+Moldy.use(dummy.adapter);
+
 
 var schema = {
+	'adapter': 'dummy',
 	'properties': {
 		'body': 'string',
 		'endTime': {
@@ -60,6 +64,7 @@ describe( 'diff', function () {
 
 	it( 'Diff should be cleared after save', function ( _done ) {
 		var moldo = Moldy.extend( 'person', {
+			adapter: 'dummy',
 			properties: {
 				didOtherStuff: 'boolean'
 			}
@@ -88,6 +93,7 @@ describe( 'diff', function () {
 
 	it( 'should create for new id-less item.', function ( _done ) {
 		var personMoldy = Moldy.extend( '2', {
+			adapter: 'dummy',
 			properties: {
 				name: 'string',
 				job: {
@@ -121,6 +127,7 @@ describe( 'diff', function () {
 
 	it( 'should work within independent moldys updating at the same time.', function ( _done ) {
 		var schema = {
+			adapter: 'dummy',
 			properties: {
 				name: '',
 				didStuff: '',
@@ -133,15 +140,15 @@ describe( 'diff', function () {
 		// This runs synchronous with the dummy adapter.
 
 		async.waterfall( [
-			function ( _done ) {
+			function ( _wdone ) {
 				sampleData = Moldy.extend( 'person', schema ).create( {
 					name: 'Jill Lizards'
 				} );
 				sampleData.$save( function () {
-					_done();
+					_wdone();
 				} );
 			},
-			function ( _done ) {
+			function ( _wdone ) {
 				var personMoldy = Moldy.extend( 'person', schema );
 				personMoldy.$findOne( {
 					id: sampleData.id
@@ -158,10 +165,10 @@ describe( 'diff', function () {
 						id: sampleData.id,
 						didStuff: true
 					} );
-					_done( null, _found );
+					_wdone( null, _found );
 				} );
 			},
-			function ( _person1, _done ) {
+			function ( _person1, _wdone ) {
 				var personMoldy = Moldy.extend( 'person', schema );
 				personMoldy.$findOne( {
 					id: sampleData.id
@@ -178,10 +185,10 @@ describe( 'diff', function () {
 						id: sampleData.id,
 						alsoDidStuff: true
 					} );
-					_done( null, _person1, _found );
+					_wdone( null, _person1, _found );
 				} );
 			},
-			function ( _personRef1, _personRef2, _callback ) {
+			function ( _personRef1, _personRef2, _wdone ) {
 				_personRef1.$update( function ( _error, _personRef1Updated ) {
 					( _personRef1 === _personRef1Updated ).should.eql( true );
 					_personRef1.$json( {
@@ -189,10 +196,10 @@ describe( 'diff', function () {
 					} ).should.eql( {
 						id: sampleData.id
 					} );
-					return _callback( _error, _personRef1, _personRef2 );
+					_wdone( _error, _personRef1, _personRef2 );
 				} );
 			},
-			function ( _personRef1, _personRef2, _callback ) {
+			function ( _personRef1, _personRef2, _wdone ) {
 				_personRef2.$update( function ( _error, _personRef2Updated ) {
 					( _personRef2 === _personRef2Updated ).should.eql( true );
 					_personRef2.$json().should.eql( {
@@ -207,10 +214,11 @@ describe( 'diff', function () {
 						id: sampleData.id
 					} );
 
-					return _done( _error );
+					_wdone( _error );
 				} );
 			},
 		], function ( _err ) {
+			console.log('calling back');
 			_done();
 		} );
 
