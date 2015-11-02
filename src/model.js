@@ -183,16 +183,17 @@ Model.prototype.$isValid = function () {
 	return isValid;
 };
 
-Model.prototype.$json = function ( shouldDiff ) {
+Model.prototype.$json = function ( options ) {
 	var self = this,
 		data = self.__data,
 		json = {};
+	options = options || {};
 
 	Object.keys( data )
 		.filter( function ( _key ) {
 			// If we've requested a diff, only return the items that have changed.
 			// Also return moldy items as they can keep their own diff state.
-			return !shouldDiff ||
+			return !options.diff ||
 				_key === 'id' ||
 				self.__data[ _key ] instanceof Array ||
 				( data[ _key ] && data[ _key ].__moldy ) ||
@@ -202,12 +203,12 @@ Model.prototype.$json = function ( shouldDiff ) {
 			if ( is.an.array( data[ _key ] ) && data[ _key ][ 0 ] instanceof Model ) {
 				json[ _key ] = [];
 				data[ _key ].forEach( function ( _moldy ) {
-					json[ _key ].push( _moldy.$json( shouldDiff ) );
+					json[ _key ].push( _moldy.$json( options ) );
 				} );
 			} else if ( is.a.date( data[ _key ] ) ) {
 				json[ _key ] = data[ _key ].toISOString();
 			} else {
-				json[ _key ] = data[ _key ] instanceof Model ? data[ _key ].$json( shouldDiff ) : data[ _key ];
+				json[ _key ] = data[ _key ] instanceof Model ? data[ _key ].$json( options ) : data[ _key ];
 			}
 		} );
 

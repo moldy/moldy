@@ -45,7 +45,9 @@ describe( 'diff', function () {
 		var postMoldy = Moldy.extend( 'post', schema ).create();
 		postMoldy.body = 'cheese';
 		postMoldy.actions.sit = 12;
-		var diff = JSON.parse( JSON.stringify( postMoldy.$json( true ) ) );
+		var diff = JSON.parse( JSON.stringify( postMoldy.$json( {
+			diff: true
+		} ) ) );
 
 		diff.should.eql( {
 			body: 'cheese',
@@ -63,16 +65,22 @@ describe( 'diff', function () {
 			}
 		} ).create();
 
-		moldo.$json( true ).should.eql( {
+		moldo.$json( {
+			diff: true
+		} ).should.eql( {
 			id: undefined
 		} );
 		moldo.didOtherStuff = true;
-		moldo.$json( true ).should.eql( {
+		moldo.$json( {
+			diff: true
+		} ).should.eql( {
 			id: undefined,
 			didOtherStuff: true
 		} );
 		moldo.$update( function ( _error, _person ) {
-			( typeof moldo.$json( true ).didOtherStuff ).should.eql( 'undefined' );
+			( typeof moldo.$json( {
+				diff: true
+			} ).didOtherStuff ).should.eql( 'undefined' );
 			moldo.didOtherStuff.should.eql( true );
 			return _done( _error, _person );
 		} );
@@ -138,11 +146,15 @@ describe( 'diff', function () {
 				personMoldy.$findOne( {
 					id: sampleData.id
 				}, function ( _err, _found ) {
-					_found.$json( true ).should.eql( {
+					_found.$json( {
+						diff: true
+					} ).should.eql( {
 						id: sampleData.id
 					} );
 					_found.didStuff = true;
-					_found.$json( true ).should.eql( {
+					_found.$json( {
+						diff: true
+					} ).should.eql( {
 						id: sampleData.id,
 						didStuff: true
 					} );
@@ -154,11 +166,15 @@ describe( 'diff', function () {
 				personMoldy.$findOne( {
 					id: sampleData.id
 				}, function ( _err, _found ) {
-					_found.$json( true ).should.eql( {
+					_found.$json( {
+						diff: true
+					} ).should.eql( {
 						id: sampleData.id
 					} );
 					_found.alsoDidStuff = true;
-					_found.$json( true ).should.eql( {
+					_found.$json( {
+						diff: true
+					} ).should.eql( {
 						id: sampleData.id,
 						alsoDidStuff: true
 					} );
@@ -168,7 +184,9 @@ describe( 'diff', function () {
 			function ( _personRef1, _personRef2, _callback ) {
 				_personRef1.$update( function ( _error, _personRef1Updated ) {
 					( _personRef1 === _personRef1Updated ).should.eql( true );
-					_personRef1.$json( true ).should.eql( {
+					_personRef1.$json( {
+						diff: true
+					} ).should.eql( {
 						id: sampleData.id
 					} );
 					return _callback( _error, _personRef1, _personRef2 );
@@ -183,7 +201,9 @@ describe( 'diff', function () {
 						alsoDidStuff: true,
 						name: sampleData.name
 					} );
-					_personRef2.$json( true ).should.eql( {
+					_personRef2.$json( {
+						diff: true
+					} ).should.eql( {
 						id: sampleData.id
 					} );
 
@@ -195,5 +215,5 @@ describe( 'diff', function () {
 		} );
 
 	} );
-	
+
 } );
