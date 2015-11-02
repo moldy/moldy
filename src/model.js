@@ -73,6 +73,10 @@ Model.prototype.$data = function ( _data, _options ) {
 		return helpers.destroyedError( self );
 	}
 
+	// Don't diff the following operations.
+	var diffBackup = self.__diff;
+	self.__diff = [];
+
 	Object.keys( data ).forEach( function ( _key ) {
 		if ( self.__attributes.hasOwnProperty( _key ) ) {
 			if ( is.an.array( data[ _key ] ) && hasKey( self.__attributes[ _key ], 'arrayOfAType', 'boolean' ) && self.__attributes[ _key ].arrayOfAType === true ) {
@@ -89,6 +93,8 @@ Model.prototype.$data = function ( _data, _options ) {
 			}
 		}
 	} );
+
+	self.__diff = diffBackup;
 
 	return self;
 };
@@ -209,12 +215,13 @@ Model.prototype.$json = function ( shouldDiff ) {
 };
 
 Model.prototype.$update = function ( _callback ) {
+	if ( this.$isDirty() ) return this.$save( _callback );
+
 	this.$do( {
 		method: 'save',
 		isDirectOperation: false,
 		data: this.$json( true )
 	}, _callback );
-
 };
 
 Model.prototype.$save = function ( _data, _callback ) {
@@ -276,10 +283,13 @@ Model.prototype.$do = function ( _options, _callback ) {
 		callback && callback( _error, self, _res );
 	};
 
-	if ( !_options.isDirectOperation ) {
-		self.__moldy.__adapter[ self.__moldy.__adapterName ][ _options.method ].call( self.__moldy, data, saveDone );
-	} else {
+	// Reset our diff.
+	self.__diff = [];
+
+	if ( _options.isDirectOperation ) {
 		self.__moldy.__adapter[ self.__moldy.__adapterName ][ _options.method ].call( self.__moldy, data, _options.isDirectOperation, saveDone );
+	} else {
+		self.__moldy.__adapter[ self.__moldy.__adapterName ][ _options.method ].call( self.__moldy, data, saveDone );
 	}
 };
 
