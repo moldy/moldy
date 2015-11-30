@@ -28,6 +28,9 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 			__metadata: {
 				value: {}
 			},
+			__meta: {
+				value: properties[ 'meta' ] || {}
+			},
 			__baseUrl: {
 				value: cast( properties[ 'baseUrl' ], 'string', '' ),
 				writable: true
