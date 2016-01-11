@@ -18,6 +18,7 @@
   },
   "homepage": "http://moldy.io",
   "devDependencies": {
+    "async": "^1.5.2",
     "body-parser": "^1.13.2",
     "browserify": "^10.2.6",
     "debug": "^2.2.0",
