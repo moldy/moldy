@@ -1,6 +1,6 @@
 {
   "name": "moldy",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "A javascript model API for the browser + server that is actually worth using.",
   "main": "src/index.js",
   "scripts": {
