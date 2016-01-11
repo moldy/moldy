@@ -217,7 +217,7 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 		}
 		adapter.find.call( self, query, function ( _error, _res ) {
 
-			if ( _error && !( _error instanceof _error ) ) {
+			if ( _error && !( _error instanceof Error ) ) {
 				_error = new Error( 'An unknown error occurred' );
 			}
 
