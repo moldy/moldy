@@ -152,7 +152,10 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 			if ( _error && !( _error instanceof Error ) ) {
 				_error = new Error( 'An unknown error occurred' );
 			}
-			if ( _error ) callback && callback( _error );
+			if ( _error ) {
+				callback && callback( _error );
+				return;
+			}
 
 			if ( is.empty( _res ) ) {
 				result = undefined;
@@ -221,7 +224,10 @@ module.exports = function ( BaseModel, defaultConfiguration, adapter ) {
 			if ( _error && !( _error instanceof Error ) ) {
 				_error = new Error( 'An unknown error occurred' );
 			}
-			if ( _error ) callback && callback( _error );
+			if ( _error ) {
+				callback && callback( _error );
+				return;
+			}
 
 			if ( is.array( _res ) ) {
 				_res.forEach( function ( _data ) {
